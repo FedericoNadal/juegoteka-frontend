@@ -210,7 +210,29 @@ La estructura definitiva se definirá durante el desarrollo.
 [x] Configurar Git  
 [x] Crear ramas principales  
 [x] Configurar Tailwind CSS  
-[ ] Crear estructura de carpetas  
+[x] Crear estructura de carpetas  
+
+
+---
+## Estructura del proyecto
+
+El código fuente se organiza por responsabilidad.
+
+- `pages/`: pantallas de la aplicación.
+- `components/`: componentes reutilizables.
+- `layouts/`: estructuras compartidas entre páginas.
+- `routes/`: configuración de React Router.
+- `services/`: comunicación con el backend.
+- `types/`: tipos TypeScript del dominio.
+- `assets/`: recursos estáticos.
+
+
+
+### Criterios
+
+- Las páginas pueden tener subcarpetas cuando su complejidad lo requiera.
+- Los tipos específicos de una página pueden mantenerse junto a ella.
+- Solo se crean nuevas carpetas cuando resuelven una necesidad real del proyecto.
 
 ## Aplicación
 
@@ -223,7 +245,6 @@ La estructura definitiva se definirá durante el desarrollo.
 [ ] Perfil  
 [ ] Integración con backend  
 
----
 
 # Bitácora
 
