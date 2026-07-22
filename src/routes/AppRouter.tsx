@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "../pages/Home/Home";
 import MainLayout from "../layouts/MainLayout";
 import Perfil from "../pages/Perfil/Perfil";
-import Libreta from "../pages/Perfil/Perfil";
+import Libreta from "../pages/Libreta/Libreta";
 import Mapa from "../pages/Mapa/Mapa";
 import Mazo from "../pages/Mazo/Mazo";
 
