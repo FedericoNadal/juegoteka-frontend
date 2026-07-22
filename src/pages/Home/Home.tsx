@@ -1,27 +1,13 @@
-import Button from "../../components/ui/Button";
+import Hero from "../../components/Hero/Hero";
 import Panel from "../../components/ui/Panel";
 import SectionTitle from "../../components/ui/SectionTitle";
 
 function Home() {
   return (
+
     <main>
 
-      <Panel>
-
-        <SectionTitle>
-          Bienvenido a Juegoteka
-        </SectionTitle>
-
-        <p className="mb-6 text-lg">
-          Organizá tus juegos, encuentros y grupos
-          de una forma simple y agradable.
-        </p>
-
-        <Button>
-          Explorar juegos
-        </Button>
-
-      </Panel>
+      <Hero />
 
       <Panel>
 
@@ -30,13 +16,15 @@ function Home() {
         </SectionTitle>
 
         <p>
-          Una plataforma para gestionar tu colección,
-          planificar encuentros y descubrir nuevos juegos.
+          Juegoteka es una plataforma orientada a facilitar el encuentro entre
+          personas a través de los juegos de mesa. Permite explorar juegos,
+          organizar encuentros y construir una comunidad alrededor de la cultura lúdica.
         </p>
 
       </Panel>
 
     </main>
+
   );
 }
 
