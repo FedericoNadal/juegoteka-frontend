@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, HashRouter } from "react-router-dom";
 
 import Home from "../pages/Home/Home";
 import MainLayout from "../layouts/MainLayout";
@@ -9,7 +9,9 @@ import Mazo from "../pages/Mazo/Mazo";
 
 function AppRouter() {
   return (
-    <BrowserRouter>
+     //<BrowserRouter> //se usa temporalmente el hashrout para visualizar maquetado en githubpages
+<HashRouter> 
+   
       <Routes>
         <Route element={<MainLayout />}>
 
@@ -21,7 +23,9 @@ function AppRouter() {
 
         </Route>
       </Routes>
-    </BrowserRouter>
+    
+</HashRouter>
+//</BrowserRouter>
   );
 }
 

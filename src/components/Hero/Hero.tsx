@@ -32,7 +32,8 @@ function Hero() {
           font-title
           text-5xl
           font-bold
-          text-amber-900
+          text-stone-300
+          #text-amber-900
           mb-6
         "
       >
@@ -43,7 +44,7 @@ function Hero() {
       <p
         className="
           text-2xl
-          text-amber-800
+          text-stone-100
           mb-3
           max-w-2xl
         "
@@ -56,7 +57,7 @@ function Hero() {
         className="
           italic
           text-lg
-          text-amber-700
+          text-amber-100
           mb-8
         "
       >

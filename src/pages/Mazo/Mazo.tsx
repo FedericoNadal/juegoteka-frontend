@@ -24,15 +24,15 @@ function Mazo() {
                         py-8
                     "
                 >
-
+                   
                     <PlayingCard />
 
-                    <Deck />
+                   <Deck />
 
                 </section>
-
+                       
             </Container>
-
+                    
         </main>
 
     );
