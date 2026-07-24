@@ -256,3 +256,75 @@ El código fuente se organiza por responsabilidad.
 - Creación del tablero Kanban.
 - Configuración inicial de Tailwind CSS.
 - Definición de criterios de desarrollo.
+
+## Estado del desarrollo (Julio 2026)
+
+### Arquitectura
+
+Se consolidó una arquitectura basada en componentes reutilizables.
+
+```
+pages/
+    Orquestan cada pantalla.
+
+components/
+    Contienen los componentes reutilizables de cada página.
+
+components/ui/
+    Componentes completamente reutilizables para toda la aplicación.
+```
+
+Las páginas actúan como coordinadoras del contenido, mientras que la lógica visual reutilizable se mantiene dentro de `components`.
+
+### Maquetado actual
+
+Se encuentra implementada una primera maqueta funcional de las pantallas principales:
+
+* Home
+* Mazo
+* Mapa
+* Libreta
+* Perfil
+
+El objetivo de esta etapa no fue implementar la lógica de negocio sino validar:
+
+* navegación
+* jerarquía visual
+* organización de componentes
+* experiencia de usuario general
+
+### Componentes UI disponibles
+
+Actualmente existen componentes reutilizables como:
+
+* Button
+* Panel
+* Container
+* Header
+* PageTitle
+* SectionTitle
+* Card (base)
+
+La Card se utilizará como base visual para diferentes especializaciones (cartas del mazo, juegos, etc.) mediante composición.
+
+### Diseño
+
+La interfaz adopta un enfoque mobile-first.
+
+El proyecto busca transmitir una identidad inspirada en los juegos de mesa físicos evitando una estética excesivamente "gamificada".
+
+Conceptos visuales que guían el diseño:
+
+* caja de juego
+* cartas
+* tablero
+* comunidad
+* encuentro
+
+### Próximas etapas
+
+* implementar navegación inferior definitiva
+* mejorar el Layout principal
+* integrar consumo del backend
+* comenzar el flujo de autenticación
+* reemplazar datos de prueba por datos reales
