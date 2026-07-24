@@ -5,7 +5,7 @@ function Header() {
     return (
         <header className="border-b border-amber-800/20 bg-amber-50">
 
-            <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div className="max-w-6xl mx-auto px-6 h-15 flex items-center justify-between">
 
                 <Link
                     to="/"

@@ -22,7 +22,8 @@ function SearchBar() {
                 border
                 border-amber-300
                 bg-amber-50
-                px-4
+                mt-2
+                px-3
                 py-3
                 shadow-sm
             "

@@ -1,8 +1,6 @@
 import Container from "../../components/ui/Container";
-import PageTitle from "../../components/ui/PageTitle";
 
-import PlayerInfo from "../../components/Perfil/ProfileHeader";
-import LorePanel from "../../components/Perfil/LorePanel";
+import PlayerCard from "../../components/Perfil/PlayerCard";
 import StatisticsPanel from "../../components/Perfil/StatsPanel";
 import MyGamesPanel from "../../components/Perfil/MyGamesPanel";
 
@@ -11,11 +9,10 @@ import MyGamesPanel from "../../components/Perfil/MyGamesPanel";
  *
  * Página principal del perfil del usuario.
  *
- * Reúne la información personal, una breve descripción,
- * estadísticas de juego y la colección de juegos.
- *
- * Cada sección se implementa mediante un componente
- * independiente para facilitar su mantenimiento.
+ * Presenta:
+ * - identidad del jugador
+ * - estadísticas
+ * - colección de juegos
  */
 function Perfil() {
 
@@ -25,14 +22,26 @@ function Perfil() {
 
             <Container>
 
-                <PageTitle>
-                    Perfil
-                </PageTitle>
-                 <PlayerInfo />
-                 <LorePanel />  
-                 <StatisticsPanel />           
-                <MyGamesPanel />
-               
+                <section
+                    className="
+                        flex
+                        flex-col
+                        gap-6
+                        py-6
+                        justify-center
+                    "
+                >
+
+                    <div className="flex justify-center">
+                        <PlayerCard />
+                    </div>
+
+                    <StatisticsPanel />
+
+                    <MyGamesPanel />
+
+                </section>
+
             </Container>
 
         </main>

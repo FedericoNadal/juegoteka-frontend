@@ -1,3 +1,4 @@
+import { useState } from "react";
 import ContactCard from "./ContactCard";
 
 /**
@@ -6,7 +7,13 @@ import ContactCard from "./ContactCard";
  * En esta primera versión utiliza
  * información simulada.
  */
+
+
+
+
 function ContactList() {
+
+    const [open, setOpen] = useState(false);
 
     const contactos = [
 
@@ -31,17 +38,19 @@ function ContactList() {
             "
         >
 
-            <h2
-                className="
-                    font-title
-                    text-xl
-                    mb-4
-                "
-            >
+            <button onClick={() => setOpen(!open)}>
                 Contactos
-            </h2>
+               
+            </button>
 
-            <div className="space-y-3">
+
+            <div
+                className={`
+        ${open ? "block" : "hidden"}
+        md:block
+        space-y-3
+    `}
+            >
 
                 {
 
@@ -57,7 +66,7 @@ function ContactList() {
                 }
 
             </div>
-
+            
         </section>
 
     );

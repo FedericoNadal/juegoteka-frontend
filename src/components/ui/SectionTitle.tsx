@@ -3,7 +3,7 @@ type SectionTitleProps = {
   className?: string;
 };
 
-function SectionTitle({ children, className = "" }: SectionTitleProps) {
+function SectionTitle({ children }: SectionTitleProps) {
   return (
     <h2 className="font-title text-3xl font-bold text-amber-900 mb-6">
       {children}

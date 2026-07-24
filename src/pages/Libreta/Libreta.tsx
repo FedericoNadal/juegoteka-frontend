@@ -1,5 +1,5 @@
 import Container from "../../components/ui/Container";
-import PageTitle from "../../components/ui/PageTitle";
+//import PageTitle from "../../components/ui/PageTitle";
 
 import SearchBar from "../../components/Libreta/SearchBar";
 import ContactList from "../../components/Libreta/ContactList";
@@ -24,10 +24,7 @@ function Libreta() {
 
             <Container>
 
-                <PageTitle>
-                    Libreta
-                </PageTitle>
-
+               
                 {/* Buscador de jugadores */}
                 <SearchBar />
 

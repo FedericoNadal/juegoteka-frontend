@@ -5,10 +5,6 @@ type ButtonProps = {
   size?: "sm" | "md";
 };
 
-const sizeClasses = {
-  sm: "px-4 py-2 text-sm",
-  md: "px-6 py-3 text-base",
-};
 
 function Button({ children, onClick }: ButtonProps) {
   return (

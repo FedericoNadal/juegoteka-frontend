@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 
 import Header from "../components/ui/Header";
 import BottomNav from "../components/ui/BottomNav";
+import fondo from "../assets/images/background.jpeg";
 
 /**
  * Layout principal de la aplicación.
@@ -27,6 +28,11 @@ export default function MainLayout() {
                 flex-col
                 overflow-hidden
             "
+            style={{
+        backgroundImage: `url(${fondo})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
         >
 
             {/* Cabecera permanente */}

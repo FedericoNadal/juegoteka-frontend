@@ -28,8 +28,8 @@ function Deck() {
       {/* Representación temporal del mazo */}
       <div
         className="
-          w-24
-          h-36
+          w-20
+          h-28
           rounded-xl
           border-2
           border-amber-900

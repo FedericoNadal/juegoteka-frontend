@@ -9,7 +9,7 @@ import Button from "../ui/Button";
  * la estructura visual. Más adelante recibirá sus
  * datos mediante props o desde el estado del mazo.
  */
-function PlayingCard() {
+function MessageCard() {
 
   return (
 
@@ -82,4 +82,4 @@ function PlayingCard() {
 
 }
 
-export default PlayingCard;
+export default MessageCard;

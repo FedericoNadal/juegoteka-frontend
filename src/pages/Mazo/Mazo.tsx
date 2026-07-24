@@ -1,5 +1,5 @@
 import Deck from "../../components/Mazo/Deck";
-import PlayingCard from "../../components/Mazo/PlayingCard";
+import MessageCard from "../../components/Mazo/MessageCard";
 import Container from "../../components/ui/Container";
 
 /**
@@ -25,9 +25,14 @@ function Mazo() {
                     "
                 >
                    
-                    <PlayingCard />
+                       <div className="flex justify-center">
+                <MessageCard />
+            </div>
 
-                   <Deck />
+
+            <div className="flex justify-end pl-50">
+                <Deck />
+            </div>
 
                 </section>
                        

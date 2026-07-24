@@ -1,6 +1,6 @@
 import MapView from "../../components/Mapa/MapView";
 import Container from "../../components/ui/Container";
-import PageTitle from "../../components/ui/PageTitle";
+//import PageTitle from "../../components/ui/PageTitle";
 import Panel from "../../components/ui/Panel";
 
 /**
@@ -24,10 +24,6 @@ function Mapa() {
 
       <Container>
 
-        <PageTitle>
-          Mapa
-        </PageTitle>
-
         <input
           type="text"
           placeholder="  🔍 Buscar juegoteka..."
@@ -39,6 +35,7 @@ function Mapa() {
         bg-amber-50
         px-4
         py-2
+        mt-2
         focus:outline-none
         focus:ring-2
         focus:ring-amber-600
