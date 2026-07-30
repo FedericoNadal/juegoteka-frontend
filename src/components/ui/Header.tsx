@@ -1,7 +1,14 @@
 import { Link } from "react-router-dom";
 import Button from "./Button";
 
-function Header() {
+interface HeaderProps {
+    onLoginClick: () => void;
+}
+
+
+function Header({ onLoginClick }: HeaderProps) {
+ 
+
     return (
         <header className="border-b border-amber-800/20 bg-amber-50">
 
@@ -11,14 +18,16 @@ function Header() {
                     to="/"
                     className="font-title text-2xl text-amber-900 font-semibold"
                 >
-                    Juegoteka
+                    Juegotekas
                 </Link>
 
-                <Link to="/login">
-                    <Button size="sm">
+               
+                    <Button size="sm"
+                    onClick={onLoginClick}
+                    >
                         Ingresar
                     </Button>
-                </Link>
+                
 
             </div>
 

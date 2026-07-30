@@ -1,29 +1,47 @@
+import type { ReactNode } from "react";
 
 type ButtonProps = {
-  children: React.ReactNode;
+  children: ReactNode;
   onClick?: () => void;
+  type?: "button" | "submit" | "reset";
   size?: "sm" | "md";
+  disabled?: boolean;
 };
 
+export default function Button({
+  children,
+  onClick,
+  type = "button",
+  size = "md",
+  disabled = false,
+}: ButtonProps) {
 
-function Button({ children, onClick }: ButtonProps) {
+  const sizeClasses =
+    size === "sm"
+      ? "px-4 py-2 text-sm"
+      : "px-6 py-3";
+
   return (
     <button
+      type={type}
       onClick={onClick}
-      className="
-        px-6
-        py-3
+      disabled={disabled}
+      className={`
+        ${sizeClasses}
+
         rounded-lg
         bg-amber-700
         text-amber-50
         font-semibold
-        hover:bg-amber-800
+
         transition-colors
-      "
+        hover:bg-amber-800
+
+        disabled:opacity-60
+        disabled:cursor-not-allowed
+      `}
     >
       {children}
     </button>
   );
 }
-
-export default Button;

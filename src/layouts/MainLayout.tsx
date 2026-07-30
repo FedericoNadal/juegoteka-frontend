@@ -3,6 +3,10 @@ import { Outlet } from "react-router-dom";
 import Header from "../components/ui/Header";
 import BottomNav from "../components/ui/BottomNav";
 import fondo from "../assets/images/background.jpeg";
+import { useState } from "react";
+import AuthOffcanvas from "../components/auth/AuthOffCanvas";
+import { login } from "../services/authService";
+import { useAuth } from "../hooks/useAuth";
 
 /**
  * Layout principal de la aplicación.
@@ -19,6 +23,12 @@ import fondo from "../assets/images/background.jpeg";
  */
 export default function MainLayout() {
 
+    const [isAuthDrawerOpen, setIsAuthDrawerOpen] = useState(false);
+    
+    const {
+    login
+} = useAuth();
+
     return (
 
         <div
@@ -29,15 +39,23 @@ export default function MainLayout() {
                 overflow-hidden
             "
             style={{
-        backgroundImage: `url(${fondo})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
+                backgroundImage: `url(${fondo})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+            }}
         >
 
             {/* Cabecera permanente */}
-            <Header />
+            <Header
 
+                onLoginClick={() => setIsAuthDrawerOpen(true)}
+
+            />
+            <AuthOffcanvas
+                isOpen={isAuthDrawerOpen}
+                onClose={() => setIsAuthDrawerOpen(false)}
+                onLogin={login}
+            />
             {/*
                 Área de contenido.
 

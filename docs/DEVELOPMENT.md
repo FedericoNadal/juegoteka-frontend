@@ -328,3 +328,6 @@ Conceptos visuales que guían el diseño:
 * integrar consumo del backend
 * comenzar el flujo de autenticación
 * reemplazar datos de prueba por datos reales
+
+### Auth / login
+ *"La URL del backend se maneja mediante variables de entorno de Vite para desacoplar el frontend del ambiente de ejecución. Durante desarrollo apunta al servidor local y en producción al backend desplegado en Render."
