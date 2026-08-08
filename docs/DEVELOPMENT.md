@@ -331,3 +331,178 @@ Conceptos visuales que guían el diseño:
 
 ### Auth / login
  *"La URL del backend se maneja mediante variables de entorno de Vite para desacoplar el frontend del ambiente de ejecución. Durante desarrollo apunta al servidor local y en producción al backend desplegado en Render."
+ //
+ # Estado del desarrollo (31/07/2026)
+
+## Arquitectura actual
+
+El frontend ya dispone de una arquitectura completa para autenticación basada en JWT.
+
+La comunicación sigue el siguiente flujo:
+
+```text
+Header
+    ↓
+AuthOffCanvas
+    ↓
+LoginForm
+    ↓
+useAuth()
+    ↓
+AuthContext.login()
+    ↓
+authService.login()
+    ↓
+POST /usuarios/login
+    ↓
+Backend (Express)
+    ↓
+MongoDB
+```
+
+La responsabilidad de cada capa es la siguiente:
+
+* **Header**
+
+  * Abre el panel lateral de autenticación.
+
+* **AuthOffCanvas**
+
+  * Contenedor visual del proceso de autenticación.
+  * No conoce la API.
+  * No conoce JWT.
+  * Solo organiza Header, LoginForm y Footer.
+
+* **LoginForm**
+
+  * Administra el estado local del formulario (`userName` y `pass`).
+  * Al enviar el formulario ejecuta `onLogin(credentials)`.
+
+* **useAuth()**
+
+  * Hook personalizado que encapsula el acceso al contexto.
+  * Evita importar `useContext(AuthContext)` en toda la aplicación.
+
+* **AuthContext**
+
+  * Responsable del estado global de autenticación.
+  * Ejecuta el login.
+  * Guarda el usuario autenticado.
+  * (Pendiente) persistir sesión mediante localStorage.
+
+* **authService**
+
+  * Responsable exclusivo de comunicarse con la API.
+  * No conoce React ni componentes.
+  * Solo realiza peticiones HTTP y devuelve objetos tipados.
+
+---
+
+# Estado actual
+
+## Funciona
+
+* Apertura y cierre del AuthOffCanvas.
+* Envío del formulario.
+* Comunicación con la API.
+* CORS correctamente configurado.
+* Login exitoso.
+* Recepción del JWT.
+* Recepción del objeto Usuario.
+* Tipado TypeScript de la respuesta.
+
+Se confirmó que el backend responde con:
+
+```json
+{
+  "message": "Login exitoso :)",
+  "token": "...",
+  "usuario": { ... }
+}
+```
+
+---
+
+# Backend de desarrollo
+
+Durante el desarrollo local se utiliza:
+
+* Backend Express en `http://localhost:3000`
+* MongoDB local
+* Base de datos:
+
+```
+juegotekas_dev
+```
+
+Variables de entorno utilizadas:
+
+```
+PORT=3000
+DB_URL=mongodb://127.0.0.1:27017/juegotekas_dev
+JWT_SECRET=...
+```
+
+---
+
+# Próxima etapa
+
+## Integración completa con la API
+
+Pendientes:
+
+* Guardar JWT en localStorage.
+* Restaurar sesión al recargar la aplicación.
+* Configurar `http.ts` para enviar automáticamente el header:
+
+```
+Authorization: Bearer <token>
+```
+
+* Implementar logout.
+* Mostrar estado autenticado en Header.
+* Proteger rutas privadas mediante React Router.
+* Manejar expiración del token.
+* Mostrar información del usuario autenticado.
+
+---
+
+# Decisiones de arquitectura
+
+Se decidió mantener una separación estricta entre capas.
+
+```
+Componentes
+        │
+        ▼
+Hooks
+        │
+        ▼
+Context
+        │
+        ▼
+Services
+        │
+        ▼
+API REST
+```
+
+Los componentes nunca deben realizar llamadas HTTP directamente.
+
+Toda comunicación con el backend debe pasar por los servicios.
+
+El Context no conoce detalles de la implementación HTTP.
+
+Los Services no conocen React.
+
+Esta separación busca facilitar el mantenimiento, las pruebas y la explicación oral del proyecto final.
+
+---
+
+# Próximo Issue
+
+**feat: integrar frontend con API REST**
+
+Objetivo:
+
+Completar el flujo de autenticación incorporando persistencia de sesión, autorización mediante JWT y consumo progresivo del resto de los endpoints del backend.

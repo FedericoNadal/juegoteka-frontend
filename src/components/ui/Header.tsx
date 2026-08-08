@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Button from "./Button";
+import { useAuth } from "../../hooks/useAuth";
 
 interface HeaderProps {
     onLoginClick: () => void;
@@ -7,7 +8,7 @@ interface HeaderProps {
 
 
 function Header({ onLoginClick }: HeaderProps) {
- 
+    const { usuario } = useAuth();
 
     return (
         <header className="border-b border-amber-800/20 bg-amber-50">
@@ -21,13 +22,15 @@ function Header({ onLoginClick }: HeaderProps) {
                     Juegotekas
                 </Link>
 
-               
-                    <Button size="sm"
+
+                <Button size="sm"
                     onClick={onLoginClick}
-                    >
-                        Ingresar
-                    </Button>
-                
+                >
+                    {usuario
+                        ? usuario.nombre
+                        : "Ingresar"}
+                </Button>
+
 
             </div>
 

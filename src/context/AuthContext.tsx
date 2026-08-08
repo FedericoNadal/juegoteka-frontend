@@ -1,5 +1,7 @@
+
 import {
     createContext,
+    useEffect,
     useState,
     type ReactNode
 } from "react";
@@ -8,230 +10,171 @@ import type { Usuario } from "../types/usuario";
 import type { LoginCredentials } from "../types/auth";
 
 import {
-    login as loginService
+    login as loginService,
+    obtenerPerfil
 } from "../services/authService";
 
 
+// ============================================================
+// TIPO DEL CONTEXTO
+// Define qué información y acciones estarán disponibles
+// para los componentes que necesiten autenticación.
+// ============================================================
 
-/*
-    Este tipo define qué información y acciones
-    estarán disponibles para cualquier componente
-    que necesite autenticación.
-
-    Ejemplos:
-    - Header necesita saber si hay usuario conectado.
-    - Perfil necesita obtener los datos del usuario.
-    - Logout necesita cerrar la sesión.
-*/
 interface AuthContextType {
-
     usuario: Usuario | null;
-
     token: string | null;
-
     isAuthenticated: boolean;
 
-
-    /*
-        Función que inicia sesión.
-
-        Recibe credenciales y delega la comunicación
-        con el backend al authService.
-    */
     login(
         credentials: LoginCredentials
     ): Promise<void>;
 
-
-    /*
-        Elimina la sesión actual.
-    */
     logout(): void;
-
 }
 
 
+// ============================================================
+// CONTEXTO
+// ============================================================
 
-/*
-    createContext crea el "canal" mediante el cual
-    los componentes podrán acceder al estado
-    de autenticación.
-
-    Inicialmente no existe ningún proveedor,
-    por eso usamos undefined.
-*/
 export const AuthContext =
-    createContext<AuthContextType | undefined>(
-        undefined
-    );
+    createContext<AuthContextType | undefined>(undefined);
 
 
-
+// ============================================================
+// PROVIDER
+// Mantiene el estado global de autenticación.
+// ============================================================
 
 interface AuthProviderProps {
-
-    /*
-        children representa todos los componentes
-        que estarán dentro del proveedor.
-
-        Ejemplo:
-
-        <AuthProvider>
-            <App />
-        </AuthProvider>
-
-        App y todo lo que contiene son children.
-    */
     children: ReactNode;
-
 }
 
-
-
-
-/*
-    AuthProvider es el componente que mantiene
-    el estado global de autenticación.
-
-    Todo componente hijo podrá acceder
-    a este estado mediante useAuth().
-*/
 export function AuthProvider({
     children
 }: AuthProviderProps) {
 
-
-
-    /*
-        Guarda el usuario actualmente autenticado.
-
-        null significa:
-        "nadie inició sesión todavía".
-    */
+    // Usuario actualmente autenticado.
     const [usuario, setUsuario] =
         useState<Usuario | null>(null);
 
-
-
-    /*
-        Guarda el JWT recibido del backend.
-
-        Más adelante será utilizado para enviar:
-
-        Authorization: Bearer <token>
-    */
+    // JWT utilizado para autenticar las peticiones.
     const [token, setToken] =
         useState<string | null>(null);
 
 
+    // ========================================================
+    // RESTAURAR SESIÓN
+    //
+    // Al recargar la aplicación buscamos el JWT guardado.
+    // Si existe, consultamos el perfil para recuperar
+    // los datos del usuario.
+    // ========================================================
+
+    useEffect(() => {
+
+        async function restaurarSesion() {
+
+            const tokenGuardado =
+                localStorage.getItem("token");
+
+            if (!tokenGuardado) {
+                return;
+            }
+
+            try {
+
+                const usuario =
+                    await obtenerPerfil(tokenGuardado);
+
+                setToken(tokenGuardado);
+                setUsuario(usuario);
+
+            } catch (error) {
+
+                console.error(
+                    "No se pudo restaurar la sesión:",
+                    error
+                );
+
+                localStorage.removeItem("token");
+
+                setToken(null);
+                setUsuario(null);
+            }
+        }
+
+        restaurarSesion();
+
+    }, []);
 
 
-    /*
-        Función principal de autenticación.
+    // ========================================================
+    // LOGIN
+    //
+    // Envía las credenciales al servicio de autenticación.
+    // Si el backend responde correctamente, guardamos:
+    //   - usuario
+    //   - JWT
+    // ========================================================
 
-        Flujo:
-
-        LoginForm
-            |
-            v
-        AuthContext.login()
-            |
-            v
-        authService.login()
-            |
-            v
-        Backend Express
-            |
-            v
-        token + usuario
-
-    */
     async function login(
         credentials: LoginCredentials
     ) {
 
-
         const response =
             await loginService(credentials);
 
+        console.log("LOGIN OK:", response);
 
+        localStorage.setItem(
+            "token",
+            response.token
+        );
 
-        /*
-            Guardamos la respuesta del backend
-            dentro del estado global.
-        */
         setUsuario(response.usuario);
-
         setToken(response.token);
-
     }
 
 
+    // ========================================================
+    // LOGOUT
+    // ========================================================
 
+    function logout() {
 
-
-    /*
-        Cierra la sesión eliminando
-        la información almacenada en React.
-    */
-    function logout(){
+        localStorage.removeItem("token");
 
         setUsuario(null);
-
         setToken(null);
-
     }
 
 
-
-
+    // ========================================================
+    // VALORES COMPARTIDOS
+    // ========================================================
 
     return (
 
-        /*
-            Provider comparte el estado con todos
-            sus componentes hijos.
-
-            Cualquier componente dentro de este árbol
-            podrá acceder a:
-
-            usuario
-            token
-            login()
-            logout()
-        */
         <AuthContext.Provider
-
             value={{
-
                 usuario,
-
                 token,
 
-
-                /*
-                    Derivamos este valor.
-
-                    No necesitamos otro estado.
-                    Si existe usuario,
-                    entonces está autenticado.
-                */
+                // Si existe usuario, consideramos
+                // que existe una sesión activa.
                 isAuthenticated:
                     usuario !== null,
 
-
                 login,
-
                 logout
-
             }}
-
         >
 
             {children}
 
         </AuthContext.Provider>
-
     );
-
 }
+
