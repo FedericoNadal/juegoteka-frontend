@@ -1,94 +1,121 @@
 import AuthHeader from "./AuthHeader";
 import AuthFooter from "./AuthFooter";
 import LoginForm from "./LoginForm";
+import AuthMenu from "./AuthMenu";
+
+import { useAuth } from "../../hooks/useAuth";
 
 interface AuthOffcanvasProps {
-  isOpen: boolean;
-  isLoading?: boolean;
-  error?: string | null;
+    isOpen: boolean;
+    isLoading?: boolean;
+    error?: string | null;
 
-  onClose: () => void;
+    onClose: () => void;
 
-  onLogin: (credentials: {
-    userName: string;
-    pass: string;
-  }) => Promise<void>;
+    onLogin: (credentials: {
+        userName: string;
+        pass: string;
+    }) => Promise<void>;
 
-  onRegister?: () => void;
+    onRegister?: () => void;
 }
 
 export default function AuthOffcanvas({
-  isOpen,
-  isLoading = false,
-  error = null,
-  onClose,
-  onLogin,
-  onRegister,
+    isOpen,
+    isLoading = false,
+    error = null,
+    onClose,
+    onLogin,
+    onRegister,
 }: AuthOffcanvasProps) {
 
-  return (
-    <>
+    const {
+        usuario,
+        isAuthenticated,
+        logout
+    } = useAuth();
 
-      <div
-        onClick={onClose}
-        className={`
-          fixed inset-0 z-40
-          bg-stone-900/60
-          backdrop-blur-[1px]
-          transition-opacity duration-300
-          ${
-            isOpen
-              ? "opacity-100 pointer-events-auto"
-              : "opacity-0 pointer-events-none"
-          }
-        `}
-      />
 
-      <aside
-        className={`
-          fixed
-          top-0
-          right-0
-          z-50
-          h-full
-          w-[90%]
-          max-w-md
-          flex
-          flex-col
+    return (
+        <>
 
-          bg-amber-50
-          border-l-2
-          border-amber-900/30
-          shadow-2xl
+            <div
+                onClick={onClose}
+                className={`
+                    fixed inset-0 z-40
+                    bg-stone-900/60
+                    backdrop-blur-[1px]
+                    transition-opacity duration-300
 
-          transform
-          transition-transform
-          duration-300
+                    ${
+                        isOpen
+                            ? "opacity-100 pointer-events-auto"
+                            : "opacity-0 pointer-events-none"
+                    }
+                `}
+            />
 
-          ${
-            isOpen
-              ? "translate-x-0"
-              : "translate-x-full"
-          }
-        `}
-      >
 
-        <AuthHeader
-          onClose={onClose}
-        />
+            <aside
+                className={`
+                    fixed
+                    top-0
+                    right-0
+                    z-50
+                    h-full
+                    w-[90%]
+                    max-w-md
+                    flex
+                    flex-col
 
-        <LoginForm
-          isLoading={isLoading}
-          error={error}
-          onLogin={onLogin}
-        />
+                    bg-amber-50
+                    border-l-2
+                    border-amber-900/30
+                    shadow-2xl
 
-        <AuthFooter
-          onRegister={onRegister}
-        />
+                    transform
+                    transition-transform
+                    duration-300
 
-      </aside>
+                    ${
+                        isOpen
+                            ? "translate-x-0"
+                            : "translate-x-full"
+                    }
+                `}
+            >
 
-    </>
-  );
+                <AuthHeader
+                    onClose={onClose}
+                />
+
+
+                {isAuthenticated && usuario ? (
+
+                    <AuthMenu
+                        userName={usuario.nombre}
+                        onLogout={logout}
+                        onClose={onClose}
+                    />
+
+                ) : (
+
+                    <>
+                        <LoginForm
+                            isLoading={isLoading}
+                            error={error}
+                            onLogin={onLogin}
+                        />
+
+                        <AuthFooter
+                            onRegister={onRegister}
+                        />
+                    </>
+
+                )}
+
+            </aside>
+
+        </>
+    );
 }
