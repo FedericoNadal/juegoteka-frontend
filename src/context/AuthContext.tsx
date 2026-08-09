@@ -10,10 +10,12 @@ import type { Usuario } from "../types/usuario";
 import type { LoginCredentials } from "../types/auth";
 
 import {
-    login as loginService,
-    obtenerPerfil
+    login as loginService
 } from "../services/authService";
 
+import {
+    obtenerPerfil
+} from "../services/usuarioService";
 
 // ============================================================
 // TIPO DEL CONTEXTO

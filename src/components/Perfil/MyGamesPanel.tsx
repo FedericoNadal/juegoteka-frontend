@@ -1,35 +1,85 @@
+import { useEffect, useState } from "react";
+
 import GameCard from "../ui/GameCard";
 
-/**
- * MyGames
- *
- * Vista resumida de la colección del usuario.
- *
- * Más adelante los datos provendrán del backend.
- */
-function MyGames() {
+import type { JuegosUsuario } from "../../types/usuario";
 
-    const juegos = [
+import {
+    eliminarDeMisJuegos
+} from "../../services/juegoService";
 
-        {
-            titulo: "Catan",
-            jugadores: "3-4",
-            duracion: "90 min"
-        },
+import { useAuth } from "../../hooks/useAuth";
 
-        {
-            titulo: "Carcassonne",
-            jugadores: "2-5",
-            duracion: "45 min"
-        },
 
-        {
-            titulo: "Terraforming Mars",
-            jugadores: "1-5",
-            duracion: "120 min"
+interface MyGamesProps {
+
+    juegos: JuegosUsuario[];
+
+}
+
+
+function MyGamesPanel({
+    juegos
+}: MyGamesProps) {
+
+    const { token } = useAuth();
+
+
+    // Estado local de los juegos mostrados.
+    // Nos permite quitar una tarjeta sin recargar toda la página.
+    const [misJuegos, setMisJuegos] =
+        useState<JuegosUsuario[]>(juegos);
+
+
+    // Si el componente padre recibe nuevos juegos,
+    // actualizamos nuestra copia local.
+    useEffect(() => {
+
+        setMisJuegos(juegos);
+
+    }, [juegos]);
+
+
+    async function handleEliminar(
+        idJuego: string
+    ) {
+
+        if (!token) {
+            return;
         }
 
-    ];
+        try {
+
+            await eliminarDeMisJuegos(
+                token,
+                idJuego
+            );
+
+
+            // El backend confirmó la eliminación.
+            // Ahora quitamos la tarjeta del estado local.
+            setMisJuegos((juegosActuales) =>
+                juegosActuales.filter(
+                    (juego) => juego.id !== idJuego
+                )
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Error al eliminar juego:",
+                error
+            );
+
+            alert(
+                "No se pudo eliminar el juego"
+            );
+
+        }
+
+    }
+
 
     return (
 
@@ -44,25 +94,25 @@ function MyGames() {
                 "
             >
 
-                {
+                {misJuegos.map((juego) => (
 
-                    juegos.map((juego) => (
+                    <GameCard
 
-                        <GameCard
+                        key={juego.id}
 
-                            key={juego.titulo}
+                        titulo={juego.titulo}
 
-                            titulo={juego.titulo}
+                        imagen={juego.imagen}
 
-                            jugadores={juego.jugadores}
+                        actionLabel="− Quitar"
 
-                            duracion={juego.duracion}
+                        onAction={() =>
+                            handleEliminar(juego.id)
+                        }
 
-                        />
+                    />
 
-                    ))
-
-                }
+                ))}
 
             </div>
 
@@ -72,4 +122,5 @@ function MyGames() {
 
 }
 
-export default MyGames;
+
+export default MyGamesPanel;

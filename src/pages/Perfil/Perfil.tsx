@@ -1,23 +1,61 @@
+import { useEffect, useState } from "react";
+
 import Container from "../../components/ui/Container";
 
 import PlayerCard from "../../components/Perfil/PlayerCard";
 import StatisticsPanel from "../../components/Perfil/StatsPanel";
 import MyGamesPanel from "../../components/Perfil/MyGamesPanel";
 
-/**
- * Perfil
- *
- * Página principal del perfil del usuario.
- *
- * Presenta:
- * - identidad del jugador
- * - estadísticas
- * - colección de juegos
- */
+import { useAuth } from "../../hooks/useAuth";
+import { obtenerMisJuegos } from "../../services/usuarioService";
+
+import type { JuegosUsuario } from "../../types/usuario";
+
 function Perfil() {
 
-    return (
+    const { usuario, token } = useAuth();
 
+    const [juegos, setJuegos] =
+        useState<JuegosUsuario[]>([]);
+
+
+    useEffect(() => {
+
+        async function cargarJuegos() {
+
+            if (!token) {
+                return;
+            }
+
+            try {
+
+                const juegosUsuario =
+                    await obtenerMisJuegos(token);
+
+                setJuegos(juegosUsuario);
+
+            } catch (error) {
+
+                console.error(
+                    "No se pudieron cargar los juegos:",
+                    error
+                );
+
+            }
+        }
+
+        cargarJuegos();
+
+    }, [token]);
+
+
+    // Mientras se restaura la sesión
+    if (!usuario) {
+        return null;
+    }
+
+
+    return (
         <main>
 
             <Container>
@@ -33,21 +71,25 @@ function Perfil() {
                 >
 
                     <div className="flex justify-center">
-                        <PlayerCard />
+
+                        <PlayerCard
+                            usuario={usuario}
+                        />
+
                     </div>
 
                     <StatisticsPanel />
 
-                    <MyGamesPanel />
+                    <MyGamesPanel
+                        juegos={juegos}
+                    />
 
                 </section>
 
             </Container>
 
         </main>
-
     );
-
 }
 
 export default Perfil;

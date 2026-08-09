@@ -1,45 +1,68 @@
 import Card from "../ui/Card";
+import type { Usuario } from "../../types/usuario";
+
+interface PlayerCardProps {
+    usuario: Usuario;
+}
 
 /**
  * PlayerCard
  *
  * Representa la carta de identidad del jugador.
  *
- * Sigue la estética de las cartas de juego:
- * - encabezado con identidad
- * - imagen principal
- * - texto narrativo
- * - atributos resumidos
- *
- * Más adelante recibirá sus datos mediante props o API.
+ * Recibe los datos del usuario mediante props.
+ * No conoce el backend ni maneja autenticación.
  */
-
-function PlayerCard() {
+function PlayerCard({ usuario }: PlayerCardProps) {
 
     return (
-
         <Card
             className="
                 w-80
                 bg-stone-100
-                p-5
+                p-4
             "
         >
-            {/* Imagen principal */}
+
+            {/* ==================================================
+                FOTO
+                Mantiene una proporción fija de 4:3.
+                object-cover evita deformar la imagen.
+               ================================================== */}
             <div
                 className="
-                    h-40
-                    rounded-lg
+                    aspect-[4/3]
+                    rounded-sm
                     bg-stone-300
+                    overflow-hidden
                     mb-4
                 "
-            />
+            >
+                {usuario.foto && (
+                    <img
+                        src={usuario.foto}
+                        alt={`Foto de ${usuario.nombre}`}
+                        className="
+                            w-full
+                            h-full
+                            object-cover
+                        "
+                    />
+                )}
+            </div>
 
-            {/* Encabezado */}
-            <div className="mb-4">
 
-                <p className="text-sm uppercase text-amber-700">
-                    Jugador
+            {/* ==================================================
+                ENCABEZADO
+               ================================================== */}
+            <div className="mb-1">
+
+                <p className="
+                    text-sm
+                    uppercase
+                    text-amber-700
+                ">
+                    {usuario.rol}
                 </p>
 
                 <h2
@@ -49,40 +72,50 @@ function PlayerCard() {
                         text-amber-900
                     "
                 >
-                    Jaime Fulanito
+                    {usuario.userName}
                 </h2>
 
             </div>
 
 
-
-
-            {/* Lore */}
+            {/* ==================================================
+                ABOUT ME
+               ================================================== */}
             <div
                 className="
                     border-t
                     border-amber-800/20
-                    pt-4
+                    pt-1
                     mb-4
                 "
             >
 
-                <p
+                <div
                     className="
+                        h-30
+                        
+                        rounded-sm
+                        p-2
+                        overflow-hidden
                         text-sm
-                        italic
-                        leading-relaxed
+                        leading-5
+                        text-stone-700
                     "
                 >
-                    Siempre llevo Brass a las juntadas.
-
-                    Prefiero juegos de estrategia antes que party games.
-                </p>
+                    {usuario.aboutMe}
+                </div>
 
             </div>
 
 
-            {/* Atributos del jugador */}
+            {/* ==================================================
+                ESTADÍSTICAS
+
+                Las dejamos comentadas por ahora mientras
+                definimos las proporciones de la carta.
+               ================================================== */}
+
+            {/*
             <div
                 className="
                     border-t
@@ -114,12 +147,10 @@ function PlayerCard() {
                 </span>
 
             </div>
-
+            */}
 
         </Card>
-
     );
-
 }
 
 export default PlayerCard;

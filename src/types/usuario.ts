@@ -3,14 +3,24 @@ export interface Usuario {
 
     userName: string;
 
-    rol: "jugador" | "juegoteka" | "administrador";
+    rol:
+        | "jugador"
+        | "juegoteka"
+        | "administrador";
 
     nombre: string;
     apellido: string;
 
+    foto?: string;
+    aboutMe?: string;
+
     direccion: string;
     telefono: string;
     mail: string;
+}
 
-    foto?: string;
+export interface JuegosUsuario {
+    id: string;
+    titulo: string;
+    imagen: string;
 }
