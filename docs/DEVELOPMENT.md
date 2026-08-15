@@ -506,3 +506,31 @@ Esta separación busca facilitar el mantenimiento, las pruebas y la explicación
 Objetivo:
 
 Completar el flujo de autenticación incorporando persistencia de sesión, autorización mediante JWT y consumo progresivo del resto de los endpoints del backend.
+/////////////////////////////////
+## Integración con API
+
+### Autenticación
+- [x] Login mediante JWT
+- [x] AuthContext
+- [x] Persistencia del token
+- [x] Recuperación del perfil del usuario autenticado
+
+### Perfil
+- [x] Perfil conectado al backend
+- [x] `aboutMe`
+- [x] Separación entre datos públicos y privados mediante respuesta personalizada
+
+### Juegos
+- [x] Obtener catálogo desde API
+- [x] Mostrar juegos mediante `GameCard`
+- [x] Agregar juego a `misJuegos`
+- [x] Eliminar juego de `misJuegos`
+- [x] Actualizar la colección visualmente sin recargar la página
+
+### Pendiente
+- [ ] Mejorar estados visuales del catálogo
+- [ ] Indicar si un juego ya pertenece a `misJuegos`
+- [ ] Edición del perfil
+- [ ] Estadísticas reales del jugador
+- [ ] Integración de encuentros/jornadas
+- [ ] Manejo más completo de errores y expiración del JWT

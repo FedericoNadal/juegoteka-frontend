@@ -1,86 +1,166 @@
+import { useEffect, useState } from "react";
+
 import MapView from "../../components/Mapa/MapView";
+import JornadasList from "../../components/Mapa/JornadasList";
+import JornadaOffCanvas from "../../components/Mapa/JornadaOffCanvas";
+
 import Container from "../../components/ui/Container";
-//import PageTitle from "../../components/ui/PageTitle";
 import Panel from "../../components/ui/Panel";
+
+import type { Jornada } from "../../types/jornada";
+
+import { obtenerJornadas } from "../../services/jornadaService";
+
 
 /**
  * Página Mapa
  *
- * El mapa constituye la puerta de entrada espacial
- * a la comunidad de Juegoteka.
+ * El mapa permite descubrir:
  *
- * Desde aquí el usuario podrá descubrir juegotekas,
- * encuentros y, en versiones futuras, otros jugadores
- * cercanos.
+ * - juegotekas espacialmente;
+ * - jornadas temporalmente.
  *
- * En esta primera iteración únicamente se presenta
- * el mapa base centrado en la Ciudad de Buenos Aires.
+ * Al seleccionar una jornada se abre
+ * su detalle sin abandonar esta página.
  */
 function Mapa() {
 
-  return (
+    /*
+     * Jornadas disponibles.
+     */
+    const [jornadas, setJornadas] =
+        useState<Jornada[]>([]);
 
-    <main>
 
-      <Container>
+    /*
+     * Jornada seleccionada.
+     *
+     * null = ninguna seleccionada.
+     */
+    const [jornadaSeleccionada, setJornadaSeleccionada] =
+        useState<Jornada | null>(null);
 
-        <input
-          type="text"
-          placeholder="  🔍 Buscar juegoteka..."
-          className="
-        w-full
-        rounded-lg
-        border
-        border-amber-700
-        bg-amber-50
-        px-4
-        py-2
-        mt-2
-        focus:outline-none
-        focus:ring-2
-        focus:ring-amber-600
-    "
-        />
 
-        {/* 
-                    El mapa se presenta dentro de un Panel para
-                    mantener la coherencia visual con el resto
-                    de la aplicación. La intención es que evoque
-                    un mapa desplegado sobre una mesa de juego
-                    y no un mapa aislado ocupando toda la pantalla.
-                */}
-        <Panel >
+    /*
+     * Cargamos las jornadas al entrar
+     * en la página.
+     */
+    useEffect(() => {
 
-          <MapView />
+        const cargarJornadas = async () => {
 
-          {/* Texto descriptivo temporal.
-                        Más adelante este espacio podrá mostrar:
-                        - cantidad de juegotekas encontradas;
-                        - filtros activos;
-                        - próximos encuentros;
-                        - información contextual.
-                    */}
-          <p
-            className="
-                            mt-4
-                            text-center
-                            text-stone-700
-                            leading-relaxed
-                        "
-          >
-            Explorá las juegotekas de la ciudad y descubrí
-            nuevos espacios para jugar, organizar encuentros
-            y conocer comunidades lúdicas.
-          </p>
+            try {
 
-        </Panel>
+                const data =
+                    await obtenerJornadas();
 
-      </Container>
+                setJornadas(data);
 
-    </main>
+            } catch (error) {
 
-  );
+                console.error(
+                    "Error al cargar jornadas:",
+                    error
+                );
 
+            }
+
+        };
+
+        cargarJornadas();
+
+    }, []);
+
+
+    return (
+
+        <main>
+
+            <Container>
+
+                {/* BUSCADOR */}
+
+                <input
+                    type="text"
+                    placeholder="🔍 Buscar juegoteka..."
+                    className="
+                        w-full
+                        rounded-lg
+                        border
+                        border-amber-700
+                        bg-amber-50
+                        px-4
+                        py-2
+                        mt-2
+                        focus:outline-none
+                        focus:ring-2
+                        focus:ring-amber-600
+                    "
+                />
+
+
+                {/* MAPA + JORNADAS */}
+
+                <div
+                    className="
+                        grid
+                        grid-cols-1
+                        lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]
+                        gap-6
+                        mt-4
+                        items-start
+                    "
+                >
+
+                    {/* MAPA */}
+
+                    <Panel>
+
+                        <MapView />
+
+                        <p
+                            className="
+                                mt-4
+                                text-center
+                                text-stone-700
+                                leading-relaxed
+                            "
+                        >
+                            Explorá las juegotekas de la ciudad
+                            y descubrí nuevos espacios para jugar,
+                            organizar encuentros y conocer
+                            comunidades lúdicas.
+                        </p>
+
+                    </Panel>
+
+
+                    {/* JORNADAS */}
+
+                    <JornadasList
+                        jornadas={jornadas}
+                        onSelectJornada={
+                            setJornadaSeleccionada
+                        }
+                    />
+
+                </div>
+
+
+                {/* DETALLE */}
+
+                <JornadaOffCanvas
+                    jornada={jornadaSeleccionada}
+                    onClose={() =>
+                        setJornadaSeleccionada(null)
+                    }
+                />
+
+            </Container>
+
+        </main>
+
+    );
 }
 
 export default Mapa;

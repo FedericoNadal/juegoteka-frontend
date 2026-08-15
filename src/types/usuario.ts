@@ -1,3 +1,8 @@
+export interface Ubicacion {
+    type: "Point";
+    coordinates: [number, number];
+}
+
 export interface Usuario {
     id: string;
 
@@ -17,6 +22,8 @@ export interface Usuario {
     direccion: string;
     telefono: string;
     mail: string;
+
+    ubicacion?: Ubicacion;
 }
 
 export interface JuegosUsuario {

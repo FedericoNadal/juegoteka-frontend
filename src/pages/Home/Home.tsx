@@ -15,7 +15,7 @@ function Home() {
             <Panel>
 
                 <SectionTitle>
-                    ¿Qué es Juegoteka?
+                    ¿Qué es Juegotekas?
                 </SectionTitle>
 
                 <p>

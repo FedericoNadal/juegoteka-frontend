@@ -81,3 +81,38 @@ export async function obtenerMisJuegos(
 
     return response.json();
 }
+/**
+ * Obtiene todas las Juegotekas registradas.
+ *
+ * Se utilizan para mostrarlas en el mapa.
+ */
+export async function obtenerJuegotekas(
+    token: string
+): Promise<Usuario[]> {
+
+    const response = await fetch(
+        `${API_URL}/usuarios/getJuegotekas`,
+        {
+            method: "GET",
+            headers: getHeaders(token)
+        }
+    );
+
+    console.log(
+        "Juegotekas - Status:",
+        response.status
+    );
+
+    console.log(
+        "Juegotekas - OK:",
+        response.ok
+    );
+
+    if (!response.ok) {
+        throw new Error(
+            "No se pudieron obtener las juegotekas"
+        );
+    }
+
+    return response.json();
+}

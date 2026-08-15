@@ -37,7 +37,7 @@ function Hero() {
           mb-6
         "
       >
-        Juegoteka
+        Juegotekas
       </h1>
 
       {/* Frase principal que introduce la filosofía del proyecto */}

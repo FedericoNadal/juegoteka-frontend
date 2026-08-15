@@ -1,33 +1,71 @@
-import { MapContainer, TileLayer } from "react-leaflet";
+import {
+    MapContainer,
+    TileLayer,
+    Marker,
+    Popup
+} from "react-leaflet";
 
 import type { LatLngTuple } from "leaflet";
 
+import { useEffect, useState } from "react";
 
+import {
+    obtenerJuegotekas
+} from "../../services/usuarioService";
 
-/**
- * Coordenadas del centro inicial.
- *
- * Por ahora utilizamos la Ciudad de Buenos Aires
- * como ubicación por defecto durante el desarrollo.
- *
- * Más adelante esta posición podrá obtenerse:
- * - desde la ubicación del usuario;
- * - desde una búsqueda;
- * - desde una juegoteka seleccionada.
- */
-const buenosAires: LatLngTuple = [-34.6037, -58.3816];
+import type { Usuario } from "../../types/usuario";
 
+import { useAuth } from "../../hooks/useAuth";
 
-/**
- * MapView
- *
- * Componente responsable únicamente de renderizar
- * el mapa base utilizando OpenStreetMap.
- *
- * En esta primera versión no existen marcadores
- * ni interacción.
- */
+const buenosAires: LatLngTuple = [
+    -34.6037,
+    -58.3816
+];
+
 function MapView() {
+
+    const { token } = useAuth();
+
+    const [juegotekas, setJuegotekas] =
+        useState<Usuario[]>([]);
+
+    const [, setError] =
+        useState<string | null>(null);
+
+useEffect(() => {
+
+    if (!token) {
+        return;
+    }
+
+    const tokenActual = token;
+
+    async function cargarJuegotekas() {
+
+        try {
+
+            const datos =
+                await obtenerJuegotekas(tokenActual);
+
+            setJuegotekas(datos);
+
+        } catch (error) {
+
+            console.error(
+                "Error al cargar juegotekas:",
+                error
+            );
+
+            setError(
+                "No se pudieron cargar las juegotekas."
+            );
+        }
+    }
+
+    cargarJuegotekas();
+
+}, [token]);
+
     return (
 
         <MapContainer
@@ -48,7 +86,6 @@ function MapView() {
             "
         >
 
-            {/* Capa base provista por OpenStreetMap */}
             <TileLayer
 
                 attribution='&copy; OpenStreetMap contributors'
@@ -57,9 +94,56 @@ function MapView() {
 
             />
 
+
+            {juegotekas.map((juegoteka) => {
+
+                if (!juegoteka.ubicacion) {
+                    return null;
+                }
+
+
+                const [
+                    longitud,
+                    latitud
+                ] = juegoteka.ubicacion.coordinates;
+
+
+                const posicion: LatLngTuple = [
+                    latitud,
+                    longitud
+                ];
+
+
+                return (
+
+                    <Marker
+                        key={juegoteka.id}
+                        position={posicion}
+                    >
+
+                        <Popup>
+
+                            <strong>
+                                {juegoteka.nombre}
+                            </strong>
+
+                            <br />
+
+                            {juegoteka.direccion}
+
+                        </Popup>
+
+                    </Marker>
+
+                );
+
+            })}
+
+
         </MapContainer>
 
     );
 }
+
 
 export default MapView;

@@ -49,13 +49,13 @@ Completar el flujo de autenticación iniciado.
 
 ### Tareas
 
-- [ ] Persistir JWT en localStorage.
-- [ ] Restaurar sesión.
-- [ ] Logout.
-- [ ] Mostrar usuario autenticado.
+- [x] Persistir JWT en localStorage.
+- [x] Restaurar sesión.
+- [x] Logout.
+- [x] Mostrar usuario autenticado.
 - [ ] Cerrar automáticamente AuthOffCanvas.
-- [ ] Manejo de expiración del token.
-- [ ] Enviar Authorization Bearer automáticamente.
+- [x] Manejo de expiración del token.
+- [x] Enviar Authorization Bearer automáticamente.
 
 Entrega esperada:
 
@@ -72,8 +72,8 @@ Conectar la pantalla Perfil con la API.
 
 ### Tareas
 
-- [ ] Obtener usuario autenticado.
-- [ ] Mostrar datos reales.
+- [x] Obtener usuario autenticado.
+- [x] Mostrar datos reales.
 - [ ] Editar perfil.
 - [ ] Actualizar información.
 - [ ] Mostrar estadísticas.
@@ -93,7 +93,7 @@ Consumir los endpoints de Juegos.
 
 ### Tareas
 
-- [ ] Listar juegos.
+- [x] Listar juegos.
 - [ ] Mostrar detalle.
 - [ ] Buscar juegos.
 - [ ] Filtrar.

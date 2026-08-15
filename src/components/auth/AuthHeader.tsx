@@ -1,4 +1,4 @@
-import Button from "../ui/Button";
+
 
 interface AuthHeaderProps {
     onClose: () => void;
