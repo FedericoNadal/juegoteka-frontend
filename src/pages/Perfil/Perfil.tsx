@@ -5,11 +5,14 @@ import Container from "../../components/ui/Container";
 import PlayerCard from "../../components/Perfil/PlayerCard";
 import StatisticsPanel from "../../components/Perfil/StatsPanel";
 import MyGamesPanel from "../../components/Perfil/MyGamesPanel";
+import MyJornadasPanel from "../../components/Perfil/MyJornadasPanel";
 
 import { useAuth } from "../../hooks/useAuth";
 import { obtenerMisJuegos } from "../../services/usuarioService";
+import { obtenerMisJornadas} from "../../services/jornadaService";
 
 import type { JuegosUsuario } from "../../types/usuario";
+import type { Jornada } from "../../types/jornada";
 
 function Perfil() {
 
@@ -18,35 +21,46 @@ function Perfil() {
     const [juegos, setJuegos] =
         useState<JuegosUsuario[]>([]);
 
+    const [jornadas, setJornadas] =
+        useState<Jornada[]>([]);
 
-    useEffect(() => {
+  
 
-        async function cargarJuegos() {
+   useEffect(() => {
 
-            if (!token) {
-                return;
-            }
+    async function cargarDatos() {
 
-            try {
-
-                const juegosUsuario =
-                    await obtenerMisJuegos(token);
-
-                setJuegos(juegosUsuario);
-
-            } catch (error) {
-
-                console.error(
-                    "No se pudieron cargar los juegos:",
-                    error
-                );
-
-            }
+        if (!token) {
+            return;
         }
 
-        cargarJuegos();
+        try {
 
-    }, [token]);
+            const juegosUsuario =
+                await obtenerMisJuegos(token);
+
+            setJuegos(juegosUsuario);
+
+
+            const jornadasUsuario =
+                await obtenerMisJornadas(token);
+
+            setJornadas(jornadasUsuario);
+
+
+        } catch (error) {
+
+            console.error(
+                "No se pudieron cargar los datos del perfil:",
+                error
+            );
+
+        }
+    }
+
+    cargarDatos();
+
+}, [token]);
 
 
     // Mientras se restaura la sesión
@@ -77,7 +91,7 @@ function Perfil() {
                         />
 
                     </div>
-
+                    <MyJornadasPanel jornadas={jornadas} />
                     <StatisticsPanel />
 
                     <MyGamesPanel

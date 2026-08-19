@@ -38,7 +38,7 @@ export interface Encuentro {
 }
 
 export interface Jornada {
-    id: string;
+    _id: string;
 
     nombre: string;
 

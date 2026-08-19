@@ -11,6 +11,8 @@ import type { Jornada } from "../../types/jornada";
 
 import { obtenerJornadas } from "../../services/jornadaService";
 
+import { inscribirseEnJornada } from "../../services/jornadaService";
+
 
 /**
  * Página Mapa
@@ -149,12 +151,32 @@ function Mapa() {
 
                 {/* DETALLE */}
 
-                <JornadaOffCanvas
-                    jornada={jornadaSeleccionada}
-                    onClose={() =>
-                        setJornadaSeleccionada(null)
-                    }
-                />
+              <JornadaOffCanvas
+    jornada={jornadaSeleccionada}
+    onClose={() =>
+        setJornadaSeleccionada(null)
+    }
+    onJornadaActualizada={(jornadaActualizada) => {
+
+        /*
+         * Actualizamos la jornada que estamos viendo
+         * en el OffCanvas.
+         */
+        setJornadaSeleccionada(jornadaActualizada);
+
+        /*
+         * También actualizamos la jornada dentro
+         * de la lista.
+         */
+        setJornadas((jornadasActuales) =>
+            jornadasActuales.map((jornada) =>
+                jornada._id === jornadaActualizada._id
+                    ? jornadaActualizada
+                    : jornada
+            )
+        );
+    }}
+/>
 
             </Container>
 

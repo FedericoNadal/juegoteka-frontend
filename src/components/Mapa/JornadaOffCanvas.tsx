@@ -1,14 +1,86 @@
 import type { Jornada } from "../../types/jornada";
 
+import { useState } from "react";
+
+import { useAuth } from "../../hooks/useAuth";
+
+import { inscribirseEnJornada } from "../../services/jornadaService";
+
 interface JornadaOffCanvasProps {
+
     jornada: Jornada | null;
+
     onClose: () => void;
+
+    onJornadaActualizada: (
+        jornada: Jornada
+    ) => void;
 }
 
 function JornadaOffCanvas({
     jornada,
     onClose,
+    onJornadaActualizada,
 }: JornadaOffCanvasProps) {
+
+     const { token } = useAuth();
+
+    const [inscribiendo, setInscribiendo] =
+        useState(false);
+
+    const [error, setError] =
+        useState<string | null>(null);
+
+        const handleInscribirse = async () => {
+
+    if (!token) {
+
+        setError(
+            "Necesitás iniciar sesión para inscribirte."
+        );
+
+        return;
+    }
+
+    setInscribiendo(true);
+    setError(null);
+
+    try {
+
+        const jornadaActualizada =
+            await inscribirseEnJornada(
+                jornada._id,
+                token
+            );
+
+        /*
+         * Avisamos al componente padre que
+         * tenemos una versión nueva de la jornada.
+         */
+        onJornadaActualizada(
+            jornadaActualizada
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Error al inscribirse:",
+            error
+        );
+
+        setError(
+            error instanceof Error
+                ? error.message
+                : "No se pudo realizar la inscripción."
+        );
+
+    } finally {
+
+        setInscribiendo(false);
+
+    }
+};
+
 
     // Si no hay jornada seleccionada, no mostramos nada
     if (!jornada) {
@@ -62,18 +134,45 @@ function JornadaOffCanvas({
                         </h2>
                     </div>
 
-                    <button
-                        onClick={onClose}
-                        className="
-                            text-2xl
-                            text-stone-600
-                            hover:text-stone-900
-                        "
-                        aria-label="Cerrar"
-                    >
-                        ×
-                    </button>
+                   {error && (
+    <p
+        className="
+            mt-4
+            rounded-lg
+            border
+            border-red-300
+            bg-red-50
+            px-4
+            py-3
+            text-sm
+            text-red-700
+        "
+    >
+        {error}
+    </p>
+)}
 
+<button
+    onClick={handleInscribirse}
+    disabled={inscribiendo}
+    className="
+        w-full
+        mt-8
+        rounded-lg
+        bg-amber-700
+        text-white
+        py-3
+        font-semibold
+        hover:bg-amber-800
+        disabled:opacity-50
+        disabled:cursor-not-allowed
+    "
+>
+    {inscribiendo
+        ? "Inscribiendo..."
+        : "Inscribirme"
+    }
+</button>
                 </div>
 
                 {/* Información básica */}
