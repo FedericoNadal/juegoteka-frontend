@@ -16,7 +16,7 @@ function JornadasList({
             {jornadas.map((jornada) => (
 
                 <div
-                    key={jornada.id}
+                    key={jornada._id}
                     className="
                         rounded-lg
                         border

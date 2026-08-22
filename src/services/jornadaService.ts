@@ -161,15 +161,16 @@ export async function inscribirseEnJornada(
 
     return data;
 }
+
 export async function cancelarInscripcionJornada(
     token: string,
     idJornada: string
 ) {
 
     const response = await fetch(
-        `${API_URL}/jornadas/inscripcion/${idJornada}`,
+        `${API_URL}/jornadas/cancelarInscripcion/${idJornada}`,
         {
-            method: "DELETE",
+            method: "PUT",
 
             headers: {
                 "Content-Type": "application/json",
@@ -178,19 +179,11 @@ export async function cancelarInscripcionJornada(
         }
     );
 
-
-    const data = await response.json();
-
-
     if (!response.ok) {
-
         throw new Error(
-            data.message ||
             "No se pudo cancelar la inscripción"
         );
-
     }
 
-
-    return data;
+    return response.json();
 }

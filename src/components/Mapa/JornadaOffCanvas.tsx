@@ -3,8 +3,11 @@ import type { Jornada } from "../../types/jornada";
 import { useState } from "react";
 
 import { useAuth } from "../../hooks/useAuth";
+import {
+    inscribirseEnJornada, cancelarInscripcionJornada
+} from "../../services/jornadaService";
 
-import { inscribirseEnJornada } from "../../services/jornadaService";
+
 
 interface JornadaOffCanvasProps {
 
@@ -23,7 +26,7 @@ function JornadaOffCanvas({
     onJornadaActualizada,
 }: JornadaOffCanvasProps) {
 
-     const { token } = useAuth();
+    const { token, usuario } = useAuth();
 
     const [inscribiendo, setInscribiendo] =
         useState(false);
@@ -31,61 +34,76 @@ function JornadaOffCanvas({
     const [error, setError] =
         useState<string | null>(null);
 
-        const handleInscribirse = async () => {
-
-    if (!token) {
-
-        setError(
-            "Necesitás iniciar sesión para inscribirte."
-        );
-
-        return;
-    }
-
-    setInscribiendo(true);
-    setError(null);
-
-    try {
-
-        const jornadaActualizada =
-            await inscribirseEnJornada(
-                jornada._id,
-                token
-            );
-
-        /*
-         * Avisamos al componente padre que
-         * tenemos una versión nueva de la jornada.
-         */
-        onJornadaActualizada(
-            jornadaActualizada
-        );
-
-    } catch (error) {
-
-        console.error(
-            "Error al inscribirse:",
-            error
-        );
-
-        setError(
-            error instanceof Error
-                ? error.message
-                : "No se pudo realizar la inscripción."
-        );
-
-    } finally {
-
-        setInscribiendo(false);
-
-    }
-};
-
-
     // Si no hay jornada seleccionada, no mostramos nada
     if (!jornada) {
         return null;
     }
+
+    const estaInscripto =
+        usuario &&
+        jornada.jugadoresInscriptos.some(
+            (jugador) =>
+                String(jugador.id) === String(usuario.id)
+        );
+
+    const handleInscripcion = async () => {
+
+        if (!token) {
+
+            setError(
+                "Necesitás iniciar sesión para realizar esta acción."
+            );
+
+            return;
+        }
+
+        setInscribiendo(true);
+        setError(null);
+
+        try {
+
+            let jornadaActualizada: Jornada;
+
+            if (estaInscripto) {
+
+                jornadaActualizada =
+                    await cancelarInscripcionJornada(
+                        token,
+                        jornada._id
+                    );
+
+            } else {
+
+                jornadaActualizada =
+                    await inscribirseEnJornada(
+                        jornada._id,
+                        token
+                    );
+            }
+
+            onJornadaActualizada(
+                jornadaActualizada
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Error al modificar inscripción:",
+                error
+            );
+
+            setError(
+                error instanceof Error
+                    ? error.message
+                    : "No se pudo modificar la inscripción."
+            );
+
+        } finally {
+
+            setInscribiendo(false);
+
+        }
+    };
 
     return (
         <>
@@ -134,9 +152,9 @@ function JornadaOffCanvas({
                         </h2>
                     </div>
 
-                   {error && (
-    <p
-        className="
+                    {error && (
+                        <p
+                            className="
             mt-4
             rounded-lg
             border
@@ -147,15 +165,15 @@ function JornadaOffCanvas({
             text-sm
             text-red-700
         "
-    >
-        {error}
-    </p>
-)}
+                        >
+                            {error}
+                        </p>
+                    )}
 
-<button
-    onClick={handleInscribirse}
-    disabled={inscribiendo}
-    className="
+                    <button
+                        onClick={handleInscripcion}
+                        disabled={inscribiendo}
+                        className="
         w-full
         mt-8
         rounded-lg
@@ -167,12 +185,14 @@ function JornadaOffCanvas({
         disabled:opacity-50
         disabled:cursor-not-allowed
     "
->
-    {inscribiendo
-        ? "Inscribiendo..."
-        : "Inscribirme"
-    }
-</button>
+                    >
+                        {inscribiendo
+                             ? "Procesando..."
+                                : estaInscripto
+                                  ? "Desinscribirme"
+                                    : "Inscribirme"
+                    }
+                    </button>
                 </div>
 
                 {/* Información básica */}
@@ -284,22 +304,6 @@ function JornadaOffCanvas({
                     )}
 
                 </section>
-
-                {/* Acción */}
-                <button
-                    className="
-                        w-full
-                        mt-8
-                        rounded-lg
-                        bg-amber-700
-                        text-white
-                        py-3
-                        font-semibold
-                        hover:bg-amber-800
-                    "
-                >
-                    Inscribirme
-                </button>
 
             </aside>
         </>
