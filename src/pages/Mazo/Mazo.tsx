@@ -5,7 +5,10 @@ import MessageCard from "../../components/Mazo/MessageCard";
 import Container from "../../components/ui/Container";
 
 import { useAuth } from "../../hooks/useAuth";
-import { obtenerMensajesRecibidos } from "../../services/mensajeService";
+import {
+    obtenerMensajesRecibidos,
+    eliminarMensaje
+} from "../../services/mensajeService";
 
 import type { Mensaje } from "../../types/mensaje";
 
@@ -54,12 +57,45 @@ function Mazo() {
      * luego del ultimo, vuelve al primero.
      */
     function siguienteMensaje() {
-    if (mensajes.length === 0) return;
+        if (mensajes.length === 0) return;
 
-    setIndiceActual(
-        (indiceActual + 1) % mensajes.length
-    );
-}
+        setIndiceActual(
+            (indiceActual + 1) % mensajes.length
+        );
+    }
+
+    async function eliminarMensajeActual(idMensaje: string) {
+        if (!token) return;
+
+        try {
+            await eliminarMensaje(idMensaje, token);
+
+            const nuevosMensajes = mensajes.filter(
+                (mensaje) => mensaje._id !== idMensaje
+            );
+
+            setMensajes(nuevosMensajes);
+
+            if (nuevosMensajes.length === 0) {
+                setIndiceActual(0);
+                return;
+            }
+
+            setIndiceActual(
+                Math.min(
+                    indiceActual,
+                    nuevosMensajes.length - 1
+                )
+            );
+
+        } catch (error) {
+            console.error(
+                "No se pudo eliminar el mensaje:",
+                error
+            );
+        }
+    }
+    ///////////////////////////////////////
     return (
         <main>
             <Container>
@@ -76,6 +112,7 @@ function Mazo() {
                         <div className="flex justify-center">
                             <MessageCard
                                 mensaje={mensajes[indiceActual]}
+                                onDelete={eliminarMensajeActual}
                             />
                         </div>
                     )}
@@ -83,7 +120,7 @@ function Mazo() {
                     <div className="flex justify-end pl-50">
                         <Deck
                             onDraw={siguienteMensaje}
-                           
+
                         />
                     </div>
                 </section>

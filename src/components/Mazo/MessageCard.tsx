@@ -3,9 +3,13 @@ import type { Mensaje } from "../../types/mensaje";
 
 interface MessageCardProps {
     mensaje: Mensaje;
+    onDelete: (idMensaje: string) => void;
 }
 
-function MessageCard({ mensaje }: MessageCardProps) {
+function MessageCard({
+    mensaje,
+    onDelete
+}: MessageCardProps) {
     return (
         <article
             className="
@@ -58,7 +62,12 @@ function MessageCard({ mensaje }: MessageCardProps) {
                 "
             >
                 <Button>{"\u{270D}"}</Button>
-                <Button>{"\u{1F5D1}"}</Button>
+
+                <Button
+                    onClick={() => onDelete(mensaje._id)}
+                >
+                    {"\u{1F5D1}"}
+                </Button>
             </div>
         </article>
     );
