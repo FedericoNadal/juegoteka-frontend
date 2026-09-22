@@ -115,4 +115,39 @@ export async function obtenerJuegotekas(
     }
 
     return response.json();
+}/**
+ * Obtiene todos los jugadores registrados.
+ *
+ * Se utilizan para seleccionar un destinatario
+ * al escribir una carta.
+ */
+export async function obtenerJugadores(
+    token: string
+): Promise<Usuario[]> {
+
+    const response = await fetch(
+        `${API_URL}/usuarios/getJugadores`,
+        {
+            method: "GET",
+            headers: getHeaders(token)
+        }
+    );
+
+    console.log(
+        "Jugadores - Status:",
+        response.status
+    );
+
+    console.log(
+        "Jugadores - OK:",
+        response.ok
+    );
+
+    if (!response.ok) {
+        throw new Error(
+            "No se pudieron obtener los jugadores"
+        );
+    }
+
+    return response.json();
 }

@@ -83,3 +83,53 @@ export async function eliminarMensaje(
         );
     }
 }
+
+export interface CrearMensajeData {
+    remitente: string;
+    destinatario: string;
+    contenido: string;
+}
+//enviar
+//////////////////////
+
+export async function enviarMensaje(
+    data: CrearMensajeData,
+    token: string
+): Promise<void> {
+
+    const response = await fetch(
+        `${API_URL}/mensajes/create`,
+        {
+            method: "POST",
+            headers: {
+                ...getHeaders(token),
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        }
+    );
+
+    const responseData = await response.json();
+
+    console.log(
+        "Enviar mensaje - Status:",
+        response.status
+    );
+
+    console.log(
+        "Enviar mensaje - OK:",
+        response.ok
+    );
+
+    console.log(
+        "Enviar mensaje - Respuesta:",
+        responseData
+    );
+
+    if (!response.ok) {
+        throw new Error(
+            responseData.message ||
+            "No se pudo enviar el mensaje"
+        );
+    }
+}

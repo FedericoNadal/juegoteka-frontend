@@ -187,3 +187,49 @@ export async function cancelarInscripcionJornada(
 
     return response.json();
 }
+interface JuegoParaEncuentro {
+    id_juego: string;
+    nombre: string;
+    imagen: string;
+}
+
+/**
+ * Crea un encuentro vacío (sin jugadores) dentro de una jornada.
+ *
+ * Devuelve la jornada actualizada. IMPORTANTE: en esta respuesta puntual
+ * el backend NO popula "encuentros" (solo hace un $push del id), así que
+ * jornada.encuentros llega como array de strings (ids), no de objetos
+ * Encuentro completos. Hay que tratarlo como tal acá, aunque el tipo
+ * Jornada declare Encuentro[] — es una inconsistencia existente del
+ * backend entre esta ruta y getJornadaByIdAndEncuentrosCompletos.
+ */
+export async function crearDesafioEnJornada(
+    idJornada: string,
+    juego: JuegoParaEncuentro,
+    capacidad: number,
+    token: string
+): Promise<{ encuentros: string[] } & Record<string, unknown>> {
+
+    const response = await fetch(
+        `${API_URL}/jornadas/updateEncuentros/${idJornada}`,
+        {
+            method: "PUT",
+            headers: getHeaders(token),
+            body: JSON.stringify({ capacidad, juego })
+        }
+    );
+
+    const data = await response.json();
+
+    console.log("Crear desafío - Status:", response.status);
+    console.log("Crear desafío - Respuesta:", data);
+
+    if (!response.ok) {
+        throw new Error(
+            data.message ||
+            "No se pudo crear el desafío"
+        );
+    }
+
+    return data;
+}

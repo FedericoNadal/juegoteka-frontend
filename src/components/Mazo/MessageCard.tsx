@@ -4,12 +4,38 @@ import type { Mensaje } from "../../types/mensaje";
 interface MessageCardProps {
     mensaje: Mensaje;
     onDelete: (idMensaje: string) => void;
+    onConfirm: (idEncuentro: string) => void;
+    onResponder: (idRemitente: string) => void;
 }
 
 function MessageCard({
     mensaje,
-    onDelete
+    onDelete,
+    onConfirm,
+    onResponder
 }: MessageCardProps) {
+
+    // Un desafío confirmable trae "referencia" (el id del encuentro).
+    // Las notificaciones de cancelación usan el mismo tipo pero no la traen.
+    const esDesafioConfirmable =
+        mensaje.tipo === "notificacionEncuentro" && !!mensaje.referencia;
+
+   function manejarAccionPrincipal() {
+    if (esDesafioConfirmable) {
+        onConfirm(mensaje.referencia!);
+        return;
+    }
+
+    if (mensaje.tipo === "general") {
+        onResponder(mensaje.remitente);
+        return;
+    }
+
+    // Tipo no contemplado todavía (ej: futuro "jornada").
+    // No se asume ninguna acción hasta que se decida el flujo.
+    console.warn(`Tipo de mensaje sin acción definida: ${mensaje.tipo}`);
+}
+
     return (
         <article
             className="
@@ -22,7 +48,6 @@ function MessageCard({
                 shadow-lg
             "
         >
-            {/* Imagen principal */}
             <div
                 className="
                     h-40
@@ -32,12 +57,10 @@ function MessageCard({
                 "
             />
 
-            {/* Tipo de mensaje */}
             <p className="text-sm uppercase text-amber-700">
                 {mensaje.tipo}
             </p>
 
-            {/* Título temporal */}
             <h2
                 className="
                     font-title
@@ -48,12 +71,10 @@ function MessageCard({
                 Mensaje
             </h2>
 
-            {/* Contenido real del mensaje */}
             <p className="mb-6">
                 {mensaje.contenido}
             </p>
 
-            {/* Acciones */}
             <div
                 className="
                     flex
@@ -61,7 +82,9 @@ function MessageCard({
                     justify-between
                 "
             >
-                <Button>{"\u{270D}"}</Button>
+                <Button onClick={manejarAccionPrincipal}>
+                    {"\u{270D}"}
+                </Button>
 
                 <Button
                     onClick={() => onDelete(mensaje._id)}

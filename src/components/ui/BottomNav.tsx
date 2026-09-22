@@ -50,14 +50,7 @@ function BottomNav() {
               🌍  Mapa
             </NavLink>
 
-            <NavLink to="/libreta" className={({ isActive }) =>
-                isActive
-                    ? "font-semibold text-amber-700"
-                    : "text-gray-600"
-            }>
-                📝  Libreta
-            </NavLink>
-
+          
             <NavLink to="/perfil" className={({ isActive }) =>
                 isActive
                     ? "font-semibold text-amber-700"

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 import Container from "../../components/ui/Container";
 
@@ -6,10 +7,11 @@ import PlayerCard from "../../components/Perfil/PlayerCard";
 import StatisticsPanel from "../../components/Perfil/StatsPanel";
 import MyGamesPanel from "../../components/Perfil/MyGamesPanel";
 import MyJornadasPanel from "../../components/Perfil/MyJornadasPanel";
+import MessageEditor from "../../components/Perfil/MessageEditor";
 
 import { useAuth } from "../../hooks/useAuth";
 import { obtenerMisJuegos } from "../../services/usuarioService";
-import { obtenerMisJornadas} from "../../services/jornadaService";
+import { obtenerMisJornadas } from "../../services/jornadaService";
 
 import type { JuegosUsuario } from "../../types/usuario";
 import type { Jornada } from "../../types/jornada";
@@ -23,47 +25,48 @@ function Perfil() {
 
     const [jornadas, setJornadas] =
         useState<Jornada[]>([]);
+    const location = useLocation();
 
-  
+    const destinatarioIdInicial =
+        location.state?.destinatarioId;
 
-   useEffect(() => {
+    useEffect(() => {
 
-    async function cargarDatos() {
+        async function cargarDatos() {
 
-        if (!token) {
-            return;
+            if (!token) {
+                return;
+            }
+
+            try {
+
+                const juegosUsuario =
+                    await obtenerMisJuegos(token);
+
+                setJuegos(juegosUsuario);
+
+
+                const jornadasUsuario =
+                    await obtenerMisJornadas(token);
+
+                setJornadas(jornadasUsuario);
+
+
+            } catch (error) {
+
+                console.error(
+                    "No se pudieron cargar los datos del perfil:",
+                    error
+                );
+
+            }
         }
 
-        try {
+        cargarDatos();
 
-            const juegosUsuario =
-                await obtenerMisJuegos(token);
-
-            setJuegos(juegosUsuario);
+    }, [token]);
 
 
-            const jornadasUsuario =
-                await obtenerMisJornadas(token);
-
-            setJornadas(jornadasUsuario);
-
-
-        } catch (error) {
-
-            console.error(
-                "No se pudieron cargar los datos del perfil:",
-                error
-            );
-
-        }
-    }
-
-    cargarDatos();
-
-}, [token]);
-
-
-    // Mientras se restaura la sesión
     if (!usuario) {
         return null;
     }
@@ -91,12 +94,25 @@ function Perfil() {
                         />
 
                     </div>
-                    <MyJornadasPanel jornadas={jornadas} />
-                    <StatisticsPanel />
+
+                    <MessageEditor
+                        destinatarioIdInicial={
+                            destinatarioIdInicial
+                        }
+                    />
+
+
+                    <MyJornadasPanel
+                        jornadas={jornadas}
+                    />
 
                     <MyGamesPanel
                         juegos={juegos}
                     />
+
+                    <StatisticsPanel />
+
+
 
                 </section>
 

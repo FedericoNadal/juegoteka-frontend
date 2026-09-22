@@ -1,11 +1,13 @@
 import type { Jornada } from "../../types/jornada";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useAuth } from "../../hooks/useAuth";
 import {
-    inscribirseEnJornada, cancelarInscripcionJornada
+    inscribirseEnJornada, cancelarInscripcionJornada,
+    crearDesafioEnJornada
 } from "../../services/jornadaService";
+import { invitarJugadorAEncuentro } from "../../services/encuentroService";
 
 
 
@@ -33,6 +35,22 @@ function JornadaOffCanvas({
 
     const [error, setError] =
         useState<string | null>(null);
+
+    // Id del jugador al que se le está enviando un desafío en este momento
+    // (para deshabilitar solo ese botón, no todos).
+    const [desafiando, setDesafiando] =
+        useState<string | null>(null);
+
+    // Juego elegido para el próximo desafío. Se inicializa con el
+    // primer juego disponible de la jornada, si existe.
+   const [juegoSeleccionadoId, setJuegoSeleccionadoId] =
+    useState<string>("");
+
+useEffect(() => {
+    setJuegoSeleccionadoId(
+        jornada?.juegosDisponibles[0]?.id ?? ""
+    );
+}, [jornada]);
 
     // Si no hay jornada seleccionada, no mostramos nada
     if (!jornada) {
@@ -101,6 +119,97 @@ function JornadaOffCanvas({
         } finally {
 
             setInscribiendo(false);
+
+        }
+    };
+
+
+    
+    /**
+     * Envía un desafío a un jugador inscripto en esta jornada.
+     *
+     * Es un proceso en dos pasos porque crear el encuentro no
+     * genera la notificación por sí solo: recién se dispara al
+     * agregar al jugador desafiado como participante nuevo.
+     */
+    const handleDesafiar = async (idJugadorDesafiado: string) => {
+
+        if (!token) {
+            setError(
+                "Necesitás iniciar sesión para realizar esta acción."
+            );
+            return;
+        }
+
+       const juego = jornada.juegosDisponibles.find(
+    (j) => j.id === juegoSeleccionadoId
+);
+
+console.log("juego encontrado:", juego);
+        console.log("juegos disponibles:", jornada.juegosDisponibles);
+console.log("juego seleccionado:", juegoSeleccionadoId);
+
+        if (!juego) {
+            setError(
+                "Elegí un juego antes de enviar el desafío."
+                
+            );
+            //console.log(juego);
+            return;
+        }
+
+        setDesafiando(idJugadorDesafiado);
+        setError(null);
+
+        try {
+
+            // Paso 1: crear el encuentro vacío en la jornada
+            const jornadaConNuevoEncuentro =
+                await crearDesafioEnJornada(
+                    jornada._id,
+                    {
+                        id_juego: juego.id,
+                        nombre: juego.titulo,
+                        imagen: juego.imagen
+                    },
+                    2,
+                    token
+                );
+
+            const idsEncuentros =
+                jornadaConNuevoEncuentro.encuentros;
+
+            const idEncuentroCreado =
+                idsEncuentros[idsEncuentros.length - 1];
+
+            // Paso 2: invitar al jugador desafiado.
+            // Esto es lo que dispara la notificación en su Mazo.
+            await invitarJugadorAEncuentro(
+                idEncuentroCreado,
+                idJugadorDesafiado,
+                token
+            );
+
+            onJornadaActualizada(
+                jornadaConNuevoEncuentro as unknown as Jornada
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Error al enviar desafío:",
+                error
+            );
+
+            setError(
+                error instanceof Error
+                    ? error.message
+                    : "No se pudo enviar el desafío."
+            );
+
+        } finally {
+
+            setDesafiando(null);
 
         }
     };
@@ -287,18 +396,100 @@ function JornadaOffCanvas({
                         Inscriptos
                     </h3>
 
+                    {estaInscripto &&
+                        jornada.juegosDisponibles.length > 0 && (
+                        <div className="mb-3">
+                            <label className="text-sm text-stone-600">
+                                Juego para desafiar:{" "}
+                                <select
+                                    value={juegoSeleccionadoId}
+                                    onChange={(e) =>
+                                        setJuegoSeleccionadoId(
+                                            e.target.value
+                                        )
+                                    }
+                                    className="
+                                        border
+                                        border-amber-300
+                                        rounded
+                                        px-2
+                                        py-1
+                                    "
+                                >
+                                    {jornada.juegosDisponibles.map(
+                                        (juego) => (
+                                            <option
+                                                key={juego.id}
+                                                value={juego.id}
+                                            >
+                                                {juego.titulo}
+                                            </option>
+                                        )
+                                    )}
+                                </select>
+                            </label>
+                        </div>
+                    )}
+
                     {jornada.jugadoresInscriptos.length === 0 ? (
                         <p className="text-stone-500">
                             Todavía no hay jugadores inscriptos.
                         </p>
                     ) : (
-                        <ul className="space-y-1">
+                        <ul className="space-y-2">
                             {jornada.jugadoresInscriptos.map(
-                                (jugador) => (
-                                    <li key={jugador.id}>
-                                        👤 {jugador.userName}
-                                    </li>
-                                )
+                                (jugador) => {
+
+                                    const esUnoMismo =
+                                        usuario &&
+                                        String(jugador.id) ===
+                                            String(usuario.id);
+
+                                    return (
+                                        <li
+                                            key={jugador.id}
+                                            className="
+                                                flex
+                                                items-center
+                                                justify-between
+                                            "
+                                        >
+                                            <span>
+                                                👤 {jugador.userName}
+                                            </span>
+
+                                            {estaInscripto &&
+                                                !esUnoMismo && (
+                                                <button
+                                                    onClick={() =>
+                                                        handleDesafiar(
+                                                            jugador.id
+                                                        )
+                                                    }
+                                                    disabled={
+                                                        desafiando ===
+                                                        jugador.id
+                                                    }
+                                                    className="
+                                                        text-sm
+                                                        rounded
+                                                        bg-amber-700
+                                                        text-white
+                                                        px-3
+                                                        py-1
+                                                        hover:bg-amber-800
+                                                        disabled:opacity-50
+                                                    "
+                                                >
+                                                    {desafiando ===
+                                                    jugador.id
+                                                        ? "Enviando..."
+                                                        : "Desafiar"}
+                                                </button>
+                                            )}
+                                        </li>
+                                    );
+                                }
                             )}
                         </ul>
                     )}

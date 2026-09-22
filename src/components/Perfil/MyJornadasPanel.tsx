@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import type { Jornada } from "../../types/jornada";
 
 interface MyJornadasProps {
@@ -8,120 +10,148 @@ function MyJornadasPanel({
     jornadas
 }: MyJornadasProps) {
 
-    return (
-        <section>
+    const [abierto, setAbierto] = useState(false);
 
-            <h2
+    return (
+        <section
+            className="
+                rounded-xl
+                bg-amber-50
+                shadow
+                overflow-hidden
+            "
+        >
+
+            <button
+                type="button"
+                onClick={() => setAbierto(!abierto)}
                 className="
-                    mb-3
+                    flex
+                    w-full
+                    items-center
+                    justify-between
+                    p-5
+                    text-left
+                    font-title
                     text-xl
-                    font-semibold
-                    text-stone-800
                 "
             >
-                Mis jornadas
-            </h2>
+                <span>Mis jornadas</span>
 
-            {jornadas.length === 0 ? (
+                <span>
+                    {abierto ? "⌃" : "⌄"}
+                </span>
+            </button>
 
-                <p
-                    className="
-                        text-sm
-                        text-stone-500
-                    "
-                >
-                    No estás inscripto en ninguna jornada.
-                </p>
+            {abierto && (
 
-            ) : (
+                <div className="px-5 pb-5">
 
-                <div
-                    className="
-                        flex
-                        flex-col
-                        gap-3
-                    "
-                >
+                    {jornadas.length === 0 ? (
 
-                    {jornadas.map((jornada) => {
+                        <p
+                            className="
+                                text-sm
+                                text-stone-500
+                            "
+                        >
+                            No estás inscripto en ninguna jornada.
+                        </p>
 
-                        const fecha =
-                            new Date(jornada.fechaHora);
+                    ) : (
 
-                        const fechaFormateada =
-                            fecha.toLocaleDateString(
-                                "es-AR",
-                                {
-                                    day: "2-digit",
-                                    month: "2-digit",
-                                    year: "numeric"
-                                }
-                            );
+                        <div
+                            className="
+                                flex
+                                flex-col
+                                gap-3
+                            "
+                        >
 
-                        const hora =
-                            fecha.toLocaleTimeString(
-                                "es-AR",
-                                {
-                                    hour: "2-digit",
-                                    minute: "2-digit"
-                                }
-                            );
+                            {jornadas.map((jornada) => {
 
-                        return (
+                                const fecha =
+                                    new Date(
+                                        jornada.fechaHora
+                                    );
 
-                            <article
-                                key={jornada._id}
-                                className="
-                                    flex
-                                    items-center
-                                    gap-4
-                                    rounded-xl
-                                    border
-                                    border-stone-300
-                                    bg-amber-50
-                                    p-4
-                                    shadow-sm
-                                "
-                            >
+                                const fechaFormateada =
+                                    fecha.toLocaleDateString(
+                                        "es-AR",
+                                        {
+                                            day: "2-digit",
+                                            month: "2-digit",
+                                            year: "numeric"
+                                        }
+                                    );
 
-                                <div className="min-w-0">
+                                const hora =
+                                    fecha.toLocaleTimeString(
+                                        "es-AR",
+                                        {
+                                            hour: "2-digit",
+                                            minute: "2-digit"
+                                        }
+                                    );
 
-                                    <h3
+                                return (
+
+                                    <article
+                                        key={jornada._id}
                                         className="
-                                            truncate
-                                            font-semibold
-                                            text-stone-800
+                                            flex
+                                            items-center
+                                            gap-4
+                                            rounded-xl
+                                            border
+                                            border-stone-300
+                                            bg-white
+                                            p-4
+                                            shadow-sm
                                         "
                                     >
-                                        {jornada.nombre}
-                                    </h3>
 
-                                    <p
-                                        className="
-                                            text-sm
-                                            text-stone-600
-                                        "
-                                    >
-                                        {fechaFormateada}
-                                        {" · "}
-                                        {hora}
-                                    </p>
+                                        <div className="min-w-0">
 
-                                    <p
-                                        className="
-                                            text-xs
-                                            text-stone-500
-                                        "
-                                    >
-                                        {jornada.Juegoteka.nombre}
-                                    </p>
+                                            <h3
+                                                className="
+                                                    truncate
+                                                    font-semibold
+                                                    text-stone-800
+                                                "
+                                            >
+                                                {jornada.nombre}
+                                            </h3>
 
-                                </div>
+                                            <p
+                                                className="
+                                                    text-sm
+                                                    text-stone-600
+                                                "
+                                            >
+                                                {fechaFormateada}
+                                                {" · "}
+                                                {hora}
+                                            </p>
 
-                            </article>
+                                            <p
+                                                className="
+                                                    text-xs
+                                                    text-stone-500
+                                                "
+                                            >
+                                                {jornada.Juegoteka.nombre}
+                                            </p>
 
-                        );
-                    })}
+                                        </div>
+
+                                    </article>
+
+                                );
+                            })}
+
+                        </div>
+                    )}
 
                 </div>
             )}

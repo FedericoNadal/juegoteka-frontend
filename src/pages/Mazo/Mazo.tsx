@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import Deck from "../../components/Mazo/Deck";
 import MessageCard from "../../components/Mazo/MessageCard";
@@ -9,123 +10,153 @@ import {
     obtenerMensajesRecibidos,
     eliminarMensaje
 } from "../../services/mensajeService";
+import { confirmarParticipacion } from "../../services/encuentroService";
 
 import type { Mensaje } from "../../types/mensaje";
 
-/**
- * Página principal del Mazo.
- *
- * Obtiene los mensajes del usuario autenticado
- * y permite recorrerlos uno por uno.
- */
 function Mazo() {
-    const { usuario, token } = useAuth();
+const { usuario, token } = useAuth();
+const navigate = useNavigate();
 
-    const [mensajes, setMensajes] = useState<Mensaje[]>([]);
-    const [indiceActual, setIndiceActual] = useState(0);
+const [mensajes, setMensajes] = useState<Mensaje[]>([]);
+const [indiceActual, setIndiceActual] = useState(0);
 
-    useEffect(() => {
-        async function cargarMensajes() {
-            if (!usuario || !token) return;
+useEffect(() => {
+async function cargarMensajes() {
+if (!usuario || !token) return;
 
-            try {
-                const respuesta = await obtenerMensajesRecibidos(
-                    usuario.id,
-                    token
+try {
+const respuesta = await obtenerMensajesRecibidos(
+usuario.id,
+token
                 );
 
-                console.log(
-                    "Mazo - Mensajes recibidos:",
-                    respuesta
+console.log(
+"Mazo - Mensajes recibidos:",
+respuesta
                 );
 
-                setMensajes(respuesta.mensajes);
+setMensajes(respuesta.mensajes);
             } catch (error) {
-                console.error(
-                    "No se pudieron cargar los mensajes:",
-                    error
+console.error(
+"No se pudieron cargar los mensajes:",
+error
                 );
             }
         }
 
-        cargarMensajes();
+cargarMensajes();
     }, [usuario, token]);
 
-    /**
-     * Avanza hacia el siguiente mensaje.
-     *
-     * luego del ultimo, vuelve al primero.
-     */
-    function siguienteMensaje() {
-        if (mensajes.length === 0) return;
+function siguienteMensaje() {
+if (mensajes.length === 0) return;
 
-        setIndiceActual(
+setIndiceActual(
             (indiceActual + 1) % mensajes.length
         );
     }
 
-    async function eliminarMensajeActual(idMensaje: string) {
-        if (!token) return;
+function quitarMensajeDeLista(idMensaje: string) {
+const nuevosMensajes = mensajes.filter(
+            (mensaje) => mensaje._id !== idMensaje
+        );
 
-        try {
-            await eliminarMensaje(idMensaje, token);
+setMensajes(nuevosMensajes);
 
-            const nuevosMensajes = mensajes.filter(
-                (mensaje) => mensaje._id !== idMensaje
-            );
+if (nuevosMensajes.length === 0) {
+setIndiceActual(0);
+return;
+        }
 
-            setMensajes(nuevosMensajes);
+setIndiceActual(
+Math.min(
+indiceActual,
+nuevosMensajes.length - 1
+            )
+        );
+    }
 
-            if (nuevosMensajes.length === 0) {
-                setIndiceActual(0);
-                return;
-            }
+async function eliminarMensajeActual(idMensaje: string) {
+if (!token) return;
 
-            setIndiceActual(
-                Math.min(
-                    indiceActual,
-                    nuevosMensajes.length - 1
-                )
-            );
+try {
+await eliminarMensaje(idMensaje, token);
+quitarMensajeDeLista(idMensaje);
 
         } catch (error) {
-            console.error(
-                "No se pudo eliminar el mensaje:",
-                error
+console.error(
+"No se pudo eliminar el mensaje:",
+error
             );
         }
     }
-    ///////////////////////////////////////
-    return (
-        <main>
-            <Container>
-                <section
-                    className="
+
+async function confirmarDesafioActual(idEncuentro: string) {
+if (!token || !usuario) return;
+
+const mensajeActual = mensajes[indiceActual];
+if (!mensajeActual) return;
+
+try {
+await confirmarParticipacion(
+                idEncuentro,
+usuario.id,
+token
+            );
+
+await eliminarMensajeActual(mensajeActual._id);
+
+        } catch (error) {
+console.error(
+"No se pudo confirmar la participación:",
+error
+            );
+        }
+    }
+
+    /**
+     * Navega a la Libreta pasando el id del remitente para
+     * que el editor lo tenga preseleccionado como destinatario
+     * de la respuesta.
+     */
+function responderMensaje(idRemitente: string) {
+navigate("/perfil", {
+state: { destinatarioId: idRemitente }
+        });
+    }
+
+return (
+<main>
+<Container>
+<section
+className="
                         flex
                         flex-col
                         items-center
                         gap-8
                         py-8
                     "
-                >
-                    {mensajes.length > 0 && (
-                        <div className="flex justify-center">
-                            <MessageCard
-                                mensaje={mensajes[indiceActual]}
-                                onDelete={eliminarMensajeActual}
-                            />
-                        </div>
+>
+{mensajes.length > 0 && (
+<div className="flex justify-center">
+<MessageCard
+mensaje={mensajes[indiceActual]}
+onDelete={eliminarMensajeActual}
+onConfirm={confirmarDesafioActual}
+onResponder={responderMensaje}
+/>
+</div>
                     )}
 
-                    <div className="flex justify-end pl-50">
-                        <Deck
-                            onDraw={siguienteMensaje}
+<div className="flex justify-end pl-50">
+<Deck
+onDraw={siguienteMensaje}
 
-                        />
-                    </div>
-                </section>
-            </Container>
-        </main>
+/>
+</div>
+</section>
+</Container>
+</main>
     );
 }
 
