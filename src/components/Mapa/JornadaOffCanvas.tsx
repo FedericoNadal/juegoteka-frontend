@@ -12,7 +12,7 @@ import {
 } from "../../services/jornadaService";
 
 import { 
-    invitarJugadorAEncuentro,  inscribirseEnEncuentro
+    invitarJugadorAEncuentro,  inscribirseEnEncuentro, cancelarInscripcionEncuentro
  } from "../../services/encuentroService";
 import { obtenerJornadaPorId } from "../../services/jornadaService";
 
@@ -383,6 +383,36 @@ const handleInscribirseEnTorneo = async (idEncuentro: string) => {
     }
 };
 /////////////////////////
+// NUEVO: espejo de handleInscribirseEnTorneo. Solo válida para torneos
+// (así lo exige encuentroService.cancelarInscripcionJugador en el backend);
+// el idJugador no se envía, el backend lo toma de req.user.id.
+const handleDesinscribirseDeTorneo = async (idEncuentro: string) => {
+    if (!token || !usuario) return;
+
+    try {
+        await cancelarInscripcionEncuentro(
+            idEncuentro,
+            token
+        );
+
+        const jornadaActualizada =
+            await obtenerJornadaPorId(jornada._id);
+
+        onJornadaActualizada(jornadaActualizada);
+    } catch (error) {
+        console.error(
+            "Error al desinscribirse del torneo:",
+            error
+        );
+
+        setError(
+            error instanceof Error
+                ? error.message
+                : "No se pudo cancelar la inscripción"
+        );
+    }
+};
+/////////////////////////
     return (
         <>
             {/* Fondo oscuro */}
@@ -701,6 +731,11 @@ const handleInscribirseEnTorneo = async (idEncuentro: string) => {
     const completo =
         encuentro.jugadores.length >= encuentro.capacidad;
 
+    // NUEVO: color del botón torneo según el estado (inscribirme/desinscribirme)
+    const colorBotonTorneo = yaInscripto
+        ? "bg-red-600 hover:bg-red-700"
+        : "bg-amber-700 hover:bg-amber-800";
+
     return (
         <li
             key={encuentro._id}
@@ -736,17 +771,19 @@ const handleInscribirseEnTorneo = async (idEncuentro: string) => {
                 {esTorneo &&
                     esJugador &&
                     !esJuegotekaPropietaria && (
+                        // MODIFICADO: antes solo permitía inscribirse (disabled si
+                        // yaInscripto). Ahora alterna inscribirse/desinscribirse
+                        // según el estado actual del jugador en el encuentro.
                         <button
                             type="button"
-                            disabled={yaInscripto || completo}
+                            disabled={completo && !yaInscripto}
                             onClick={() =>
-                                handleInscribirseEnTorneo(
-                                    encuentro._id
-                                )
+                                yaInscripto
+                                    ? handleDesinscribirseDeTorneo(encuentro._id)
+                                    : handleInscribirseEnTorneo(encuentro._id)
                             }
-                            className="
+                            className={`
                                 rounded-lg
-                                bg-amber-700
                                 px-3
                                 py-2
                                 text-sm
@@ -754,10 +791,11 @@ const handleInscribirseEnTorneo = async (idEncuentro: string) => {
                                 text-white
                                 disabled:cursor-not-allowed
                                 disabled:opacity-50
-                            "
+                                ${colorBotonTorneo}
+                            `}
                         >
                             {yaInscripto
-                                ? "Inscripto"
+                                ? "Desinscribirme"
                                 : completo
                                   ? "Completo"
                                   : "Inscribirme"}
