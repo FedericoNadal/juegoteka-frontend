@@ -1,13 +1,14 @@
-import type {
-    LoginCredentials,
-    AuthResponse
-} from "../types/auth";
 
 import {
     API_URL,
     getHeaders
 } from "./http";
 
+import type {
+    LoginCredentials,
+    AuthResponse,
+    RegisterData
+} from "../types/auth";
 
 /**
  * Inicia sesión en el backend.
@@ -42,6 +43,28 @@ export async function login(
     if (!response.ok) {
         throw new Error(
             "Error al iniciar sesión"
+        );
+    }
+
+    return response.json();
+}
+
+export async function register(
+    data: RegisterData
+) {
+
+    const response = await fetch(
+        `${API_URL}/usuarios/registrar`,
+        {
+            method: "POST",
+            headers: getHeaders(),
+            body: JSON.stringify(data)
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error(
+            "Error al crear la cuenta"
         );
     }
 
