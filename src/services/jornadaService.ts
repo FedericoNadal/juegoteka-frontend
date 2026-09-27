@@ -1,5 +1,6 @@
 import type { Jornada } from "../types/jornada";
 
+
 import {
     API_URL,
     getHeaders
@@ -208,7 +209,7 @@ export async function crearDesafioEnJornada(
     juego: JuegoParaEncuentro,
     capacidad: number,
     token: string
-): Promise<{ encuentros: string[] } & Record<string, unknown>> {
+): Promise<Jornada> {
 
     const response = await fetch(
         `${API_URL}/jornadas/updateEncuentros/${idJornada}`,
@@ -227,9 +228,63 @@ export async function crearDesafioEnJornada(
     if (!response.ok) {
         throw new Error(
             data.message ||
-            "No se pudo crear el desafío"
+            "No se pudo crear el encuentro"
         );
     }
 
     return data;
+}
+
+export interface NuevaJornada {
+    nombre: string;
+    fechaHora: string;
+    precioInscripcion: number;
+    capacidad: number;
+}
+
+export async function crearJornada(
+    jornada: NuevaJornada,
+    token: string
+): Promise<Jornada> {
+    const response = await fetch(`${API_URL}/jornadas/create`, {
+        method: "POST",
+        headers: getHeaders(token),
+        body: JSON.stringify(jornada)
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(
+            error.message || "No se pudo crear la jornada"
+        );
+    }
+
+    const data = await response.json();
+
+    return data.nuevaJornada;
+}
+export async function cancelarJornada(
+    idJornada: string,
+    token: string
+): Promise<Jornada> {
+    const response = await fetch(
+        `${API_URL}/jornadas/updateEstado/${idJornada}`,
+        {
+            method: "PUT",
+            headers: getHeaders(token),
+            body: JSON.stringify({
+                estado: "cancelado"
+            })
+        }
+    );
+
+    if (!response.ok) {
+        const error = await response.json();
+
+        throw new Error(
+            error.message || "No se pudo cancelar la jornada"
+        );
+    }
+
+    return await response.json();
 }

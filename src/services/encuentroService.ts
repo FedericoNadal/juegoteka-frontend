@@ -72,3 +72,36 @@ export async function invitarJugadorAEncuentro(
         );
     }
 }
+
+export async function inscribirseEnEncuentro(
+    idEncuentro: string,
+    idJugador: string,
+    token: string
+): Promise<void> {
+    const response = await fetch(
+        `${API_URL}/encuentros/updatejugadores/${idEncuentro}`,
+        {
+            method: "PUT",
+            headers: getHeaders(token),
+            body: JSON.stringify({
+                jugadores: [
+                    {
+                        id_jugador: idJugador,
+                        estado: "confirmado"
+                    }
+                ]
+            })
+        }
+    );
+
+    const data = await response.json();
+
+    console.log("Inscripción al encuentro - Status:", response.status);
+
+    if (!response.ok) {
+        throw new Error(
+            data.message ||
+            "No se pudo realizar la inscripción"
+        );
+    }
+}

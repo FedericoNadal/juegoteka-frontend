@@ -152,7 +152,7 @@ function GameCatalog() {
                                 hover:bg-amber-900
                             "
                         >
-                            + Mis juegos
+                            APRENDER
                         </button>
 
                     )}

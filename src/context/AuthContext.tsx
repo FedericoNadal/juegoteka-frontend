@@ -32,6 +32,10 @@ interface AuthContextType {
         credentials: LoginCredentials
     ): Promise<void>;
 
+    actualizarUsuario(
+        usuarioActualizado: Usuario
+    ): void;
+
     logout(): void;
 }
 
@@ -139,7 +143,14 @@ export function AuthProvider({
         setToken(response.token);
     }
 
-
+ // ========================================================
+    // actualizar datos
+    // ========================================================
+    function actualizarUsuario(
+    usuarioActualizado: Usuario
+) {
+    setUsuario(usuarioActualizado);
+}
     // ========================================================
     // LOGOUT
     // ========================================================
@@ -170,6 +181,7 @@ export function AuthProvider({
                     usuario !== null,
 
                 login,
+                actualizarUsuario,
                 logout
             }}
         >

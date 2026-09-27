@@ -31,3 +31,14 @@ export interface JuegosUsuario {
     titulo: string;
     imagen: string;
 }
+
+export interface UpdateUsuarioData {
+    nombre: string;
+    apellido: string;
+    foto?: string;
+    aboutMe?: string;
+    telefono: string;
+    mail: string;
+    direccion: string;
+    ubicacion?: Ubicacion;
+}

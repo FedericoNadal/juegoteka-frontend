@@ -70,6 +70,7 @@ function PlayerCard({ usuario }: PlayerCardProps) {
                         font-title
                         text-2xl
                         text-amber-900
+                        truncate
                     "
                 >
                     {usuario.userName}

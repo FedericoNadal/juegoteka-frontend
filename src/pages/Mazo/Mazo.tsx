@@ -120,7 +120,7 @@ error
      * de la respuesta.
      */
 function responderMensaje(idRemitente: string) {
-navigate("/perfil", {
+navigate("/estudio", {
 state: { destinatarioId: idRemitente }
         });
     }

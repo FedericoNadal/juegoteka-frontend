@@ -104,7 +104,7 @@ function MyGamesPanel({
 
                         imagen={juego.imagen}
 
-                        actionLabel="− Quitar"
+                        actionLabel="abandonar"
 
                         onAction={() =>
                             handleEliminar(juego.id)

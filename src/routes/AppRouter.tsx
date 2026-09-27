@@ -2,9 +2,8 @@ import { Routes, Route, HashRouter } from "react-router-dom";
 
 import Home from "../pages/Home/Home";
 import MainLayout from "../layouts/MainLayout";
-import Perfil from "../pages/Perfil/Perfil";
-import Mapa from "../pages/Mapa/Mapa";
 import Mazo from "../pages/Mazo/Mazo";
+import Estudio from "../pages/Estudio/Estudio";
 
 function AppRouter() {
   return (
@@ -13,12 +12,9 @@ function AppRouter() {
    
       <Routes>
         <Route element={<MainLayout />}>
-
           <Route path="/" element={<Home />} />
-          <Route path="/mazo" element={<Mazo />} />
-          <Route path="/mapa" element={<Mapa />} />
-          <Route path="/perfil" element={<Perfil />} />
-
+          <Route path="/mazo" element={<Mazo />} />     
+          <Route path="/estudio" element={<Estudio />} />
         </Route>
       </Routes>
     

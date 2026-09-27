@@ -1,9 +1,14 @@
-import type { Usuario, JuegosUsuario } from "../types/usuario";
+import type {
+    Usuario,
+    JuegosUsuario,
+    UpdateUsuarioData
+} from "../types/usuario";
 
 import {
     API_URL,
     getHeaders
 } from "./http";
+
 
 /**
  * Obtiene los datos del usuario
@@ -146,6 +151,29 @@ export async function obtenerJugadores(
     if (!response.ok) {
         throw new Error(
             "No se pudieron obtener los jugadores"
+        );
+    }
+
+    return response.json();
+}
+
+export async function updateUsuario(
+    data: UpdateUsuarioData,
+    token: string
+): Promise<Usuario> {
+
+    const response = await fetch(
+        `${API_URL}/usuarios/edit`,
+        {
+            method: "PUT",
+            headers: getHeaders(token),
+            body: JSON.stringify(data)
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error(
+            "Error al actualizar el perfil"
         );
     }
 
