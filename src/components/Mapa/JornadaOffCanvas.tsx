@@ -93,6 +93,40 @@ const esJuegotekaPropietaria =
     esJuegoteka &&
     String(jornada.Juegoteka.id) === String(usuario.id);
 
+    // Un desafío es privado entre createdBy y los jugadores invitados;
+// un torneo es público para toda la jornada. Filtramos antes de listar
+// para que un jugador no vea desafíos ajenos.
+const encuentrosVisibles = jornada.encuentros.filter((encuentro) => {
+    if (encuentro.tipo !== "desafio" && encuentro.tipo !== "desafío") {
+        return true; // torneo: visible para todos
+    }
+
+    if (!usuario) return false;
+
+    const esCreador = encuentro.createdBy.some(
+        (org) => String(org.id_usuario) === String(usuario.id)
+    );
+
+    const esParticipante = encuentro.jugadores.some(
+        (jugador) => String(jugador.id_jugador) === String(usuario.id)
+    );
+
+    return esCreador || esParticipante;
+});
+
+// Encuentros activos por juego, para visibilizar contención de tableros
+// físicos sin exponer participantes. Se calcula sobre jornada.encuentros
+// COMPLETO (no encuentrosVisibles): el uso del tablero es real para todos,
+// aunque el jugador no pueda ver el detalle de cada desafío ajeno.
+const encuentrosActivosPorJuego = jornada.encuentros
+    .filter((e) => e.estado !== "cancelado" && e.estado !== "finalizado")
+    .reduce<Record<string, number>>((acc, encuentro) => {
+        const idJuego = encuentro.juego?.[0]?.id_juego;
+        if (!idJuego) return acc;
+        acc[idJuego] = (acc[idJuego] ?? 0) + 1;
+        return acc;
+    }, {});
+
 
 
     const handleInscripcion = async () => {
@@ -569,16 +603,22 @@ const handleDesinscribirseDeTorneo = async (idEncuentro: string) => {
                         Juegos disponibles
                     </h3>
 
-                    <ul className="space-y-1">
-                        {jornada.juegosDisponibles.map((juego) => (
-                            <li
-                                key={juego.id}
-                                className="text-stone-700"
-                            >
-                                🎲 {juego.titulo}
-                            </li>
-                        ))}
-                    </ul>
+                  <ul className="space-y-1">
+    {jornada.juegosDisponibles.map((juego) => {
+        const enUso = encuentrosActivosPorJuego[juego.id] ?? 0;
+
+        return (
+            <li key={juego.id} className="text-stone-700">
+                🎲 {juego.titulo}
+                {enUso > 0 && (
+                    <span className="text-xs text-stone-500">
+                        {" "}— {enUso} {enUso === 1 ? "encuentro agendado" : "encuentros agendados"}
+                    </span>
+                )}
+            </li>
+        );
+    })}
+</ul>
 
                 </section>
 
@@ -710,13 +750,14 @@ const handleDesinscribirseDeTorneo = async (idEncuentro: string) => {
     </>
 
 )}
-                    {jornada.encuentros.length === 0 ? (
-                        <p className="text-stone-500">
-                            Todavía no hay encuentros.
-                        </p>
-                    ) : (
-                        <ul className="space-y-2">
- {jornada.encuentros.map((encuentro) => {
+                  {encuentrosVisibles.length === 0 ? (
+    <p className="text-stone-500">
+        Todavía no hay encuentros.
+    </p>
+) : (
+    <ul className="space-y-2">
+        {encuentrosVisibles.map((encuentro) => {
+
     const esTorneo = encuentro.tipo === "torneo";
     const juego = encuentro.juego?.[0];
 

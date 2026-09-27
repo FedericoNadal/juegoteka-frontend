@@ -153,36 +153,6 @@ async function handleUpdateProfile(
     }
 }
 
-
-const handleDesinscribirseDeTorneo = async (idEncuentro: string) => {
-    if (!token || !usuario) return;
-
-    try {
-        await cancelarInscripcionEncuentro(
-            idEncuentro,
-            token
-        );
-
-        const jornadaActualizada =
-            await obtenerJornadaPorId(jornada._id);
-
-        onJornadaActualizada(jornadaActualizada);
-    } catch (error) {
-        console.error(
-            "Error al desinscribirse del torneo:",
-            error
-        );
-
-        setError(
-            error instanceof Error
-                ? error.message
-                : "No se pudo cancelar la inscripción"
-        );
-    }
-};
-
-
-
     return (
         <>
 
