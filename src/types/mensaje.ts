@@ -11,6 +11,8 @@ export interface Mensaje {
     tipo: string;
 
     referencia?: string;
+    
+    imagen?: string; // 👈 Campo de imagen opcional
 
     leido: boolean;
 

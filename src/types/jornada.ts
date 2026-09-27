@@ -15,10 +15,17 @@ export interface JugadorInscripto {
     userName: string;
 }
 
+export interface OrganizadorEncuentro {
+    id_usuario: string;
+     userName: string;
+    tipo: "jugador" | "juegoteka";
+}
+
 export interface Encuentro {
     _id: string;
     tipo: "torneo" | "desafío";
     capacidad: number;
+    createdBy: OrganizadorEncuentro[];
     juego: {
         id_juego: string;
         nombre: string;

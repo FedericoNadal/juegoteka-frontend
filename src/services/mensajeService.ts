@@ -88,6 +88,7 @@ export interface CrearMensajeData {
     remitente: string;
     destinatario: string;
     contenido: string;
+    imagen?: string;
 }
 //enviar
 //////////////////////
@@ -110,6 +111,9 @@ export async function enviarMensaje(
     );
 
     const responseData = await response.json();
+
+    // 🔍 LOG 2: Respuesta del Backend tras guardar el mensaje<<---------------------------------------------
+  //console.log("📥 [SERVICIO] Respuesta de creación desde el Backend:", responseData);
 
     console.log(
         "Enviar mensaje - Status:",

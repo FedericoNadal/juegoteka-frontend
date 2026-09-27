@@ -97,7 +97,7 @@ const esJuegotekaPropietaria =
 // un torneo es público para toda la jornada. Filtramos antes de listar
 // para que un jugador no vea desafíos ajenos.
 const encuentrosVisibles = jornada.encuentros.filter((encuentro) => {
-    if (encuentro.tipo !== "desafio" && encuentro.tipo !== "desafío") {
+    if (encuentro.tipo !== "desafío") {
         return true; // torneo: visible para todos
     }
 
@@ -612,7 +612,7 @@ const handleDesinscribirseDeTorneo = async (idEncuentro: string) => {
                 🎲 {juego.titulo}
                 {enUso > 0 && (
                     <span className="text-xs text-stone-500">
-                        {" "}— {enUso} {enUso === 1 ? "encuentro agendado" : "encuentros agendados"}
+                        {" "}— {enUso} {enUso === 1 ? "encuentro agendado" : "encuentros agendados "}
                     </span>
                 )}
             </li>
