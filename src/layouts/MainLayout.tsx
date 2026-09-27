@@ -5,7 +5,6 @@ import BottomNav from "../components/ui/BottomNav";
 import fondo from "../assets/images/background.jpeg";
 import { useState } from "react";
 import AuthOffcanvas from "../components/auth/AuthOffCanvas";
-import { login } from "../services/authService";
 import { useAuth } from "../hooks/useAuth";
 
 /**

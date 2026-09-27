@@ -42,28 +42,13 @@ function BottomNav() {
                🂠 Mazo
             </NavLink>
 
-            <NavLink to="/mapa" className={({ isActive }) =>
+                     
+            <NavLink to="/estudio" className={({ isActive }) =>
                 isActive
                     ? "font-semibold text-amber-700"
                     : "text-gray-600"
             }>
-              🌍  Mapa
-            </NavLink>
-
-            <NavLink to="/libreta" className={({ isActive }) =>
-                isActive
-                    ? "font-semibold text-amber-700"
-                    : "text-gray-600"
-            }>
-                📝  Libreta
-            </NavLink>
-
-            <NavLink to="/perfil" className={({ isActive }) =>
-                isActive
-                    ? "font-semibold text-amber-700"
-                    : "text-gray-600"
-            }>
-               👤 Perfil
+               📚 Estudio
             </NavLink>
 
         </nav>

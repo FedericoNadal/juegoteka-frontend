@@ -1,3 +1,4 @@
+
 import Card from "../ui/Card";
 
 type GameCardProps = {
@@ -6,27 +7,41 @@ type GameCardProps = {
 
     imagen?: string;
 
-    jugadores: string;
+    // Son opcionales porque en "Mis juegos"
+    // no necesitamos mostrar estos datos.
+    jugadores?: string;
 
-    duracion: string;
+    duracion?: string;
+
+    // Acción opcional.
+    // La card no sabe qué hace: simplemente ejecuta la función.
+    actionLabel?: string;
+
+    onAction?: () => void;
 
 };
+
 
 /**
  * GameCard
  *
- * Representa un juego de mesa dentro de la colección
- * del usuario.
+ * Representa un juego de mesa.
  *
- * En esta primera maqueta utiliza una imagen de
- * reemplazo cuando todavía no existen recursos reales.
+ * Puede utilizarse tanto en:
+ *
+ * - catálogo de juegos
+ * - colección "Mis juegos"
+ *
+ * No conoce el backend ni maneja autenticación.
  */
 function GameCard({
 
     titulo,
     imagen,
     jugadores,
-    duracion
+    duracion,
+    actionLabel,
+    onAction
 
 }: GameCardProps) {
 
@@ -42,6 +57,7 @@ function GameCard({
         >
 
             {/* Imagen del juego */}
+
             <div
                 className="
                     h-56
@@ -55,15 +71,16 @@ function GameCard({
             >
 
                 {
-
                     imagen ?
 
                         <img
-
                             src={imagen}
                             alt={titulo}
-                            className="w-full h-full object-cover"
-
+                            className="
+                                w-full
+                                h-full
+                                object-cover
+                            "
                         />
 
                         :
@@ -71,10 +88,10 @@ function GameCard({
                         <span className="text-6xl">
                             🎲
                         </span>
-
                 }
 
             </div>
+
 
             {/* Información principal */}
 
@@ -85,24 +102,80 @@ function GameCard({
                         font-title
                         text-lg
                         text-amber-900
+                        truncate
                     "
+                    title={titulo}
                 >
                     {titulo}
                 </h3>
 
-                <p className="text-sm">
 
-                    👥 {jugadores}
+                {/* Datos del juego.
+                    Solo aparecen cuando fueron proporcionados. */}
 
-                </p>
+                {
+                    (jugadores || duracion) && (
 
-                <p className="text-sm">
+                        <div
+                            className="
+                                flex
+                                justify-between
+                                mt-1
+                                text-xs
+                                text-stone-600
+                            "
+                        >
 
-                    ⏳ {duracion}
+                            {
+                                jugadores && (
+                                    <span>
+                                        👥 {jugadores}
+                                    </span>
+                                )
+                            }
 
-                </p>
+                            {
+                                duracion && (
+                                    <span>
+                                        ⏳ {duracion}
+                                    </span>
+                                )
+                            }
+
+                        </div>
+
+                    )
+                }
 
             </div>
+
+
+            {/* Acción opcional */}
+
+            {
+                actionLabel && onAction && (
+
+                    <button
+                        type="button"
+                        onClick={onAction}
+                        className="
+                            w-full
+                            mt-1
+                            px-3
+                            py-2
+                            text-sm
+                            rounded
+                            bg-amber-800
+                            text-amber-50
+                            hover:bg-amber-900
+                            transition
+                        "
+                    >
+                        {actionLabel}
+                    </button>
+
+                )
+            }
 
         </Card>
 
@@ -111,3 +184,4 @@ function GameCard({
 }
 
 export default GameCard;
+
