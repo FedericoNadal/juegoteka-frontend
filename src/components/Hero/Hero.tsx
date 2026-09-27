@@ -65,9 +65,12 @@ function Hero() {
       </p>
 
       {/* Acción principal disponible para visitantes */}
-      <Button>
-        Explorar juegos
-      </Button>
+     
+   <Button onClick={() => {
+     document.getElementById("catalogo-juegos")?.scrollIntoView({ behavior: "smooth" });
+ }}>
+      Explorar juegos
+  </Button>
 
     </section>
 

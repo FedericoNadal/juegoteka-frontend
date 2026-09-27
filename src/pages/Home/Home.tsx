@@ -36,7 +36,9 @@ function Home() {
                     Juegos
                 </SectionTitle>
 
+            <div id="catalogo-juegos">
                 <GameCatalog />
+           </div>
 
             </Panel>
 
