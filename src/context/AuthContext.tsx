@@ -27,14 +27,12 @@ interface AuthContextType {
     usuario: Usuario | null;
     token: string | null;
     isAuthenticated: boolean;
+    cargandoSesion: boolean; // NUEVO: true mientras se valida el token guardado en localStorage
 
-    login(
-        credentials: LoginCredentials
-    ): Promise<void>;
 
-    actualizarUsuario(
-        usuarioActualizado: Usuario
-    ): void;
+    login(credentials: LoginCredentials): Promise<void>;
+
+    actualizarUsuario(usuarioActualizado: Usuario): void;
 
     logout(): void;
 }
@@ -62,13 +60,13 @@ export function AuthProvider({
 }: AuthProviderProps) {
 
     // Usuario actualmente autenticado.
-    const [usuario, setUsuario] =
-        useState<Usuario | null>(null);
+    const [usuario, setUsuario] =  useState<Usuario | null>(null);
 
     // JWT utilizado para autenticar las peticiones.
-    const [token, setToken] =
-        useState<string | null>(null);
+    const [token, setToken] =  useState<string | null>(null);
 
+    // si hay un token guardado válido o no.
+    const [cargandoSesion, setCargandoSesion] = useState(true);
 
     // ========================================================
     // RESTAURAR SESIÓN
@@ -86,7 +84,8 @@ export function AuthProvider({
                 localStorage.getItem("token");
 
             if (!tokenGuardado) {
-                return;
+                 setCargandoSesion(false); // sin token, no hay nada que esperar
+                 return;
             }
 
             try {
@@ -108,6 +107,9 @@ export function AuthProvider({
 
                 setToken(null);
                 setUsuario(null);
+        
+            } finally {
+                setCargandoSesion(false); // NUEVO: pase lo que pase, ya se resolvió
             }
         }
 
@@ -177,9 +179,8 @@ export function AuthProvider({
 
                 // Si existe usuario, consideramos
                 // que existe una sesión activa.
-                isAuthenticated:
-                    usuario !== null,
-
+                isAuthenticated: usuario !== null,
+                cargandoSesion,
                 login,
                 actualizarUsuario,
                 logout

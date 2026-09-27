@@ -15,101 +15,109 @@ import { confirmarParticipacion } from "../../services/encuentroService";
 import type { Mensaje } from "../../types/mensaje";
 
 function Mazo() {
-const { usuario, token } = useAuth();
-const navigate = useNavigate();
+    // NUEVO: isAuthenticated y cargandoSesion, para el guard de abajo
+    const { usuario, token, isAuthenticated, cargandoSesion } = useAuth();
+    const navigate = useNavigate();
 
-const [mensajes, setMensajes] = useState<Mensaje[]>([]);
-const [indiceActual, setIndiceActual] = useState(0);
+    const [mensajes, setMensajes] = useState<Mensaje[]>([]);
+    const [indiceActual, setIndiceActual] = useState(0);
 
-useEffect(() => {
-async function cargarMensajes() {
-if (!usuario || !token) return;
+    // NUEVO: guard de sesión
+    useEffect(() => {
+        if (!cargandoSesion && !isAuthenticated) {
+            navigate("/", { replace: true });
+        }
+    }, [cargandoSesion, isAuthenticated, navigate]);
 
-try {
-const respuesta = await obtenerMensajesRecibidos(
-usuario.id,
-token
+    useEffect(() => {
+        async function cargarMensajes() {
+            if (!usuario || !token) return;
+
+            try {
+                const respuesta = await obtenerMensajesRecibidos(
+                    usuario.id,
+                    token
                 );
 
-console.log(
-"Mazo - Mensajes recibidos:",
-respuesta
+                console.log(
+                    "Mazo - Mensajes recibidos:",
+                    respuesta
                 );
 
-setMensajes(respuesta.mensajes);
+                setMensajes(respuesta.mensajes);
             } catch (error) {
-console.error(
-"No se pudieron cargar los mensajes:",
-error
+                console.error(
+                    "No se pudieron cargar los mensajes:",
+                    error
                 );
             }
         }
 
-cargarMensajes();
+        cargarMensajes();
     }, [usuario, token]);
 
-function siguienteMensaje() {
-if (mensajes.length === 0) return;
+    function siguienteMensaje() {
+        if (mensajes.length === 0) return;
 
-setIndiceActual(
+        setIndiceActual(
             (indiceActual + 1) % mensajes.length
         );
     }
 
-function quitarMensajeDeLista(idMensaje: string) {
-const nuevosMensajes = mensajes.filter(
+    function quitarMensajeDeLista(idMensaje: string) {
+        const nuevosMensajes = mensajes.filter(
             (mensaje) => mensaje._id !== idMensaje
         );
 
-setMensajes(nuevosMensajes);
+        setMensajes(nuevosMensajes);
 
-if (nuevosMensajes.length === 0) {
-setIndiceActual(0);
-return;
+        if (nuevosMensajes.length === 0) {
+            setIndiceActual(0);
+            return;
         }
 
-setIndiceActual(
-Math.min(
-indiceActual,
-nuevosMensajes.length - 1
+        setIndiceActual(
+            Math.min(
+                indiceActual,
+                nuevosMensajes.length - 1
             )
         );
     }
 
-async function eliminarMensajeActual(idMensaje: string) {
-if (!token) return;
+    async function eliminarMensajeActual(idMensaje: string) {
+        if (!token) return;
 
-try {
-await eliminarMensaje(idMensaje, token);
-quitarMensajeDeLista(idMensaje);
+        try {
+            await eliminarMensaje(idMensaje, token);
+            quitarMensajeDeLista(idMensaje);
 
         } catch (error) {
-console.error(
-"No se pudo eliminar el mensaje:",
-error
+            console.error(
+                "No se pudo eliminar el mensaje:",
+                error
             );
         }
     }
 
-async function confirmarDesafioActual(idEncuentro: string) {
-if (!token || !usuario) return;
+    async function confirmarDesafioActual(idEncuentro: string) {
+        if (!token || !usuario) return;
 
-const mensajeActual = mensajes[indiceActual];
-if (!mensajeActual) return;
+        const mensajeActual = mensajes[indiceActual];
+        if (!mensajeActual) return;
 
-try {
-await confirmarParticipacion(
+        try {
+            await confirmarParticipacion(
                 idEncuentro,
-usuario.id,
-token
+                usuario.id,
+                token
             );
 
-await eliminarMensajeActual(mensajeActual._id);
+            await eliminarMensajeActual(mensajeActual._id);
 
         } catch (error) {
-console.error(
-"No se pudo confirmar la participación:",
-error
+            console.error(
+                "No se pudo confirmar la participación:",
+                error
             );
         }
     }
@@ -119,44 +127,48 @@ error
      * que el editor lo tenga preseleccionado como destinatario
      * de la respuesta.
      */
-function responderMensaje(idRemitente: string) {
-navigate("/estudio", {
-state: { destinatarioId: idRemitente }
+    function responderMensaje(idRemitente: string) {
+        navigate("/estudio", {
+            state: { destinatarioId: idRemitente }
         });
     }
 
-return (
-<main>
-<Container>
-<section
-className="
+    // NUEVO: corta el render antes de mostrar nada sin sesión
+    if (cargandoSesion || !isAuthenticated) {
+        return null;
+    }
+
+    return (
+        <main>
+            <Container>
+                <section
+                    className="
                         flex
                         flex-col
                         items-center
                         gap-8
                         py-8
                     "
->
-{mensajes.length > 0 && (
-<div className="flex justify-center">
-<MessageCard
-mensaje={mensajes[indiceActual]}
-onDelete={eliminarMensajeActual}
-onConfirm={confirmarDesafioActual}
-onResponder={responderMensaje}
-/>
-</div>
+                >
+                    {mensajes.length > 0 && (
+                        <div className="flex justify-center">
+                            <MessageCard
+                                mensaje={mensajes[indiceActual]}
+                                onDelete={eliminarMensajeActual}
+                                onConfirm={confirmarDesafioActual}
+                                onResponder={responderMensaje}
+                            />
+                        </div>
                     )}
 
-<div className="flex justify-end pl-50">
-<Deck
-onDraw={siguienteMensaje}
-
-/>
-</div>
-</section>
-</Container>
-</main>
+                    <div className="flex justify-end pl-50">
+                        <Deck
+                            onDraw={siguienteMensaje}
+                        />
+                    </div>
+                </section>
+            </Container>
+        </main>
     );
 }
 

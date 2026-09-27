@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import Container from "../../components/ui/Container";
 
@@ -24,7 +24,8 @@ import type { Jornada } from "../../types/jornada";
 
 function Estudio() {
 
-    const { usuario, token } = useAuth();
+    // NUEVO: isAuthenticated y cargandoSesion, para el guard de abajo
+    const { usuario, token, isAuthenticated, cargandoSesion } = useAuth();
 
     const [juegos, setJuegos] =
         useState<JuegosUsuario[]>([]);
@@ -39,12 +40,21 @@ function Estudio() {
         useState<Jornada | null>(null);
 
     const location = useLocation();
+    const navigate = useNavigate(); // NUEVO
 
     const destinatarioIdInicial =
         location.state?.destinatarioId;
 
     const [mostrarNuevaJornada, setMostrarNuevaJornada] =
     useState(false);
+
+    // NUEVO: guard de sesión. Corre antes que cargarDatos en cada render,
+    // pero como es un hook más, no altera el orden de los ya existentes.
+    useEffect(() => {
+        if (!cargandoSesion && !isAuthenticated) {
+            navigate("/", { replace: true });
+        }
+    }, [cargandoSesion, isAuthenticated, navigate]);
 
     useEffect(() => {
 
@@ -89,7 +99,9 @@ function Estudio() {
     }, [token]);
 
 
-    if (!usuario) {
+    // MODIFICADO: antes era "if (!usuario) return null" (mudo).
+    // Ahora cubre también el estado de carga y dispara el redirect de arriba.
+    if (cargandoSesion || !isAuthenticated || !usuario) {
         return null;
     }
 
