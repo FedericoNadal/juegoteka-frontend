@@ -74,8 +74,8 @@ Conectar la pantalla Perfil con la API.
 
 - [x] Obtener usuario autenticado.
 - [x] Mostrar datos reales.
-- [ ] Editar perfil.
-- [ ] Actualizar información.
+- [x] Editar perfil.
+- [x] Actualizar información.
 - [ ] Mostrar estadísticas.
 
 Entrega:
@@ -114,8 +114,8 @@ Conectar React Leaflet con la API.
 
 ### Tareas
 
-- [ ] Obtener juegotekas.
-- [ ] Mostrar marcadores.
+- [X] Obtener juegotekas.
+- [X] Mostrar marcadores.
 - [ ] Popup con información.
 - [ ] Navegar al perfil.
 
@@ -134,10 +134,10 @@ Implementar el sistema de mensajes.
 
 ### Tareas
 
-- [ ] Obtener mensajes.
-- [ ] Mostrar cartas.
+- [x] Obtener mensajes.
+- [x] Mostrar cartas.
 - [ ] Marcar como leído.
-- [ ] Navegar desde mensajes.
+- [x] Navegar desde mensajes.
 
 Entrega:
 
@@ -155,10 +155,10 @@ Implementar la interacción entre jugadores.
 ### Tareas
 
 - [ ] Mostrar contactos.
-- [ ] Enviar desafío.
-- [ ] Recibir desafío.
-- [ ] Aceptar desafío.
-- [ ] Rechazar desafío.
+- [x] Enviar desafío.
+- [x] Recibir desafío.
+- [x] Aceptar desafío.
+- [x] Rechazar desafío.
 
 Entrega:
 
@@ -175,11 +175,11 @@ Implementar las funcionalidades exclusivas de las Juegotekas.
 
 ### Tareas
 
-- [ ] Crear jornada.
-- [ ] Editar jornada.
-- [ ] Eliminar jornada.
-- [ ] Gestionar participantes.
-- [ ] Consultar encuentros.
+- [x] Crear jornada.
+- [x] Editar jornada.
+- [x] Eliminar jornada.
+- [x] Gestionar participantes.
+- [x] Consultar encuentros.
 
 Entrega:
 
