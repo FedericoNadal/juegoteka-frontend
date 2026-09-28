@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect,useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import Container from "../../components/ui/Container";
@@ -11,6 +11,7 @@ import MessageEditor from "../../components/Perfil/MessageEditor";
 import JornadaOffCanvas from "../../components/Mapa/JornadaOffCanvas";
 import JornadaForm from "../../components/Perfil/JornadaForm";
 import MapPanel from "../../components/Perfil/MapPanel";
+import MazoPanel from "../../components/Mazo/MazoPanel";
 
 import { useAuth } from "../../hooks/useAuth";
 import { obtenerMisJuegos } from "../../services/usuarioService";
@@ -47,8 +48,14 @@ function Estudio() {
     const location = useLocation();
     const navigate = useNavigate(); // NUEVO
 
-    const destinatarioIdInicial =
-        location.state?.destinatarioId;
+    const [destinatarioId, setDestinatarioId] =
+    useState<string | undefined>(location.state?.destinatarioId);
+const editorRef = useRef<HTMLDivElement>(null);
+
+function responderMensaje(idRemitente: string) {
+    setDestinatarioId(idRemitente);
+    editorRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
 
     const [mostrarNuevaJornada, setMostrarNuevaJornada] =
     useState(false);
@@ -126,24 +133,18 @@ function Estudio() {
                     "
                 >
 
-                    {/*
-                    <div className="flex justify-center">
+                 
+                    <MazoPanel onResponder={responderMensaje} />
 
-                        <PlayerCard
-                            usuario={usuario}
+                    <div ref={editorRef}>
+                        <MessageEditor
+                            key={destinatarioId}
+                            destinatarioIdInicial={destinatarioId}
                         />
-
                     </div>
-                    */}
 
-
-                    <MessageEditor
-                        destinatarioIdInicial={
-                            destinatarioIdInicial
-                        }
-                    />
-
-<MapPanel />
+               
+            <MapPanel />
 
                  <MyJornadasPanel
                       jornadas={jornadas}

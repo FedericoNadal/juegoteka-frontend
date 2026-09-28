@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 
 import Header from "../components/ui/Header";
-import BottomNav from "../components/ui/BottomNav";
+//import BottomNav from "../components/ui/BottomNav";
 import fondo from "../assets/images/background.jpeg";
 import { useState } from "react";
 import AuthOffcanvas from "../components/auth/AuthOffCanvas";
@@ -79,8 +79,7 @@ export default function MainLayout() {
 
             </main>
 
-            {/* Navegación principal */}
-            <BottomNav />
+          
 
         </div>
 

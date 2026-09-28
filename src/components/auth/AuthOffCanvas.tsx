@@ -5,10 +5,11 @@ import RegisterForm from "./RegisterForm";
 
 import PlayerCard from "../Perfil/PlayerCard";
 import ChangePasswordForm from "../auth/ChangePasswordForm";
-import type { CambiarPasswordData } from "../Perfil/ChangePasswordForm";
+import type { CambiarPasswordData } from "../auth/ChangePasswordForm";
 
 import { useAuth } from "../../hooks/useAuth";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import Button from "../ui/Button";
 
@@ -63,7 +64,22 @@ export default function AuthOffcanvas({
     logout
 } = useAuth();
 
-    const [view, setView] =
+const navigate = useNavigate();
+
+// Redirige a Estudio solo cuando el usuario ACABA de loguearse con el
+// off-canvas abierto. Una recarga con sesión restaurada no dispara esto,
+// porque ahí el off-canvas está cerrado.
+const estabaAutenticado = useRef(isAuthenticated);
+
+useEffect(() => {
+    if (isAuthenticated && !estabaAutenticado.current && isOpen) {
+        onClose();
+        navigate("/estudio");
+    }
+    estabaAutenticado.current = isAuthenticated;
+}, [isAuthenticated, isOpen, onClose, navigate]);
+
+const [view, setView] =
     useState<"login" | "register">("login");
 
 const [registerLoading, setRegisterLoading] =
@@ -313,6 +329,18 @@ async function handleChangePassword(
         ) : (
 
             <>
+
+
+                <Button
+                    onClick={() => {
+                        onClose();
+                        navigate("/estudio");
+                    }}
+                >
+                    📚 Ir a mi estudio
+                </Button>
+
+                
                 <PlayerCard
                     usuario={usuario}
                 />

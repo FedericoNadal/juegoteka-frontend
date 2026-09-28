@@ -1,43 +1,54 @@
 interface DeckProps {
     onDraw: () => void;
+    cantidad: number;
 }
 
 /**
  * Deck
  *
- * Representa la pila de cartas.
+ * Cabecera del mazo. Mismo formato que los desplegables de Estudio
+ * (ver MapPanel) y muestra cuántas cartas hay disponibles.
  *
- * No conoce los mensajes ni administra su estado.
- * Al hacer click solicita a Mazo que extraiga la siguiente carta.
+ * No conoce los mensajes ni administra su estado: al hacer click
+ * solicita a MazoPanel que extraiga la siguiente carta.
  */
-function Deck({ onDraw }: DeckProps) {
+function Deck({ onDraw, cantidad }: DeckProps) {
+    const hayCartas = cantidad > 0;
+
     return (
         <section
             className="
-                flex
-                flex-col
-                items-center
-                gap-8
+                rounded-xl
+                bg-amber-50
+                shadow
+                overflow-hidden
             "
         >
             <button
                 type="button"
                 onClick={onDraw}
+                disabled={!hayCartas}
                 className="
-                    w-20
-                    h-28
-                    rounded-xl
-                    border-2
-                    border-amber-900
-                    bg-amber-900
-                    text-white
                     flex
+                    w-full
                     items-center
-                    justify-center
-                    cursor-pointer
+                    justify-between
+                    p-5
+                    text-left
+                    font-title
+                    text-xl
+                    transition-colors
+                    hover:bg-amber-100/50
+                    disabled:cursor-default
+                    disabled:opacity-60
+                    disabled:hover:bg-transparent
                 "
             >
-                MAZO
+                <span>Robar una carta</span>
+
+                <span className="rounded-full bg-amber-900 px-3 py-1 font-sans text-sm text-amber-50">
+                    {cantidad} {cantidad === 1 ? "carta" : "cartas"}
+                </span>
             </button>
         </section>
     );
