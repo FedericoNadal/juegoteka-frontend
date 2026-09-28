@@ -4,6 +4,8 @@ import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 
 import PlayerCard from "../Perfil/PlayerCard";
+import ChangePasswordForm from "../auth/ChangePasswordForm";
+import type { CambiarPasswordData } from "../Perfil/ChangePasswordForm";
 
 import { useAuth } from "../../hooks/useAuth";
 import { useState } from "react";
@@ -21,7 +23,8 @@ import type {
 import EditProfileForm from "../Perfil/EditProfileForm";
 
 import {
-    updateUsuario
+    updateUsuario,
+    cambiarPassword
 } from "../../services/usuarioService";
 
 
@@ -76,6 +79,15 @@ const [profileLoading, setProfileLoading] =
     useState(false);
 
 const [profileError, setProfileError] =
+    useState<string | null>(null);
+
+const [changingPassword, setChangingPassword] =
+    useState(false);
+
+const [passwordLoading, setPasswordLoading] =
+    useState(false);
+
+const [passwordError, setPasswordError] =
     useState<string | null>(null);
 
 async function handleRegister(
@@ -153,6 +165,44 @@ async function handleUpdateProfile(
     }
 }
 
+async function handleChangePassword(
+    data: CambiarPasswordData
+) {
+
+    if (!token) {
+        return;
+    }
+
+    setPasswordLoading(true);
+    setPasswordError(null);
+
+    try {
+
+        await cambiarPassword(data, token);
+
+        setChangingPassword(false);
+
+        alert("Contraseña actualizada correctamente.");
+
+    } catch (error) {
+
+        console.error(
+            "Error al cambiar contraseña:",
+            error
+        );
+
+        setPasswordError(
+            error instanceof Error
+                ? error.message
+                : "No se pudo cambiar la contraseña."
+        );
+
+    } finally {
+
+        setPasswordLoading(false);
+
+    }
+}
     return (
         <>
 
@@ -241,6 +291,25 @@ async function handleUpdateProfile(
 
             </div>
 
+             ) : changingPassword ? (
+
+
+            <div className="w-full">
+                <h2 className="mb-6 font-title text-2xl text-amber-900">
+                    Cambiar contraseña
+                </h2>
+
+                <ChangePasswordForm
+                    onSave={handleChangePassword}
+                   onCancel={() => {
+                        setPasswordError(null);
+                        setChangingPassword(false);
+                    }}
+                    loading={passwordLoading}
+                    error={passwordError}
+                />
+            </div>
+
         ) : (
 
             <>
@@ -256,6 +325,16 @@ async function handleUpdateProfile(
                 >
                     Editar perfil
                 </Button>
+
+                <Button
+                    onClick={() => {
+                        setPasswordError(null);
+                        setChangingPassword(true);
+                    }}
+                >
+                    Cambiar contraseña
+                </Button>
+
 
                 <Button
                     onClick={() => {

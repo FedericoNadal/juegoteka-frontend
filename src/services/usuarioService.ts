@@ -179,3 +179,36 @@ export async function updateUsuario(
 
     return response.json();
 }
+/**
+ * Cambia la contraseña del usuario actualmente autenticado.
+ * El backend valida que passVieja sea correcta y que passNueva
+ * no sea igual a la anterior.
+ */
+export async function cambiarPassword(
+data: { passVieja: string; passNueva: string },
+token: string
+): Promise<void> {
+
+const response = await fetch(
+`${API_URL}/usuarios/cambiarPassword`,
+        {
+method: "PUT",
+headers: getHeaders(token),
+body: JSON.stringify(data)
+        }
+    );
+
+const responseData = await response.json();
+
+    console.log(
+"Cambiar contraseña - Status:",
+        response.status
+    );
+
+if (!response.ok) {
+throw new Error(
+            responseData.message ||
+"No se pudo cambiar la contraseña"
+        );
+    }
+}
