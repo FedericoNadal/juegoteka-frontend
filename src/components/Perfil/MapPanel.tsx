@@ -2,7 +2,12 @@ import { useState } from "react";
 
 import MapView from "../Mapa/MapView";
 
-function MapPanel() {
+
+interface MapPanelProps {
+    onVerJornadas: (juegotekaId: string) => void;
+}
+
+function MapPanel({ onVerJornadas }: MapPanelProps) {
 
     const [abierto, setAbierto] = useState(false);
 
@@ -42,7 +47,7 @@ function MapPanel() {
 
                 <div className="px-5 pb-5">
 
-                    <MapView />
+             <MapView onVerJornadas={onVerJornadas} />
 
                     <p
                         className="

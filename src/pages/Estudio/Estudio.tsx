@@ -35,8 +35,7 @@ function Estudio() {
         useState<Jornada[]>([]);
 
 
-        // @ts-expect-error -- pendiente de uso: distinguir jornadas propias vs.
-// inscriptas en MyJornadasPanel (ver backlog "revisar coherencia flujo
+// @ts-expect-error -- pendiente de uso: distinguir jornadas propias vs.inscriptas en MyJornadasPanel (ver backlog "revisar coherencia flujo
 // Jornada → Encuentro"). Se mantiene cargado para no repetir el fetch
 // cuando se implemente.
     const [jornadasInscripto, setJornadasInscripto] =
@@ -45,12 +44,25 @@ function Estudio() {
     const [jornadaSeleccionada, setJornadaSeleccionada] =
         useState<Jornada | null>(null);
 
+    const [filtroJuegotekaId, setFiltroJuegotekaId] =
+        useState<string | null>(null);
+
+    const jornadasPanelRef = useRef<HTMLDivElement>(null);
+
+    function handleVerJornadasDeJuegoteka(juegotekaId: string) {
+        setFiltroJuegotekaId(juegotekaId);
+        jornadasPanelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
     const location = useLocation();
     const navigate = useNavigate(); // NUEVO
 
     const [destinatarioId, setDestinatarioId] =
     useState<string | undefined>(location.state?.destinatarioId);
 const editorRef = useRef<HTMLDivElement>(null);
+
+
+
 
 function responderMensaje(idRemitente: string) {
     setDestinatarioId(idRemitente);
@@ -144,16 +156,19 @@ function responderMensaje(idRemitente: string) {
                     </div>
 
                
-            <MapPanel />
+            <MapPanel onVerJornadas={handleVerJornadasDeJuegoteka} />
 
-                 <MyJornadasPanel
-                      jornadas={jornadas}
+                <div ref={jornadasPanelRef}>
+                    <MyJornadasPanel
+                        jornadas={jornadas}
                         usuario={usuario}
-                    onSeleccionarJornada={setJornadaSeleccionada}
-                    onNuevaJornada={() => setMostrarNuevaJornada(true)}
+                        onSeleccionarJornada={setJornadaSeleccionada}
+                        onNuevaJornada={() => setMostrarNuevaJornada(true)}
+                        filtroJuegotekaId={filtroJuegotekaId}
+                        onLimpiarFiltro={() => setFiltroJuegotekaId(null)}
+                        forzarAbierto={filtroJuegotekaId !== null}
                     />
-
-
+                </div>
                     <MyGamesPanel
                         juegos={juegos}
                     />
@@ -197,16 +212,16 @@ function responderMensaje(idRemitente: string) {
                     
                 />
                 {mostrarNuevaJornada && (
-    <JornadaForm
-    onClose={() => setMostrarNuevaJornada(false)}
-    onCreada={(jornada) => {
-        setJornadas((actuales) => [
-            ...actuales,
-            jornada
-        ]);
-    }}
-/>
-)}
+                    <JornadaForm
+                    onClose={() => setMostrarNuevaJornada(false)}
+                    onCreada={(jornada) => {
+                        setJornadas((actuales) => [
+                            ...actuales,
+                            jornada
+                        ]);
+                    }}
+                />
+                )}
 
             </Container>
 
