@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import GameCard from "../ui/GameCard";
 
@@ -28,6 +29,7 @@ function GameCatalog() {
 
     const [error, setError] = useState<string | null>(null);
 
+    const navigate = useNavigate();
 
     useEffect(() => {
 
@@ -187,7 +189,18 @@ function GameCatalog() {
                                 jugadores={`${juego.cantJugadoresMin}-${juego.cantJugadoresMax}`}
                                 duracion={`${juego.tiempoEstimado} min`}
                             />
-
+                            <button
+                                type="button"
+                                onClick={() => navigate(`/juegos/${juego._id}`)}
+                                className="
+                                 w-full mt-2 px-3 py-2
+                                 text-sm border border-amber-800
+                                 text-amber-900 rounded
+                                 hover:bg-amber-100
+                                 "
+                            >
+                                REGLAMENTO
+                            </button>
                             {isAuthenticated && (
                                 <button
                                     type="button"

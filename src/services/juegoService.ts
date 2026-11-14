@@ -99,3 +99,30 @@ export async function eliminarDeMisJuegos(
 
     return data;
 }
+
+/**
+ * Obtiene los datos completos de un juego.
+ *
+ * El endpoint es público y permite consultar
+ * el reglamento y demás información por ID.
+ */
+export async function obtenerJuegoPorId(
+    id: string
+): Promise<Juego> {
+
+    const response = await fetch(
+        `${API_URL}/juegos/${id}`,
+        {
+            method: "GET",
+            headers: getHeaders()
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error(
+            "No se pudo obtener la información del juego"
+        );
+    }
+
+    return response.json();
+}
