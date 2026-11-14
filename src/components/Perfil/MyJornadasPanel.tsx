@@ -103,7 +103,7 @@ function MyJornadasPanel({
                     rounded-xl border border-stone-300
                     p-4 shadow-sm
                     transition hover:bg-stone-50
-                    ${estaInscripto ? "bg-amber-50 border-amber-300" : "bg-white"}
+                    ${estaInscripto ? "bg-amber-100 border-amber-300" : "bg-white"}
                 `}
             >
                 <div className="min-w-0">

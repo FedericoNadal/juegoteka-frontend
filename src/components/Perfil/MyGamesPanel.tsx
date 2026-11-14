@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Button from "../ui/Button";
 
 import GameCard from "../ui/GameCard";
 
@@ -23,6 +25,14 @@ function MyGamesPanel({
 }: MyGamesProps) {
 
     const { token } = useAuth();
+
+    const navigate = useNavigate();
+
+    const [abierto, setAbierto] = useState(false);
+
+function explorarJuegos() {
+    navigate("/", { state: { scrollTo: "catalogo-juegos" } });
+}
 
 
     // Estado local de los juegos mostrados.
@@ -81,44 +91,49 @@ function MyGamesPanel({
     }
 
 
-    return (
+return (
+     <section className="rounded-xl bg-amber-50 shadow overflow-hidden">
 
-        <section>
+         <button
+               type="button"
+               onClick={() => setAbierto(!abierto)}
+               className="flex w-full items-center justify-between p-5 text-left font-title text-xl"
+           >
+               <span>Mis juegos</span>
+               <span>{abierto ? "⌃" : "⌄"}</span>
+           </button>
 
-            <div
-                className="
-                    flex
-                    gap-4
-                    overflow-x-auto
-                    pb-2
-                "
-            >
+           {abierto && (
+           <div className="px-5 pb-5 space-y-4">
+               <Button onClick={explorarJuegos}>
+                   Explorar juegos
+               </Button>
 
-                {misJuegos.map((juego) => (
 
-                    <GameCard
-
-                        key={juego.id}
-
-                        titulo={juego.titulo}
-
-                        imagen={juego.imagen}
-
-                        actionLabel="abandonar"
-
-                        onAction={() =>
-                            handleEliminar(juego.id)
-                        }
-
-                    />
-
-                ))}
-
-            </div>
-
-        </section>
-
-    );
+          {misJuegos.length === 0 ? (
+                <p className="text-sm leading-relaxed text-stone-700">
+                    Todavía no tenés juegos. Explorá el catálogo y sumá
+                    los que quieras con el botón APRENDER. Si sos una
+                    juegoteka, necesitás al menos uno para poder crear
+                    jornadas.
+                </p>
+            ) : (
+                <div className="flex gap-4 overflow-x-auto pb-2">
+                    {misJuegos.map((juego) => (
+                        <GameCard
+                            key={juego.id}
+                            titulo={juego.titulo}
+                            imagen={juego.imagen}
+                            actionLabel="abandonar"
+                            onAction={() => handleEliminar(juego.id)}
+                        />
+                    ))}
+                </div>
+            )}
+        </div>
+        )}
+    </section>
+);
 
 }
 

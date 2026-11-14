@@ -1,29 +1,14 @@
+
 interface DeckProps {
     onDraw: () => void;
     cantidad: number;
 }
 
-/**
- * Deck
- *
- * Cabecera del mazo. Mismo formato que los desplegables de Estudio
- * (ver MapPanel) y muestra cuántas cartas hay disponibles.
- *
- * No conoce los mensajes ni administra su estado: al hacer click
- * solicita a MazoPanel que extraiga la siguiente carta.
- */
 function Deck({ onDraw, cantidad }: DeckProps) {
-    const hayCartas = cantidad > 0;
+    const hayCartas = cantidad > 1;
 
     return (
-        <section
-            className="
-                rounded-xl
-                bg-amber-50
-                shadow
-                overflow-hidden
-            "
-        >
+        <section className="rounded-xl bg-amber-50 shadow overflow-hidden">
             <button
                 type="button"
                 onClick={onDraw}
@@ -37,8 +22,17 @@ function Deck({ onDraw, cantidad }: DeckProps) {
                     text-left
                     font-title
                     text-xl
+
+                    /* Estados normales y Hover */
                     transition-colors
+                    duration-200
                     hover:bg-amber-100/50
+
+                    /* EL PARPADEO: feedback táctil instantáneo al presionar */
+                    active:bg-amber-200
+                    active:duration-0
+
+                    /* Deshabilitado */
                     disabled:cursor-default
                     disabled:opacity-60
                     disabled:hover:bg-transparent

@@ -35,9 +35,6 @@ function Estudio() {
         useState<Jornada[]>([]);
 
 
-// @ts-expect-error -- pendiente de uso: distinguir jornadas propias vs.inscriptas en MyJornadasPanel (ver backlog "revisar coherencia flujo
-// Jornada → Encuentro"). Se mantiene cargado para no repetir el fetch
-// cuando se implemente.
     const [jornadasInscripto, setJornadasInscripto] =
         useState<Jornada[]>([]);
 
@@ -167,6 +164,7 @@ function responderMensaje(idRemitente: string) {
                         filtroJuegotekaId={filtroJuegotekaId}
                         onLimpiarFiltro={() => setFiltroJuegotekaId(null)}
                         forzarAbierto={filtroJuegotekaId !== null}
+                        idsInscripto={jornadasInscripto.map((j) => j._id)}
                     />
                 </div>
                     <MyGamesPanel
