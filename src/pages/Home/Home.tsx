@@ -4,7 +4,13 @@ import SectionTitle from "../../components/ui/SectionTitle";
 
 import GameCatalog from "../../components/Juegos/GameCatalog";
 
+import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import Button from "../../components/ui/Button";
+
 function Home() {
+    const { isAuthenticated } = useAuth();
+    const navigate = useNavigate();
 
     return (
 
@@ -36,12 +42,18 @@ function Home() {
                     Juegos
                 </SectionTitle>
 
-            <div id="catalogo-juegos">
-                <GameCatalog />
-           </div>
+                <div id="catalogo-juegos">
+                    <GameCatalog />
+                </div>
 
             </Panel>
-
+            {isAuthenticated && (
+                <div className="mt-6 flex justify-center">
+                    <Button onClick={() => navigate("/estudio")}>
+                        📚 Volver a mi estudio
+                    </Button>
+                </div>
+            )}
         </main>
 
     );

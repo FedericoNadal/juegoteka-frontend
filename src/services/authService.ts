@@ -39,12 +39,17 @@ export async function login(
         "OK:",
         response.ok
     );
+if (!response.ok) {
+    const data = await response.json();
 
-    if (!response.ok) {
-        throw new Error(
-            "Error al iniciar sesión"
-        );
+    if (response.status === 401) {
+        throw new Error("Usuario o contraseña incorrectos");
     }
+
+    throw new Error(
+        data.message || "No se pudo iniciar sesión"
+    );
+}
 
     return response.json();
 }

@@ -21,12 +21,32 @@ import { useAuth } from "../hooks/useAuth";
  * visible la navegación.
  */
 export default function MainLayout() {
+    const { login } = useAuth();
 
     const [isAuthDrawerOpen, setIsAuthDrawerOpen] = useState(false);
-    
-    const {
-    login
-} = useAuth();
+    const [loginError, setLoginError] = useState<string | null>(null);
+    const [loginLoading, setLoginLoading] = useState(false);
+
+    async function handleLogin(credentials: {
+        userName: string;
+        pass: string;
+    }) {
+        setLoginLoading(true);
+        setLoginError(null);
+
+        try {
+            await login(credentials);
+        } catch (error) {
+            setLoginError(
+                error instanceof Error
+                    ? error.message
+                    : "No se pudo iniciar sesión"
+            );
+        } finally {
+            setLoginLoading(false);
+        }
+    }
+
 
     return (
 
@@ -53,7 +73,9 @@ export default function MainLayout() {
             <AuthOffcanvas
                 isOpen={isAuthDrawerOpen}
                 onClose={() => setIsAuthDrawerOpen(false)}
-                onLogin={login}
+                onLogin={handleLogin}
+                error={loginError}
+                isLoading={loginLoading}
             />
             {/*
                 Área de contenido.
@@ -79,7 +101,7 @@ export default function MainLayout() {
 
             </main>
 
-          
+
 
         </div>
 

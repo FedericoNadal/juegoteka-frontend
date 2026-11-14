@@ -46,7 +46,7 @@ interface AuthOffcanvasProps {
         pass: string;
     }) => Promise<void>;
 
-  }
+}
 
 export default function AuthOffcanvas({
     isOpen,
@@ -54,171 +54,171 @@ export default function AuthOffcanvas({
     error = null,
     onClose,
     onLogin,
-    }: AuthOffcanvasProps) {
+}: AuthOffcanvasProps) {
 
-  const {
-    usuario,
-    token,
-    isAuthenticated,
-    actualizarUsuario,
-    logout
-} = useAuth();
+    const {
+        usuario,
+        token,
+        isAuthenticated,
+        actualizarUsuario,
+        logout
+    } = useAuth();
 
-const navigate = useNavigate();
+    const navigate = useNavigate();
 
-// Redirige a Estudio solo cuando el usuario ACABA de loguearse con el
-// off-canvas abierto. Una recarga con sesión restaurada no dispara esto,
-// porque ahí el off-canvas está cerrado.
-const estabaAutenticado = useRef(isAuthenticated);
+    // Redirige a Estudio solo cuando el usuario ACABA de loguearse con el
+    // off-canvas abierto. Una recarga con sesión restaurada no dispara esto,
+    // porque ahí el off-canvas está cerrado.
+    const estabaAutenticado = useRef(isAuthenticated);
 
-useEffect(() => {
-    if (isAuthenticated && !estabaAutenticado.current && isOpen) {
-        onClose();
-        navigate("/estudio");
-    }
-    estabaAutenticado.current = isAuthenticated;
-}, [isAuthenticated, isOpen, onClose, navigate]);
+    useEffect(() => {
+        if (isAuthenticated && !estabaAutenticado.current && isOpen) {
+            onClose();
+            navigate("/estudio");
+        }
+        estabaAutenticado.current = isAuthenticated;
+    }, [isAuthenticated, isOpen, onClose, navigate]);
 
-const [view, setView] =
-    useState<"login" | "register">("login");
+    const [view, setView] =
+        useState<"login" | "register">("login");
 
-const [registerLoading, setRegisterLoading] =
-    useState(false);
+    const [registerLoading, setRegisterLoading] =
+        useState(false);
 
-const [registerError, setRegisterError] =
-    useState<string | null>(null);
+    const [registerError, setRegisterError] =
+        useState<string | null>(null);
 
-const [editingProfile, setEditingProfile] =
-    useState(false);
+    const [editingProfile, setEditingProfile] =
+        useState(false);
 
-const [profileLoading, setProfileLoading] =
-    useState(false);
+    const [profileLoading, setProfileLoading] =
+        useState(false);
 
-const [profileError, setProfileError] =
-    useState<string | null>(null);
+    const [profileError, setProfileError] =
+        useState<string | null>(null);
 
-const [changingPassword, setChangingPassword] =
-    useState(false);
+    const [changingPassword, setChangingPassword] =
+        useState(false);
 
-const [passwordLoading, setPasswordLoading] =
-    useState(false);
+    const [passwordLoading, setPasswordLoading] =
+        useState(false);
 
-const [passwordError, setPasswordError] =
-    useState<string | null>(null);
+    const [passwordError, setPasswordError] =
+        useState<string | null>(null);
 
-async function handleRegister(
-    data: RegisterData
-) {
+    async function handleRegister(
+        data: RegisterData
+    ) {
 
-    setRegisterLoading(true);
-    setRegisterError(null);
+        setRegisterLoading(true);
+        setRegisterError(null);
 
-    try {
+        try {
 
-        await register(data);
+            await register(data);
 
-        // El registro fue exitoso.
-        // Volvemos al login para que
-        // el usuario ingrese normalmente.
-        setView("login");
+            // El registro fue exitoso.
+            // Volvemos al login para que
+            // el usuario ingrese normalmente.
+            setView("login");
 
-    } catch (error) {
+        } catch (error) {
 
-        console.error(
-            "Error al registrar usuario:",
-            error
-        );
+            console.error(
+                "Error al registrar usuario:",
+                error
+            );
 
-        setRegisterError(
-            error instanceof Error
-                ? error.message
-                : "No se pudo crear la cuenta."
-        );
+            setRegisterError(
+                error instanceof Error
+                    ? error.message
+                    : "No se pudo crear la cuenta."
+            );
 
-    } finally {
+        } finally {
 
-        setRegisterLoading(false);
-    }
-}
-
-async function handleUpdateProfile(
-    data: UpdateUsuarioData
-) {
-
-    if (!token) {
-        return;
+            setRegisterLoading(false);
+        }
     }
 
-    setProfileLoading(true);
-    setProfileError(null);
+    async function handleUpdateProfile(
+        data: UpdateUsuarioData
+    ) {
 
-    try {
+        if (!token) {
+            return;
+        }
 
-        const usuarioActualizado =
-            await updateUsuario(data, token);
+        setProfileLoading(true);
+        setProfileError(null);
 
-        actualizarUsuario(usuarioActualizado);
+        try {
 
-        setEditingProfile(false);
+            const usuarioActualizado =
+                await updateUsuario(data, token);
 
-    } catch (error) {
+            actualizarUsuario(usuarioActualizado);
 
-        console.error(
-            "Error al actualizar perfil:",
-            error
-        );
+            setEditingProfile(false);
 
-        setProfileError(
-            error instanceof Error
-                ? error.message
-                : "No se pudo actualizar el perfil."
-        );
+        } catch (error) {
 
-    } finally {
+            console.error(
+                "Error al actualizar perfil:",
+                error
+            );
 
-        setProfileLoading(false);
+            setProfileError(
+                error instanceof Error
+                    ? error.message
+                    : "No se pudo actualizar el perfil."
+            );
 
+        } finally {
+
+            setProfileLoading(false);
+
+        }
     }
-}
 
-async function handleChangePassword(
-    data: CambiarPasswordData
-) {
+    async function handleChangePassword(
+        data: CambiarPasswordData
+    ) {
 
-    if (!token) {
-        return;
+        if (!token) {
+            return;
+        }
+
+        setPasswordLoading(true);
+        setPasswordError(null);
+
+        try {
+
+            await cambiarPassword(data, token);
+
+            setChangingPassword(false);
+
+            alert("Contraseña actualizada correctamente.");
+
+        } catch (error) {
+
+            console.error(
+                "Error al cambiar contraseña:",
+                error
+            );
+
+            setPasswordError(
+                error instanceof Error
+                    ? error.message
+                    : "No se pudo cambiar la contraseña."
+            );
+
+        } finally {
+
+            setPasswordLoading(false);
+
+        }
     }
-
-    setPasswordLoading(true);
-    setPasswordError(null);
-
-    try {
-
-        await cambiarPassword(data, token);
-
-        setChangingPassword(false);
-
-        alert("Contraseña actualizada correctamente.");
-
-    } catch (error) {
-
-        console.error(
-            "Error al cambiar contraseña:",
-            error
-        );
-
-        setPasswordError(
-            error instanceof Error
-                ? error.message
-                : "No se pudo cambiar la contraseña."
-        );
-
-    } finally {
-
-        setPasswordLoading(false);
-
-    }
-}
     return (
         <>
 
@@ -230,10 +230,9 @@ async function handleChangePassword(
                     backdrop-blur-[1px]
                     transition-opacity duration-300
 
-                    ${
-                        isOpen
-                            ? "opacity-100 pointer-events-auto"
-                            : "opacity-0 pointer-events-none"
+                    ${isOpen
+                        ? "opacity-100 pointer-events-auto"
+                        : "opacity-0 pointer-events-none"
                     }
                 `}
             />
@@ -259,19 +258,18 @@ async function handleChangePassword(
                     transition-transform
                     duration-300
 
-                    ${
-                        isOpen
-                            ? "translate-x-0"
-                            : "translate-x-full"
+                    ${isOpen
+                        ? "translate-x-0"
+                        : "translate-x-full"
                     }
                 `}
             >
 
-                
+
 
                 {isAuthenticated && usuario ? (
 
-    <div className="
+                    <div className="
         flex
         flex-1
         flex-col
@@ -281,135 +279,123 @@ async function handleChangePassword(
         overflow-y-auto
     ">
 
-        {editingProfile ? (
+                        {editingProfile ? (
 
-            <div className="w-full">
+                            <div className="w-full">
 
-                <h2 className="
+                                <h2 className="
                     mb-6
                     font-title
                     text-2xl
                     text-amber-900
                 ">
-                    Editar perfil
-                </h2>
+                                    Editar perfil
+                                </h2>
 
-                <EditProfileForm
-                    usuario={usuario}
-                    onSave={handleUpdateProfile}
-                    onCancel={() => {
-                        setProfileError(null);
-                        setEditingProfile(false);
-                    }}
-                    loading={profileLoading}
-                    error={profileError}
-                />
+                                <EditProfileForm
+                                    usuario={usuario}
+                                    onSave={handleUpdateProfile}
+                                    onCancel={() => {
+                                        setProfileError(null);
+                                        setEditingProfile(false);
+                                    }}
+                                    loading={profileLoading}
+                                    error={profileError}
+                                />
 
-            </div>
+                            </div>
 
-             ) : changingPassword ? (
-
-
-            <div className="w-full">
-                <h2 className="mb-6 font-title text-2xl text-amber-900">
-                    Cambiar contraseña
-                </h2>
-
-                <ChangePasswordForm
-                    onSave={handleChangePassword}
-                   onCancel={() => {
-                        setPasswordError(null);
-                        setChangingPassword(false);
-                    }}
-                    loading={passwordLoading}
-                    error={passwordError}
-                />
-            </div>
-
-        ) : (
-
-            <>
+                        ) : changingPassword ? (
 
 
-                <Button
-                    onClick={() => {
-                        onClose();
-                        navigate("/estudio");
-                    }}
-                >
-                    📚 Ir a mi estudio
-                </Button>
+                            <div className="w-full">
+                                <h2 className="mb-6 font-title text-2xl text-amber-900">
+                                    Cambiar contraseña
+                                </h2>
 
-                
-                <PlayerCard
-                    usuario={usuario}
-                />
+                                <ChangePasswordForm
+                                    onSave={handleChangePassword}
+                                    onCancel={() => {
+                                        setPasswordError(null);
+                                        setChangingPassword(false);
+                                    }}
+                                    loading={passwordLoading}
+                                    error={passwordError}
+                                />
+                            </div>
 
-                <Button
-                    onClick={() => {
-                        setProfileError(null);
-                        setEditingProfile(true);
-                    }}
-                >
-                    Editar perfil
-                </Button>
+                        ) : (
 
-                <Button
-                    onClick={() => {
-                        setPasswordError(null);
-                        setChangingPassword(true);
-                    }}
-                >
-                    Cambiar contraseña
-                </Button>
+                            <>
+                                <PlayerCard
+                                    usuario={usuario}
+                                />
+
+                                <Button
+                                    onClick={() => {
+                                        setProfileError(null);
+                                        setEditingProfile(true);
+                                    }}
+                                >
+                                    Editar perfil
+                                </Button>
+
+                                <Button
+                                    onClick={() => {
+                                        setPasswordError(null);
+                                        setChangingPassword(true);
+                                    }}
+                                >
+                                    Cambiar contraseña
+                                </Button>
 
 
-                <Button
-                    onClick={() => {
-                        logout();
-                        onClose();
-                    }}
-                >
-                    Cerrar sesión
-                </Button>
-            </>
+                                <Button
+                                    onClick={() => {
+                                        logout();
+                                        onClose();
+                                    }}
+                                >
+                                    Cerrar sesión
+                                </Button>
+                            </>
 
-        )}
+                        )}
 
-    </div>
+                    </div>
 
 
                 ) : (
-                <>
-                   <AuthHeader
-    onClose={() => {
-        setView("login");
-        onClose();
-    }}
-/>
+                    <>
+                        <AuthHeader
+                            onClose={() => {
+                                setView("login");
+                                onClose();
+                            }}
+                        />
 
-{view === "login" ? (
-    <>
-        <LoginForm
-            isLoading={isLoading}
-            error={error}
-            onLogin={onLogin}
-        />
+                        {view === "login" ? (
+                            <>
+                                <LoginForm
+                                    isLoading={isLoading}
+                                    error={error}
+                                    onLogin={onLogin}
+                                />
 
-        <AuthFooter
-            onRegister={() => {
-                setRegisterError(null);
-                setView("register");
-            }}
-        />
-    </>
-) : (
-    <RegisterForm
-        isLoading={registerLoading}
-        error={registerError}
-        onRegister={handleRegister}
-    />
-)}
+                                <AuthFooter
+                                    onRegister={() => {
+                                        setRegisterError(null);
+                                        setView("register");
+                                    }}
+                                />
+                            </>
+                        ) : (
+                            <RegisterForm
+                                isLoading={registerLoading}
+                                error={registerError}
+                                onRegister={handleRegister}
+                            />
+                        )}
                     </>
 
                 )}
