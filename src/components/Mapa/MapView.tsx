@@ -5,6 +5,8 @@ import {
     Popup
 } from "react-leaflet";
 
+import { divIcon } from "leaflet";
+
 import type { LatLngTuple } from "leaflet";
 
 import { useEffect, useState } from "react";
@@ -23,6 +25,7 @@ import type { Jornada } from "../../types/jornada";
 
 import { useAuth } from "../../hooks/useAuth";
 
+
 interface MapViewProps {
     onVerJornadas: (juegotekaId: string) => void;
 }
@@ -32,6 +35,41 @@ const buenosAires: LatLngTuple = [
     -58.3816
 ];
 
+function crearIconoJuegoteka(foto?: string) {
+
+    return divIcon({
+        className: "",
+        html: `
+            <div style="
+                width: 48px;
+                height: 48px;
+                border: 3px solid white;
+                border-radius: 50%;
+                overflow: hidden;
+                background: #fef3c7;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            ">
+                ${foto
+                ? `<img
+                            src="${foto}"
+                            style="
+                                width: 100%;
+                                height: 100%;
+                                object-fit: cover;
+                            "
+                        />`
+                : `<span style="font-size: 24px;">🎲</span>`
+            }
+            </div>
+        `,
+        iconSize: [48, 48],
+        iconAnchor: [24, 24],
+        popupAnchor: [0, -26]
+    });
+}
 // Popup con dos vistas: primero la carta de la juegoteka,
 // y al click en "Ver jornadas" se reemplaza por el listado.
 // Vive en su propio componente para poder usar useState local
@@ -49,53 +87,53 @@ interface JuegotekaPopupProps {
 function JuegotekaPopup({
     juegoteka,
     cantidadJornadas,
-   onVerJornadas
-   
+    onVerJornadas
+
 }: JuegotekaPopupProps) {
 
-   
+
     return (
         <div className="w-56">
 
-                    {juegoteka.foto && (
-                        <div className="
+            {juegoteka.foto && (
+                <div className="
                             aspect-[16/9]
                             rounded-sm
                             bg-stone-300
                             overflow-hidden
                             mb-2
                         ">
-                            <img
-                                src={juegoteka.foto}
-                                alt={`Foto de ${juegoteka.nombre}`}
-                                className="w-full h-full object-cover"
-                            />
-                        </div>
-                    )}
+                    <img
+                        src={juegoteka.foto}
+                        alt={`Foto de ${juegoteka.nombre}`}
+                        className="w-full h-full object-cover"
+                    />
+                </div>
+            )}
 
-                    <p className="text-xs uppercase text-amber-700">
-                        {juegoteka.rol}
-                    </p>
+            <p className="text-xs uppercase text-amber-700">
+                {juegoteka.rol}
+            </p>
 
-                    <h3 className="font-title text-lg text-amber-900 truncate">
-                        {juegoteka.nombre}
-                    </h3>
+            <h3 className="font-title text-lg text-amber-900 truncate">
+                {juegoteka.nombre}
+            </h3>
 
-                    {juegoteka.aboutMe && (
-                        <p className="
+            {juegoteka.aboutMe && (
+                <p className="
                             text-xs
                             text-stone-600
                             mt-1
                             line-clamp-2
                         ">
-                            {juegoteka.aboutMe}
-                        </p>
-                    )}
+                    {juegoteka.aboutMe}
+                </p>
+            )}
 
-                    <button
-                        type="button"
-                      onClick={() => onVerJornadas(juegoteka.id)}
-                        className="
+            <button
+                type="button"
+                onClick={() => onVerJornadas(juegoteka.id)}
+                className="
                             mt-3
                             w-full
                             rounded-lg
@@ -107,12 +145,12 @@ function JuegotekaPopup({
                             text-white
                             hover:bg-amber-800
                         "
-                    >
-                      Ver jornadas ({cantidadJornadas})
-                    </button>
-               
+            >
+                Ver jornadas ({cantidadJornadas})
+            </button>
 
-          
+
+
         </div>
     );
 }
@@ -227,13 +265,14 @@ function MapView({ onVerJornadas }: MapViewProps) {
                     <Marker
                         key={juegoteka.id}
                         position={posicion}
+                        icon={crearIconoJuegoteka(juegoteka.foto)}
                     >
 
                         <Popup maxWidth={280} minWidth={230}>
                             <JuegotekaPopup
                                 juegoteka={juegoteka}
                                 cantidadJornadas={jornadasDeJuegoteka.length}
-                               onVerJornadas={onVerJornadas}
+                                onVerJornadas={onVerJornadas}
                             />
                         </Popup>
 
