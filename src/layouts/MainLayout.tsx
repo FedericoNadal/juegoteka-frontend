@@ -96,8 +96,9 @@ export default function MainLayout() {
                     pb-20
                 "
             >
-
-                <Outlet />
+                <Outlet context={{
+                    abrirAuth: () => setIsAuthDrawerOpen(true)
+                }} />
 
             </main>
 

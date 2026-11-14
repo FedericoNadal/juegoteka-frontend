@@ -5,18 +5,25 @@ import SectionTitle from "../../components/ui/SectionTitle";
 import GameCatalog from "../../components/Juegos/GameCatalog";
 
 import { useAuth } from "../../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import Button from "../../components/ui/Button";
+
 
 function Home() {
     const { isAuthenticated } = useAuth();
     const navigate = useNavigate();
+    const { abrirAuth } = useOutletContext<{
+        abrirAuth: () => void;
+    }>();
 
     return (
 
         <main>
 
-            <Hero />
+            <Hero
+                isAuthenticated={isAuthenticated}
+                onLoginClick={abrirAuth}
+            />
 
             <Panel>
 
@@ -25,7 +32,7 @@ function Home() {
                 </SectionTitle>
 
                 <p>
-                    Juegoteka es una plataforma orientada
+                    Juegotekas es una plataforma orientada
                     a facilitar el encuentro entre personas
                     a través de los juegos de mesa. Permite
                     explorar juegos, organizar encuentros y

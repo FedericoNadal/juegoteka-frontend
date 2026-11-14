@@ -12,9 +12,20 @@ import Button from "../ui/Button";
  * incorporar posteriormente imágenes, texturas o ilustraciones
  * sin modificar la organización del componente.
  */
-function Hero() {
-  return (
 
+interface HeroProps {
+  isAuthenticated: boolean;
+  onLoginClick: () => void;
+}
+
+/**
+ * Hero
+ *
+ * Presenta la identidad de Juegoteka y ofrece
+ * puntos de entrada hacia la autenticación y el catálogo.
+ */
+function Hero({ isAuthenticated, onLoginClick }: HeroProps) {
+  return (
     <section
       className="
         flex
@@ -25,8 +36,6 @@ function Hero() {
         py-16
       "
     >
-
-      {/* Título principal del proyecto */}
       <h1
         className="
           font-title
@@ -40,7 +49,6 @@ function Hero() {
         Juegotekas
       </h1>
 
-      {/* Frase principal que introduce la filosofía del proyecto */}
       <p
         className="
           text-2xl
@@ -52,7 +60,6 @@ function Hero() {
         Las mejores partidas empiezan antes de abrir la caja.
       </p>
 
-      {/* Lema institucional */}
       <p
         className="
           italic
@@ -64,16 +71,24 @@ function Hero() {
         Porque ningún juego se juega solo.
       </p>
 
-      {/* Acción principal disponible para visitantes */}
-     
-   <Button onClick={() => {
-     document.getElementById("catalogo-juegos")?.scrollIntoView({ behavior: "smooth" });
- }}>
-      Explorar juegos
-  </Button>
+      <div className="flex flex-col items-center gap-3">
+        {!isAuthenticated && (
+          <Button onClick={onLoginClick}>
+            Iniciar sesión / Crear cuenta
+          </Button>
+        )}
 
+        <Button
+          onClick={() => {
+            document
+              .getElementById("catalogo-juegos")
+              ?.scrollIntoView({ behavior: "smooth" });
+          }}
+        >
+          Explorar juegos
+        </Button>
+      </div>
     </section>
-
   );
 }
 
