@@ -19,6 +19,9 @@ type GameCardProps = {
 
     onAction?: () => void;
 
+    widthClass?: string;
+    imageHeightClass?: string;
+
 };
 
 
@@ -41,33 +44,34 @@ function GameCard({
     jugadores,
     duracion,
     actionLabel,
-    onAction
+    onAction,
+    widthClass = "w-48",
+    imageHeightClass = "h-56"
 
 }: GameCardProps) {
 
     return (
 
         <Card
-            className="
-                w-48
-                flex
-                flex-col
-                gap-3
-            "
+            className={`
+        ${widthClass}
+        flex
+        flex-col
+        gap-3
+    `}
         >
-
             {/* Imagen del juego */}
 
             <div
-                className="
-                    h-56
+                className={`
+                    ${imageHeightClass}
                     rounded-md
                     overflow-hidden
                     bg-stone-300
                     flex
                     items-center
                     justify-center
-                "
+                 `}
             >
 
                 {
