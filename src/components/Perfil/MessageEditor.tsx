@@ -102,54 +102,54 @@ function MessageEditor({ destinatarioIdInicial }: MessageEditorProps) {
   }
 
   async function handleEnviar() {
-  if (!token || !usuario) return;
+    if (!token || !usuario) return;
 
-  if (destinatariosIds.length === 0) {
-    alert("Seleccioná al menos un destinatario.");
-    return;
+    if (destinatariosIds.length === 0) {
+      alert("Seleccioná al menos un destinatario.");
+      return;
+    }
+
+    if (!contenido.trim()) {
+      alert("Escribí un mensaje.");
+      return;
+    }
+
+    // Fallback: Si no puso URL de imagen, usa la foto de perfil del remitente
+    const imagenFinal = imagenUrl.trim() || usuario.foto || "";
+
+    try {
+      setEnviando(true);
+
+      const envíos = destinatariosIds.map((destinatarioId) => {
+        const payload = {
+          remitente: usuario.id,
+          destinatario: destinatarioId,
+          contenido: contenido.trim(),
+          imagen: imagenFinal,
+        };
+
+        // 🔍 LOG 1: Lo que sale del editor para este destinatario
+        //console.log("📤 [EDITOR] Enviando payload a destinatario:", destinatarioId, payload);
+
+        return enviarMensaje(payload, token);
+      });
+
+      await Promise.all(envíos);
+
+      setContenido("");
+      setImagenUrl("");
+      setDestinatariosIds([]);
+      setBusqueda("");
+      setAbierto(false);
+
+      alert(`Carta enviada con éxito a ${envíos.length} destinatario(s).`);
+    } catch (error) {
+      console.error("Error al enviar las cartas:", error);
+      alert("Ocurrió un error al intentar enviar una o más cartas.");
+    } finally {
+      setEnviando(false);
+    }
   }
-
-  if (!contenido.trim()) {
-    alert("Escribí un mensaje.");
-    return;
-  }
-
-  // Fallback: Si no puso URL de imagen, usa la foto de perfil del remitente
-  const imagenFinal = imagenUrl.trim() || usuario.foto || "";
-
-  try {
-    setEnviando(true);
-
-    const envíos = destinatariosIds.map((destinatarioId) => {
-      const payload = {
-        remitente: usuario.id,
-        destinatario: destinatarioId,
-        contenido: contenido.trim(),
-        imagen: imagenFinal,
-      };
-
-      // 🔍 LOG 1: Lo que sale del editor para este destinatario
-      //console.log("📤 [EDITOR] Enviando payload a destinatario:", destinatarioId, payload);
-
-      return enviarMensaje(payload, token);
-    });
-
-    await Promise.all(envíos);
-
-    setContenido("");
-    setImagenUrl("");
-    setDestinatariosIds([]);
-    setBusqueda("");
-    setAbierto(false);
-
-    alert(`Carta enviada con éxito a ${envíos.length} destinatario(s).`);
-  } catch (error) {
-    console.error("Error al enviar las cartas:", error);
-    alert("Ocurrió un error al intentar enviar una o más cartas.");
-  } finally {
-    setEnviando(false);
-  }
-}
 
   const seleccionadosObjetos = useMemo(() => {
     return destinatariosPosibles.filter((u) => destinatariosIds.includes(u.id));
@@ -215,63 +215,78 @@ function MessageEditor({ destinatarioIdInicial }: MessageEditorProps) {
                 onChange={(e) => setBusqueda(e.target.value)}
                 className="w-full rounded-lg border border-amber-300 bg-white p-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
               />
-              {usuariosFiltrados.length > 0 && (
+              {usuario?.rol === "juegoteka" && (
                 <button
                   type="button"
                   onClick={seleccionarTodosVisibles}
-                  className="px-3 py-2 text-xs font-medium text-amber-900 bg-amber-200/80 hover:bg-amber-300 rounded-lg border border-amber-400 whitespace-nowrap"
-                >
+                  className="px-3 py-2 text-xs font-bold text-red-800 bg-red-100 hover:bg-red-200 rounded-lg border border-red-300 whitespace-nowrap">
                   {usuariosFiltrados.every((u) => destinatariosIds.includes(u.id))
                     ? "Deseleccionar filtrados"
-                    : "Marcar filtrados"}
+                    : "SPAM!!"}
                 </button>
               )}
             </div>
 
-            {/* LISTA RESULTADOS */}
-            {cargandoUsuarios ? (
-              <p className="text-sm text-amber-700 italic">Cargando destinatarios...</p>
-            ) : (
-              <div className="max-h-36 overflow-y-auto rounded-lg border border-amber-200 bg-white divide-y divide-amber-100">
-                {usuariosFiltrados.length === 0 ? (
-                  <p className="p-3 text-xs text-amber-700 italic">
-                    No se encontraron usuarios o juegotekas que coincidan con "{busqueda}".
+            {/* LISTA RESULTADOS: solo cuando hay una búsqueda */}
+            {busqueda.trim() && (
+              <>
+                {cargandoUsuarios ? (
+                  <p className="text-sm text-amber-700 italic">
+                    Cargando destinatarios...
                   </p>
                 ) : (
-                  usuariosFiltrados.map((u) => {
-                    const seleccionado = destinatariosIds.includes(u.id);
-                    return (
-                      <button
-                        key={u.id}
-                        type="button"
-                        onClick={() => toggleDestinatario(u.id)}
-                        className={`w-full text-left px-3 py-2 text-xs flex items-center justify-between transition-colors ${
-                          seleccionado
-                            ? "bg-amber-100/80 font-semibold text-amber-950"
-                            : "hover:bg-amber-50 text-amber-900"
-                        }`}
-                      >
-                        <span className="flex items-center gap-2">
-                          <input
-                            type="checkbox"
-                            checked={seleccionado}
-                            onChange={() => {}}
-                            className="rounded text-amber-800 focus:ring-amber-500"
-                          />
-                          <span>{u.userName || u.nombre}</span>
-                        </span>
+                  <div className="max-h-36 overflow-y-auto rounded-lg border border-amber-200 bg-white divide-y divide-amber-100">
+                    {usuariosFiltrados.length === 0 ? (
+                      <p className="p-3 text-xs text-amber-700 italic">
+                        No se encontraron usuarios o juegotekas que coincidan con "{busqueda}".
+                      </p>
+                    ) : (
+                      usuariosFiltrados.map((u) => {
+                        const seleccionado = destinatariosIds.includes(u.id);
+                        return (
+                          <button
+                            key={u.id}
+                            type="button"
+                            onClick={() => toggleDestinatario(u.id)}
+                            className={`w-full text-left px-3 py-2 text-xs flex items-center justify-between transition-colors ${seleccionado
+                              ? "bg-amber-100/80 font-semibold text-amber-950"
+                              : "hover:bg-amber-50 text-amber-900"
+                              }`}
+                          >
+                            <span className="flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                checked={seleccionado}
+                                onChange={() => { }}
+                                className="rounded text-amber-800 focus:ring-amber-500"
+                              />
+                              <span>{u.userName || u.nombre}</span>
+                            </span>
 
-                        <span className="text-[10px] text-amber-700 capitalize border border-amber-300 px-1.5 py-0.5 rounded bg-amber-50">
-                          {u.rol || "Jugador"}
-                        </span>
-                      </button>
-                    );
-                  })
+                            <span className="text-[10px] text-amber-700 capitalize border border-amber-300 px-1.5 py-0.5 rounded bg-amber-50">
+                              {u.rol || "Jugador"}
+                            </span>
+                          </button>
+                        );
+                      })
+                    )}
+                  </div>
                 )}
-              </div>
+              </>
             )}
           </div>
 
+
+          {/* CONTENIDO DEL MENSAJE */}
+          <div>
+            <textarea
+              rows={5}
+              value={contenido}
+              onChange={(event) => setContenido(event.target.value)}
+              placeholder="Escribí tu mensaje..."
+              className="w-full rounded-lg border border-amber-300 bg-white p-3 text-amber-950 resize-none focus:outline-none focus:ring-2 focus:ring-amber-500"
+            />
+          </div>
           {/* URL DE IMAGEN OPCIONAL */}
           <div>
             <label htmlFor="imagenUrl" className="block font-semibold text-amber-900 text-sm mb-1">
@@ -286,18 +301,6 @@ function MessageEditor({ destinatarioIdInicial }: MessageEditorProps) {
               className="w-full rounded-lg border border-amber-300 bg-white p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
             />
           </div>
-
-          {/* CONTENIDO DEL MENSAJE */}
-          <div>
-            <textarea
-              rows={5}
-              value={contenido}
-              onChange={(event) => setContenido(event.target.value)}
-              placeholder="Escribí tu mensaje..."
-              className="w-full rounded-lg border border-amber-300 bg-white p-3 text-amber-950 resize-none focus:outline-none focus:ring-2 focus:ring-amber-500"
-            />
-          </div>
-
           {/* BOTÓN DE ENVÍO */}
           <div className="pt-2">
             <Button onClick={handleEnviar} disabled={enviando}>
