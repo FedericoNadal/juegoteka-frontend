@@ -1,4 +1,4 @@
-import { useEffect,useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../ui/Button";
 import GameCard from "../ui/GameCard";
@@ -17,12 +17,12 @@ function MyGamesPanel({ juegos }: MyGamesProps) {
 
     const { token } = useAuth();
     const navigate = useNavigate();
-     const [misJuegos, setMisJuegos] =
+    const [misJuegos, setMisJuegos] =
         useState<JuegosUsuario[]>(juegos);
     const [busqueda, setBusqueda] = useState("");
 
 
-        const carruselRef = useRef<HTMLDivElement>(null);
+    const carruselRef = useRef<HTMLDivElement>(null);
 
     function moverIzquierda() {
         if (carruselRef.current) {
@@ -94,48 +94,48 @@ function MyGamesPanel({ juegos }: MyGamesProps) {
     return (
         <section className=" rounded-xl bg-amber-10/50 shadow overflow-hidden">
 
-                        <div className="px-4 sm:px-5 pb-5 space-y-4">
+            <div className="px-4 sm:px-5 pb-5 space-y-4">
 
-                    {misJuegos.length === 0 ? (
+                {misJuegos.length === 0 ? (
 
-                        <p className="text-sm leading-relaxed text-stone-700">
-                            Todavía no tenés juegos. Explorá el catálogo
-                            y sumá los que quieras con el botón APRENDER.
-                            Si sos una juegoteka, necesitás al menos uno
-                            para poder crear jornadas.
-                        </p>
+                    <p className="text-sm leading-relaxed text-stone-700">
+                        Todavía no tenés juegos. Explorá el catálogo
+                        y sumá los que quieras con el botón APRENDER.
+                        Si sos una juegoteka, necesitás al menos uno
+                        para poder crear jornadas.
+                    </p>
 
-                    ) : (
+                ) : (
 
-                        <div>
+                    <div>
 
-                            {juegosFiltrados.length === 0 ? (
+                        {juegosFiltrados.length === 0 ? (
 
-                                <p className="text-stone-700">
-                                    No se encontraron juegos.
-                                </p>
+                            <p className="text-stone-700">
+                                No se encontraron juegos.
+                            </p>
 
-                             ) : (
-                                <div className="relative">
-                                    <button
-                                        type="button"
-                                        onClick={moverIzquierda}
-                                        aria-label="Anterior"
-                                        className="hidden md:flex items-center justify-center absolute left-1 top-20 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-amber-50/90 hover:bg-amber-100 border border-amber-800/40 text-amber-900 font-bold shadow"
-                                    >
-                                        ‹
-                                    </button>
+                        ) : (
+                            <div className="relative">
+                                <button
+                                    type="button"
+                                    onClick={moverIzquierda}
+                                    aria-label="Anterior"
+                                    className="hidden md:flex items-center justify-center absolute left-1 top-20 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-amber-50/90 hover:bg-amber-100 border border-amber-800/40 text-amber-900 font-bold shadow"
+                                >
+                                    ‹
+                                </button>
 
-                                    <div
-                                        ref={carruselRef}
-                                        className="
+                                <div
+                                    ref={carruselRef}
+                                    className="
                                             flex gap-4
                                             overflow-x-auto
                                             pb-3
                                             snap-x snap-mandatory
                                             scroll-smooth
                                         "
-                                    >
+                                >
                                     {juegosFiltrados.map((juego) => (
                                         <div
                                             key={juego.id}
@@ -180,41 +180,38 @@ function MyGamesPanel({ juegos }: MyGamesProps) {
                                             </div>
                                         </div>
                                     ))}
-                                    </div>
-
-                                    <button
-                                        type="button"
-                                        onClick={moverDerecha}
-                                        aria-label="Siguiente"
-                                        className="hidden md:flex items-center justify-center absolute right-1 top-20 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-amber-50/90 hover:bg-amber-100 border border-amber-800/40 text-amber-900 font-bold shadow"
-                                    >
-                                        ›
-                                    </button>
                                 </div>
-                            )}
-                            <input
 
-                                type="search"
-                                value={busqueda}
-                                onChange={(e) => setBusqueda(e.target.value)}
-                                placeholder="Buscar un juego por título..."
-                                aria-label="Buscar juegos por título"
-                                className="
+                                <button
+                                    type="button"
+                                    onClick={moverDerecha}
+                                    aria-label="Siguiente"
+                                    className="hidden md:flex items-center justify-center absolute right-1 top-20 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-amber-50/90 hover:bg-amber-100 border border-amber-800/40 text-amber-900 font-bold shadow"
+                                >
+                                    ›
+                                </button>
+                            </div>
+                        )}
+                        <input
+
+                            type="search"
+                            value={busqueda}
+                            onChange={(e) => setBusqueda(e.target.value)}
+                            placeholder="Buscar un juego por título..."
+                            aria-label="Buscar juegos por título"
+                            className="
                                 w-full mb-5 p-3
                                 border border-amber-800
                                 rounded-lg bg-amber-50/50
                             "
-                            />
-                        </div>
-                    )}
+                        />
+                    </div>
+                )}
 
-                    <Button onClick={explorarJuegos}>
-                        Explorar juegos
-                    </Button>
-                </div>
-
-
-            )
+                <Button onClick={explorarJuegos}>
+                    Explorar mas juegos
+                </Button>
+            </div>
 
         </section>
 

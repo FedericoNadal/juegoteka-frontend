@@ -99,7 +99,8 @@ function MessageCard({
 
             <div className="flex gap-3 justify-between pt-3 border-t border-amber-200/80">
                 <Button onClick={manejarAccionPrincipal}>
-                    {"\u{270D}"}
+                    {/*"\u{270D}"*/}
+                      {"↩"}
                 </Button>
 
                 <Button onClick={() => onDelete(mensaje._id)}>
