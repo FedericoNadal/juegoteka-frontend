@@ -1,17 +1,10 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import GameCard from "../ui/GameCard";
-
 import type { Juego } from "../../types/juego";
-
-import {
-    obtenerJuegos,
-    agregarAMisJuegos
-} from "../../services/juegoService";
-
+import {obtenerJuegos, agregarAMisJuegos} from "../../services/juegoService";
 import { obtenerMisJuegos } from "../../services/usuarioService";
-
 import { useAuth } from "../../hooks/useAuth";
 
 
@@ -55,6 +48,9 @@ function GameCatalog() {
                 }
 
                 // Mezclamos el catálogo una sola vez.
+                // Algoritmo Fisher-Yates,
+                // evita repeticiones por que cada intercambio modifica el array inmediatamente. No estamos copiando un elemento a otra posición: estamos intercambiando dos elementos.
+
                 const mezclados = [...datos];
 
                 for (let i = mezclados.length - 1; i > 0; i--) {

@@ -1,9 +1,8 @@
+
 import Hero from "../../components/Hero/Hero";
 import Panel from "../../components/ui/Panel";
 import SectionTitle from "../../components/ui/SectionTitle";
-
 import GameCatalog from "../../components/Juegos/GameCatalog";
-
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import Button from "../../components/ui/Button";
@@ -32,12 +31,12 @@ function Home() {
                 </SectionTitle>
 
                 <p>
-                    Juegotekas es una plataforma orientada
-                    a facilitar el encuentro entre personas
-                    a través de los juegos de mesa. Permite
-                    explorar juegos, organizar encuentros y
-                    construir una comunidad alrededor de la
-                    cultura lúdica.
+                    Juegotekas es una plataforma orientada a facilitar el encuentro entre personas
+                    a través de los juegos de mesa. Permite explorar juegos, organizar encuentros y
+                    construir una comunidad alrededor de la cultura lúdica.
+
+                    Nace como el proyecto de cierre de la materia PROGRAMACION III de la tecnicatura en INFORMATICA APLICADA del INSPT
+                    y hace uso de una API desarrollada en equipo durante la cursada
                 </p>
 
             </Panel>
@@ -54,10 +53,12 @@ function Home() {
                 </div>
 
             </Panel>
+
+
             {isAuthenticated && (
                 <div className="mt-6 flex justify-center">
                     <Button onClick={() => navigate("/estudio")}>
-                        📚 Volver a mi estudio
+                         Volver a mi estudio
                     </Button>
                 </div>
             )}

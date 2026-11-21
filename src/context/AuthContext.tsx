@@ -1,3 +1,7 @@
+import type { Usuario } from "../types/usuario";
+import type { LoginCredentials } from "../types/auth";
+import {login as loginService} from "../services/authService";
+import {obtenerPerfil} from "../services/usuarioService";
 
 import {
     createContext,
@@ -6,19 +10,8 @@ import {
     type ReactNode
 } from "react";
 
-import type { Usuario } from "../types/usuario";
-import type { LoginCredentials } from "../types/auth";
-
-import {
-    login as loginService
-} from "../services/authService";
-
-import {
-    obtenerPerfil
-} from "../services/usuarioService";
-
 // ============================================================
-// TIPO DEL CONTEXTO
+//                      TIPO DEL CONTEXTO
 // Define qué información y acciones estarán disponibles
 // para los componentes que necesiten autenticación.
 // ============================================================
@@ -27,19 +20,16 @@ interface AuthContextType {
     usuario: Usuario | null;
     token: string | null;
     isAuthenticated: boolean;
-    cargandoSesion: boolean; // NUEVO: true mientras se valida el token guardado en localStorage
-
+    cargandoSesion: boolean;
 
     login(credentials: LoginCredentials): Promise<void>;
-
     actualizarUsuario(usuarioActualizado: Usuario): void;
-
     logout(): void;
 }
 
 
 // ============================================================
-// CONTEXTO
+//                          CONTEXTO
 // ============================================================
 
 export const AuthContext =
@@ -47,13 +37,10 @@ export const AuthContext =
 
 
 // ============================================================
-// PROVIDER
-// Mantiene el estado global de autenticación.
+//                              PROVIDER
+// Mantiene el estado global de autenticación. devuelve el proveedor (Provider) que envuelve a sus componentes hijos.
 // ============================================================
-
-interface AuthProviderProps {
-    children: ReactNode;
-}
+interface AuthProviderProps {children: ReactNode;}
 
 export function AuthProvider({
     children
@@ -80,8 +67,7 @@ export function AuthProvider({
 
         async function restaurarSesion() {
 
-            const tokenGuardado =
-                localStorage.getItem("token");
+            const tokenGuardado = localStorage.getItem("token");
 
             if (!tokenGuardado) {
                  setCargandoSesion(false); // sin token, no hay nada que esperar
@@ -90,8 +76,7 @@ export function AuthProvider({
 
             try {
 
-                const usuario =
-                    await obtenerPerfil(tokenGuardado);
+                const usuario = await obtenerPerfil(tokenGuardado);
 
                 setToken(tokenGuardado);
                 setUsuario(usuario);
@@ -107,13 +92,13 @@ export function AuthProvider({
 
                 setToken(null);
                 setUsuario(null);
-        
+
             } finally {
                 setCargandoSesion(false); // NUEVO: pase lo que pase, ya se resolvió
             }
         }
 
-        restaurarSesion();
+    restaurarSesion();
 
     }, []);
 
@@ -127,12 +112,9 @@ export function AuthProvider({
     //   - JWT
     // ========================================================
 
-    async function login(
-        credentials: LoginCredentials
-    ) {
+    async function login(credentials: LoginCredentials) {
 
-        const response =
-            await loginService(credentials);
+        const response = await loginService(credentials);
 
         console.log("LOGIN OK:", response);
 
@@ -148,9 +130,7 @@ export function AuthProvider({
  // ========================================================
     // actualizar datos
     // ========================================================
-    function actualizarUsuario(
-    usuarioActualizado: Usuario
-) {
+    function actualizarUsuario(usuarioActualizado: Usuario) {
     setUsuario(usuarioActualizado);
 }
     // ========================================================
@@ -176,10 +156,7 @@ export function AuthProvider({
             value={{
                 usuario,
                 token,
-
-                // Si existe usuario, consideramos
-                // que existe una sesión activa.
-                isAuthenticated: usuario !== null,
+                isAuthenticated: usuario !== null,  // Si existe usuario, consideramos que existe una sesión activa.
                 cargandoSesion,
                 login,
                 actualizarUsuario,

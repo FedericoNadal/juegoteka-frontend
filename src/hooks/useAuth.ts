@@ -1,11 +1,6 @@
-import {
-    useContext
-} from "react";
 
-import {
-    AuthContext
-} from "../context/AuthContext";
-
+import {useContext} from "react";
+import {AuthContext} from "../context/AuthContext";
 
 
 /*
@@ -15,6 +10,7 @@ import {
     Evita repetir useContext(AuthContext)
     en todos los componentes.
 */
+
 export function useAuth() {
 
 
@@ -24,14 +20,11 @@ export function useAuth() {
 
 
     /*
-        Si alguien usa useAuth()
-        fuera de AuthProvider,
-        significa que la arquitectura
-        está mal conectada.
-
+        Si alguien usa useAuth() fuera de AuthProvider,
+        significa que la arquitectura está mal conectada.
         Lanzamos un error claro.
     */
-    if (!context) {
+        if (!context) {
 
         throw new Error(
             "useAuth debe utilizarse dentro de AuthProvider"

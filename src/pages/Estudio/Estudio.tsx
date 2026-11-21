@@ -1,10 +1,8 @@
+
 import { useEffect,useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
 import Container from "../../components/ui/Container";
-
-
-import StatisticsPanel from "../../components/Perfil/StatsPanel";
+//import StatisticsPanel from "../../components/Perfil/StatsPanel";
 import MyGamesPanel from "../../components/Perfil/MyGamesPanel";
 import MyJornadasPanel from "../../components/Perfil/MyJornadasPanel";
 import MessageEditor from "../../components/Perfil/MessageEditor";
@@ -12,20 +10,16 @@ import JornadaOffCanvas from "../../components/Mapa/JornadaOffCanvas";
 import JornadaForm from "../../components/Perfil/JornadaForm";
 import MapPanel from "../../components/Perfil/MapPanel";
 import MazoPanel from "../../components/Mazo/MazoPanel";
-
 import { useAuth } from "../../hooks/useAuth";
 import { obtenerMisJuegos } from "../../services/usuarioService";
-import {
-    obtenerJornadas,
-    obtenerMisJornadas
-} from "../../services/jornadaService";
+import {obtenerJornadas,obtenerMisJornadas} from "../../services/jornadaService";
 
 import type { JuegosUsuario } from "../../types/usuario";
 import type { Jornada } from "../../types/jornada";
 
 function Estudio() {
 
-    // NUEVO: isAuthenticated y cargandoSesion, para el guard de abajo
+
     const { usuario, token, isAuthenticated, cargandoSesion } = useAuth();
 
     const [juegos, setJuegos] =
@@ -52,11 +46,11 @@ function Estudio() {
     }
 
     const location = useLocation();
-    const navigate = useNavigate(); // NUEVO
+    const navigate = useNavigate();
 
     const [destinatarioId, setDestinatarioId] =
     useState<string | undefined>(location.state?.destinatarioId);
-const editorRef = useRef<HTMLDivElement>(null);
+    const editorRef = useRef<HTMLDivElement>(null);
 
 
 
@@ -69,7 +63,7 @@ function responderMensaje(idRemitente: string) {
     const [mostrarNuevaJornada, setMostrarNuevaJornada] =
     useState(false);
 
-    // NUEVO: guard de sesión. Corre antes que cargarDatos en cada render,
+    //  guard de sesión. Corre antes que cargarDatos en cada render,
     // pero como es un hook más, no altera el orden de los ya existentes.
     useEffect(() => {
         if (!cargandoSesion && !isAuthenticated) {
@@ -120,7 +114,7 @@ function responderMensaje(idRemitente: string) {
     }, [token]);
 
 
-    // MODIFICADO: antes era "if (!usuario) return null" (mudo).
+
     // Ahora cubre también el estado de carga y dispara el redirect de arriba.
     if (cargandoSesion || !isAuthenticated || !usuario) {
         return null;
@@ -142,8 +136,8 @@ function responderMensaje(idRemitente: string) {
                     "
                 >
 
-                 
-                    <MazoPanel onResponder={responderMensaje} />
+                 <MapPanel onVerJornadas={handleVerJornadasDeJuegoteka} />
+                 <MazoPanel onResponder={responderMensaje} />
 
                     <div ref={editorRef}>
                         <MessageEditor
@@ -152,8 +146,8 @@ function responderMensaje(idRemitente: string) {
                         />
                     </div>
 
-               
-            <MapPanel onVerJornadas={handleVerJornadasDeJuegoteka} />
+
+             <MyGamesPanel juegos={juegos}/>
 
                 <div ref={jornadasPanelRef}>
                     <MyJornadasPanel
@@ -167,12 +161,12 @@ function responderMensaje(idRemitente: string) {
                         idsInscripto={jornadasInscripto.map((j) => j._id)}
                     />
                 </div>
-                    <MyGamesPanel
-                        juegos={juegos}
-                    />
 
 
-                    <StatisticsPanel />
+
+
+
+                {/* <StatisticsPanel /> */}
 
                 </section>
 
@@ -183,7 +177,7 @@ function responderMensaje(idRemitente: string) {
                         setJornadaSeleccionada(null)
                     }
                     onJornadaActualizada={(jornadaActualizada) => {
-                        
+
 
                         /*
                          * Actualizamos la jornada abierta.
@@ -207,7 +201,7 @@ function responderMensaje(idRemitente: string) {
 
                     }}
 
-                    
+
                 />
                 {mostrarNuevaJornada && (
                     <JornadaForm

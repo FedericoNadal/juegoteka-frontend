@@ -1,7 +1,5 @@
 import { Outlet } from "react-router-dom";
-
 import Header from "../components/ui/Header";
-//import BottomNav from "../components/ui/BottomNav";
 import fondo from "../assets/images/background.jpeg";
 import { useState } from "react";
 import AuthOffcanvas from "../components/auth/AuthOffCanvas";
@@ -21,8 +19,8 @@ import { useAuth } from "../hooks/useAuth";
  * visible la navegación.
  */
 export default function MainLayout() {
-    const { login } = useAuth();
 
+    const { login } = useAuth();
     const [isAuthDrawerOpen, setIsAuthDrawerOpen] = useState(false);
     const [loginError, setLoginError] = useState<string | null>(null);
     const [loginLoading, setLoginLoading] = useState(false);

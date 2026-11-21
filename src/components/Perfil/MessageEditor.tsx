@@ -14,7 +14,7 @@ function MessageEditor({ destinatarioIdInicial }: MessageEditorProps) {
 
   const [abierto, setAbierto] = useState(Boolean(destinatarioIdInicial));
   const [destinatariosPosibles, setDestinatariosPosibles] = useState<Usuario[]>([]);
-  
+
   const [destinatariosIds, setDestinatariosIds] = useState<string[]>(
     destinatarioIdInicial ? [destinatarioIdInicial] : []
   );
@@ -156,22 +156,25 @@ function MessageEditor({ destinatarioIdInicial }: MessageEditorProps) {
   }, [destinatariosPosibles, destinatariosIds]);
 
   return (
-    <section className="rounded-xl bg-amber-50/90 border border-amber-200 shadow-md overflow-hidden transition-all">
+    <section className="w-full max-w-md mx-auto rounded-xl bg-amber-50/90 border border-amber-200 shadow-md overflow-hidden transition-all">
+
+
       {/* Cabecera Desplegable */}
+
       <button
         type="button"
         onClick={() => setAbierto(!abierto)}
         className="flex w-full items-center justify-between p-5 text-left font-title text-xl text-amber-950 hover:bg-amber-100/50 transition-colors"
       >
         <span className="flex items-center gap-2">
-          Escribir una carta
+          Repartir una carta
         </span>
         <span className="text-amber-700">{abierto ? "⌃" : "⌄"}</span>
       </button>
 
       {abierto && (
         <div className="px-5 pb-5 space-y-4">
-          
+
           {/* SECCIÓN DESTINATARIOS */}
           <div className="space-y-2">
             <label className="block font-semibold text-amber-900 text-sm">
@@ -252,12 +255,12 @@ function MessageEditor({ destinatarioIdInicial }: MessageEditorProps) {
                           <input
                             type="checkbox"
                             checked={seleccionado}
-                            onChange={() => {}} 
+                            onChange={() => {}}
                             className="rounded text-amber-800 focus:ring-amber-500"
                           />
                           <span>{u.userName || u.nombre}</span>
                         </span>
-                        
+
                         <span className="text-[10px] text-amber-700 capitalize border border-amber-300 px-1.5 py-0.5 rounded bg-amber-50">
                           {u.rol || "Jugador"}
                         </span>

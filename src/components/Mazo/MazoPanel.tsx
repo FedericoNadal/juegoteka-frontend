@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
-
 import Deck from "./Deck";
 import MessageCard from "./MessageCard";
-
 import { useAuth } from "../../hooks/useAuth";
+import { confirmarParticipacion } from "../../services/encuentroService";
 import {
     obtenerMensajesRecibidos,
     eliminarMensaje
 } from "../../services/mensajeService";
-import { confirmarParticipacion } from "../../services/encuentroService";
+
 
 import type { Mensaje } from "../../types/mensaje";
 
@@ -17,8 +16,8 @@ interface MazoPanelProps {
 }
 
 function MazoPanel({ onResponder }: MazoPanelProps) {
-    const { usuario, token } = useAuth();
 
+    const { usuario, token } = useAuth();
     const [mensajes, setMensajes] = useState<Mensaje[]>([]);
     const [indiceActual, setIndiceActual] = useState(0);
 
@@ -68,9 +67,12 @@ function MazoPanel({ onResponder }: MazoPanelProps) {
         }
     }
 
+
+    ///////////////////////////////////////////////////
+
    return (
     <>
-        
+
 
         {mensajes.length > 0 && (
             <div className="flex justify-center">

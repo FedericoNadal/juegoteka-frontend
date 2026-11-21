@@ -8,7 +8,7 @@ function Deck({ onDraw, cantidad }: DeckProps) {
     const hayCartas = cantidad > 1;
 
     return (
-        <section className="rounded-xl bg-amber-50 shadow overflow-hidden">
+        <section className="w-full max-w-md mx-auto rounded-xl bg-amber-50 shadow overflow-hidden">
             <button
                 type="button"
                 onClick={onDraw}
