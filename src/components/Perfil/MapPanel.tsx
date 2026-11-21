@@ -15,30 +15,26 @@ function MapPanel({ onVerJornadas }: MapPanelProps) {
         <section
             className="
                 rounded-xl
-                bg-amber-50
+                bg-amber-50/50
                 shadow
                 overflow-hidden
+
+
             "
         >
 
             <button
                 type="button"
                 onClick={() => setAbierto(!abierto)}
-                className="
-                    flex
-                    w-full
-                    items-center
-                    justify-between
-                    p-5
-                    text-left
-                    font-title
-                    text-xl
-                "
+               className="
+        relative flex w-full items-center justify-center
+        p-5 font-title text-xl
+    "
             >
-                <span>Mapa</span>
+                <span> 🌎 JuegoteKas </span>
 
                 <span>
-                    {abierto ? "⌃" : "⌄"}
+                    {abierto ? "⌃" : ""}
                 </span>
             </button>
 
@@ -49,19 +45,6 @@ function MapPanel({ onVerJornadas }: MapPanelProps) {
 
              <MapView onVerJornadas={onVerJornadas} />
 
-                    <p
-                        className="
-                            mt-4
-                            text-center
-                            text-stone-700
-                            leading-relaxed
-                        "
-                    >
-                        Explorá las juegotekas de la ciudad
-                        y descubrí nuevos espacios para jugar,
-                        organizar encuentros y conocer
-                        comunidades lúdicas.
-                    </p>
 
                 </div>
 

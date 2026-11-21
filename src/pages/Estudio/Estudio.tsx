@@ -1,5 +1,5 @@
 
-import { useEffect,useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Container from "../../components/ui/Container";
 //import StatisticsPanel from "../../components/Perfil/StatsPanel";
@@ -12,7 +12,7 @@ import MapPanel from "../../components/Perfil/MapPanel";
 import MazoPanel from "../../components/Mazo/MazoPanel";
 import { useAuth } from "../../hooks/useAuth";
 import { obtenerMisJuegos } from "../../services/usuarioService";
-import {obtenerJornadas,obtenerMisJornadas} from "../../services/jornadaService";
+import { obtenerJornadas, obtenerMisJornadas } from "../../services/jornadaService";
 
 import type { JuegosUsuario } from "../../types/usuario";
 import type { Jornada } from "../../types/jornada";
@@ -49,19 +49,19 @@ function Estudio() {
     const navigate = useNavigate();
 
     const [destinatarioId, setDestinatarioId] =
-    useState<string | undefined>(location.state?.destinatarioId);
+        useState<string | undefined>(location.state?.destinatarioId);
     const editorRef = useRef<HTMLDivElement>(null);
 
 
 
 
-function responderMensaje(idRemitente: string) {
-    setDestinatarioId(idRemitente);
-    editorRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-}
+    function responderMensaje(idRemitente: string) {
+        setDestinatarioId(idRemitente);
+        editorRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
 
     const [mostrarNuevaJornada, setMostrarNuevaJornada] =
-    useState(false);
+        useState(false);
 
     //  guard de sesión. Corre antes que cargarDatos en cada render,
     // pero como es un hook más, no altera el orden de los ya existentes.
@@ -136,8 +136,22 @@ function responderMensaje(idRemitente: string) {
                     "
                 >
 
-                 <MapPanel onVerJornadas={handleVerJornadasDeJuegoteka} />
-                 <MazoPanel onResponder={responderMensaje} />
+                    <MapPanel onVerJornadas={handleVerJornadasDeJuegoteka} />
+
+                    <div ref={jornadasPanelRef}>
+                        <MyJornadasPanel
+                            jornadas={jornadas}
+                            usuario={usuario}
+                            onSeleccionarJornada={setJornadaSeleccionada}
+                            onNuevaJornada={() => setMostrarNuevaJornada(true)}
+                            filtroJuegotekaId={filtroJuegotekaId}
+                            onLimpiarFiltro={() => setFiltroJuegotekaId(null)}
+                            forzarAbierto={filtroJuegotekaId !== null}
+                            idsInscripto={jornadasInscripto.map((j) => j._id)}
+                        />
+                    </div>
+
+                    <MazoPanel onResponder={responderMensaje} />
 
                     <div ref={editorRef}>
                         <MessageEditor
@@ -147,26 +161,13 @@ function responderMensaje(idRemitente: string) {
                     </div>
 
 
-             <MyGamesPanel juegos={juegos}/>
 
-                <div ref={jornadasPanelRef}>
-                    <MyJornadasPanel
-                        jornadas={jornadas}
-                        usuario={usuario}
-                        onSeleccionarJornada={setJornadaSeleccionada}
-                        onNuevaJornada={() => setMostrarNuevaJornada(true)}
-                        filtroJuegotekaId={filtroJuegotekaId}
-                        onLimpiarFiltro={() => setFiltroJuegotekaId(null)}
-                        forzarAbierto={filtroJuegotekaId !== null}
-                        idsInscripto={jornadasInscripto.map((j) => j._id)}
-                    />
-                </div>
+                    <MyGamesPanel juegos={juegos} />
 
 
 
 
-
-                {/* <StatisticsPanel /> */}
+                    {/* <StatisticsPanel /> */}
 
                 </section>
 
@@ -193,7 +194,7 @@ function responderMensaje(idRemitente: string) {
                         setJornadas((jornadasActuales) =>
                             jornadasActuales.map((jornada) =>
                                 jornada._id ===
-                                jornadaActualizada._id
+                                    jornadaActualizada._id
                                     ? jornadaActualizada
                                     : jornada
                             )
@@ -205,14 +206,14 @@ function responderMensaje(idRemitente: string) {
                 />
                 {mostrarNuevaJornada && (
                     <JornadaForm
-                    onClose={() => setMostrarNuevaJornada(false)}
-                    onCreada={(jornada) => {
-                        setJornadas((actuales) => [
-                            ...actuales,
-                            jornada
-                        ]);
-                    }}
-                />
+                        onClose={() => setMostrarNuevaJornada(false)}
+                        onCreada={(jornada) => {
+                            setJornadas((actuales) => [
+                                ...actuales,
+                                jornada
+                            ]);
+                        }}
+                    />
                 )}
 
             </Container>
