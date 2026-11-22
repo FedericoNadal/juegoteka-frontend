@@ -42,3 +42,13 @@ export interface UpdateUsuarioData {
     direccion: string;
     ubicacion?: Ubicacion;
 }
+export interface UsuarioAdmin {
+    id: string;
+    userName: string;
+    rol: "jugador" | "juegoteka" | "administrador";
+    nombre: string;
+    apellido: string;
+    foto?: string;
+    mail?: string;
+    telefono?: string;
+}

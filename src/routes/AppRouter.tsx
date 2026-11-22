@@ -6,6 +6,8 @@ import Home from "../pages/Home/Home";
 import MainLayout from "../layouts/MainLayout";
 import Estudio from "../pages/Estudio/Estudio";
 import DetalleJuego from "../pages/Juegos/DetalleJuego";
+import AdminRoute from "./AdminRoute";
+import Admin from "../pages/Admin/Admin";
 
 function AppRouter() {
   return (
@@ -17,6 +19,8 @@ function AppRouter() {
           <Route path="/" element={<Home />} />
           <Route path="/estudio" element={<Estudio />} />
           <Route path="/juegos/:id" element={<DetalleJuego />} />
+          <Route element={<AdminRoute />} />
+          <Route path="/admin" element={<Admin />} />
         </Route>
       </Routes>
 

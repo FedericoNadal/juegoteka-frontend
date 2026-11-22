@@ -8,12 +8,12 @@ import {
     cancelarInscripcionJornada,
     crearDesafioEnJornada,
     cancelarJornada,
-  
+
 } from "../../services/jornadaService";
 
-import { 
-    invitarJugadorAEncuentro,  inscribirseEnEncuentro, cancelarInscripcionEncuentro
- } from "../../services/encuentroService";
+import {
+    invitarJugadorAEncuentro, inscribirseEnEncuentro, cancelarInscripcionEncuentro
+} from "../../services/encuentroService";
 import { obtenerJornadaPorId } from "../../services/jornadaService";
 
 
@@ -40,7 +40,7 @@ function JornadaOffCanvas({
         useState(false);
 
     const [cancelando, setCancelando] =
-    useState(false);
+        useState(false);
     const [error, setError] =
         useState<string | null>(null);
 
@@ -50,29 +50,29 @@ function JornadaOffCanvas({
         useState<string | null>(null);
 
     const [creandoTorneo, setCreandoTorneo] =
-    useState(false);
+        useState(false);
 
-const [mostrarFormularioTorneo, setMostrarFormularioTorneo] =
-    useState(false);
+    const [mostrarFormularioTorneo, setMostrarFormularioTorneo] =
+        useState(false);
 
-const [juegoTorneoId, setJuegoTorneoId] =
-    useState("");
+    const [juegoTorneoId, setJuegoTorneoId] =
+        useState("");
 
-const [capacidadTorneo, setCapacidadTorneo] =
-    useState("4");
+    const [capacidadTorneo, setCapacidadTorneo] =
+        useState("4");
 
     // Juego elegido para el próximo desafío. Se inicializa con el
     // primer juego disponible de la jornada, si existe.
-   const [juegoSeleccionadoId, setJuegoSeleccionadoId] =
-    useState<string>("");
+    const [juegoSeleccionadoId, setJuegoSeleccionadoId] =
+        useState<string>("");
 
-useEffect(() => {
-    const primerJuego =
-        jornada?.juegosDisponibles[0]?.id ?? "";
+    useEffect(() => {
+        const primerJuego =
+            jornada?.juegosDisponibles[0]?.id ?? "";
 
-    setJuegoSeleccionadoId(primerJuego);
-    setJuegoTorneoId(primerJuego);
-}, [jornada]);
+        setJuegoSeleccionadoId(primerJuego);
+        setJuegoTorneoId(primerJuego);
+    }, [jornada]);
 
     // Si no hay jornada seleccionada, no mostramos nada
     if (!jornada) {
@@ -86,46 +86,46 @@ useEffect(() => {
                 String(jugador.id) === String(usuario.id)
         );
 
-const esJugador = usuario?.rol === "jugador";
-const esJuegoteka = usuario?.rol === "juegoteka";
+    const esJugador = usuario?.rol === "jugador";
+    const esJuegoteka = usuario?.rol === "juegoteka";
 
-const esJuegotekaPropietaria =
-    esJuegoteka &&
-    String(jornada.Juegoteka.id) === String(usuario.id);
+    const esJuegotekaPropietaria =
+        esJuegoteka &&
+        String(jornada.Juegoteka.id) === String(usuario.id);
 
     // Un desafío es privado entre createdBy y los jugadores invitados;
-// un torneo es público para toda la jornada. Filtramos antes de listar
-// para que un jugador no vea desafíos ajenos.
-const encuentrosVisibles = jornada.encuentros.filter((encuentro) => {
-    if (encuentro.tipo !== "desafío") {
-        return true; // torneo: visible para todos
-    }
+    // un torneo es público para toda la jornada. Filtramos antes de listar
+    // para que un jugador no vea desafíos ajenos.
+    const encuentrosVisibles = jornada.encuentros.filter((encuentro) => {
+        if (encuentro.tipo !== "desafío") {
+            return true; // torneo: visible para todos
+        }
 
-    if (!usuario) return false;
+        if (!usuario) return false;
 
-    const esCreador = encuentro.createdBy.some(
-        (org) => String(org.id_usuario) === String(usuario.id)
-    );
+        const esCreador = encuentro.createdBy.some(
+            (org) => String(org.id_usuario) === String(usuario.id)
+        );
 
-    const esParticipante = encuentro.jugadores.some(
-        (jugador) => String(jugador.id_jugador) === String(usuario.id)
-    );
+        const esParticipante = encuentro.jugadores.some(
+            (jugador) => String(jugador.id_jugador) === String(usuario.id)
+        );
 
-    return esCreador || esParticipante;
-});
+        return esCreador || esParticipante;
+    });
 
-// Encuentros activos por juego, para visibilizar contención de tableros
-// físicos sin exponer participantes. Se calcula sobre jornada.encuentros
-// COMPLETO (no encuentrosVisibles): el uso del tablero es real para todos,
-// aunque el jugador no pueda ver el detalle de cada desafío ajeno.
-const encuentrosActivosPorJuego = jornada.encuentros
-    .filter((e) => e.estado !== "cancelado" && e.estado !== "finalizado")
-    .reduce<Record<string, number>>((acc, encuentro) => {
-        const idJuego = encuentro.juego?.[0]?.id_juego;
-        if (!idJuego) return acc;
-        acc[idJuego] = (acc[idJuego] ?? 0) + 1;
-        return acc;
-    }, {});
+    // Encuentros activos por juego, para visibilizar contención de tableros
+    // físicos sin exponer participantes. Se calcula sobre jornada.encuentros
+    // COMPLETO (no encuentrosVisibles): el uso del tablero es real para todos,
+    // aunque el jugador no pueda ver el detalle de cada desafío ajeno.
+    const encuentrosActivosPorJuego = jornada.encuentros
+        .filter((e) => e.estado !== "cancelado" && e.estado !== "finalizado")
+        .reduce<Record<string, number>>((acc, encuentro) => {
+            const idJuego = encuentro.juego?.[0]?.id_juego;
+            if (!idJuego) return acc;
+            acc[idJuego] = (acc[idJuego] ?? 0) + 1;
+            return acc;
+        }, {});
 
 
 
@@ -189,7 +189,7 @@ const encuentrosActivosPorJuego = jornada.encuentros
     };
 
 
-    
+
     /**
      * Envía un desafío a un jugador inscripto en esta jornada.
      *
@@ -203,25 +203,25 @@ const encuentrosActivosPorJuego = jornada.encuentros
             setError(
                 "Necesitás iniciar sesión para realizar esta acción."
             );
-            
+
             return;
         }
 
-       const juego = jornada.juegosDisponibles.find(
-    (j) => j.id === juegoSeleccionadoId
-   );
+        const juego = jornada.juegosDisponibles.find(
+            (j) => j.id === juegoSeleccionadoId
+        );
 
-   // console.log("juego encontrado:", juego);
-    //console.log("juegos disponibles:", jornada.juegosDisponibles);
-    //console.log("juego seleccionado:", juegoSeleccionadoId);
-   // console.log("Juego seleccionado:", juego);
-   // console.log("ID enviado:", juego.id);
-    //console.log("_ID juego:", juego._id);
+        // console.log("juego encontrado:", juego);
+        //console.log("juegos disponibles:", jornada.juegosDisponibles);
+        //console.log("juego seleccionado:", juegoSeleccionadoId);
+        // console.log("Juego seleccionado:", juego);
+        // console.log("ID enviado:", juego.id);
+        //console.log("_ID juego:", juego._id);
 
         if (!juego) {
             setError(
                 "Elegí un juego antes de enviar el desafío."
-                
+
             );
             //console.log(juego);
             return;
@@ -244,22 +244,22 @@ const encuentrosActivosPorJuego = jornada.encuentros
                     2,
                     token
                 );
-const encuentros =
-    jornadaConNuevoEncuentro.encuentros;
+            const encuentros =
+                jornadaConNuevoEncuentro.encuentros;
 
-const encuentroCreado =
-    encuentros[encuentros.length - 1];
+            const encuentroCreado =
+                encuentros[encuentros.length - 1];
 
-await invitarJugadorAEncuentro(
-    encuentroCreado._id,
-    idJugadorDesafiado,
-    token
-);
-          
+            await invitarJugadorAEncuentro(
+                encuentroCreado._id,
+                idJugadorDesafiado,
+                token
+            );
+
 
             onJornadaActualizada(
-    jornadaConNuevoEncuentro
-);
+                jornadaConNuevoEncuentro
+            );
 
         } catch (error) {
 
@@ -282,171 +282,170 @@ await invitarJugadorAEncuentro(
     };
 
     const handleCancelarJornada = async () => {
-    if (!token) {
-        setError(
-            "Necesitás iniciar sesión para realizar esta acción."
-        );
-        return;
-    }
+        if (!token) {
+            setError(
+                "Necesitás iniciar sesión para realizar esta acción."
+            );
+            return;
+        }
 
-    setCancelando(true);
-    setError(null);
+        setCancelando(true);
+        setError(null);
 
-    try {
-        const jornadaActualizada =
-            await cancelarJornada(
-                jornada._id,
+        try {
+            await cancelarJornada(jornada._id, token);
+
+            const jornadaActualizada =
+                await obtenerJornadaPorId(jornada._id);
+
+            onJornadaActualizada(jornadaActualizada);
+            onClose();
+
+        } catch (error) {
+            console.error(
+                "Error al cancelar jornada:",
+                error
+            );
+
+            setError(
+                error instanceof Error
+                    ? error.message
+                    : "No se pudo cancelar la jornada."
+            );
+
+        } finally {
+            setCancelando(false);
+        }
+    };
+
+    //////////////////
+    const handleCrearTorneo = async () => {
+        if (!token) {
+            setError(
+                "Necesitás iniciar sesión para realizar esta acción."
+            );
+            return;
+        }
+
+        const juego =
+            jornada.juegosDisponibles.find(
+                (j) => j.id === juegoTorneoId
+            );
+
+        if (!juego) {
+            setError(
+                "Elegí un juego para el torneo."
+            );
+            return;
+        }
+
+        setCreandoTorneo(true);
+        setError(null);
+
+        try {
+            const jornadaActualizada =
+                await crearDesafioEnJornada(
+                    jornada._id,
+                    {
+                        id_juego: juego.id,
+                        nombre: juego.titulo,
+                        imagen: juego.imagen
+                    },
+                    Number(capacidadTorneo),
+                    token
+                );
+
+            onJornadaActualizada(
+                jornadaActualizada
+            );
+
+            setMostrarFormularioTorneo(false);
+
+        } catch (error) {
+            console.error(
+                "Error al crear torneo:",
+                error
+            );
+
+            setError(
+                error instanceof Error
+                    ? error.message
+                    : "No se pudo crear el torneo."
+            );
+
+        } finally {
+            setCreandoTorneo(false);
+        }
+    };
+
+    console.log({
+        juegos: jornada.juegosDisponibles.map((juego) => juego.id),
+        encuentros: jornada.encuentros.map(
+            (encuentro) => encuentro._id
+        ),
+        jugadores: jornada.jugadoresInscriptos.map(
+            (jugador) => jugador.id
+        ),
+    });
+    ///////////////////////
+    const handleInscribirseEnTorneo = async (idEncuentro: string) => {
+        if (!token || !usuario) return;
+
+        try {
+            await inscribirseEnEncuentro(
+                idEncuentro,
+                usuario.id,
                 token
             );
 
-        onJornadaActualizada(jornadaActualizada);
-        onClose();
+            const jornadaActualizada =
+                await obtenerJornadaPorId(jornada._id);
 
-    } catch (error) {
-        console.error(
-            "Error al cancelar jornada:",
-            error
-        );
+            onJornadaActualizada(jornadaActualizada);
+        } catch (error) {
+            console.error(
+                "Error al inscribirse en el torneo:",
+                error
+            );
 
-        setError(
-            error instanceof Error
-                ? error.message
-                : "No se pudo cancelar la jornada."
-        );
+            setError(
+                error instanceof Error
+                    ? error.message
+                    : "No se pudo realizar la inscripción"
+            );
+        }
+    };
+    /////////////////////////
+    // NUEVO: espejo de handleInscribirseEnTorneo. Solo válida para torneos
+    // (así lo exige encuentroService.cancelarInscripcionJugador en el backend);
+    // el idJugador no se envía, el backend lo toma de req.user.id.
+    const handleDesinscribirseDeTorneo = async (idEncuentro: string) => {
+        if (!token || !usuario) return;
 
-    } finally {
-        setCancelando(false);
-    }
-};
-
-//////////////////
-const handleCrearTorneo = async () => {
-    if (!token) {
-        setError(
-            "Necesitás iniciar sesión para realizar esta acción."
-        );
-        return;
-    }
-
-    const juego =
-        jornada.juegosDisponibles.find(
-            (j) => j.id === juegoTorneoId
-        );
-
-    if (!juego) {
-        setError(
-            "Elegí un juego para el torneo."
-        );
-        return;
-    }
-
-    setCreandoTorneo(true);
-    setError(null);
-
-    try {
-        const jornadaActualizada =
-            await crearDesafioEnJornada(
-                jornada._id,
-                {
-                    id_juego: juego.id,
-                    nombre: juego.titulo,
-                    imagen: juego.imagen
-                },
-                Number(capacidadTorneo),
+        try {
+            await cancelarInscripcionEncuentro(
+                idEncuentro,
                 token
             );
 
-        onJornadaActualizada(
-            jornadaActualizada
-        );
+            const jornadaActualizada =
+                await obtenerJornadaPorId(jornada._id);
 
-        setMostrarFormularioTorneo(false);
+            onJornadaActualizada(jornadaActualizada);
+        } catch (error) {
+            console.error(
+                "Error al desinscribirse del torneo:",
+                error
+            );
 
-    } catch (error) {
-        console.error(
-            "Error al crear torneo:",
-            error
-        );
-
-        setError(
-            error instanceof Error
-                ? error.message
-                : "No se pudo crear el torneo."
-        );
-
-    } finally {
-        setCreandoTorneo(false);
-    }
-};
-
-console.log({
-    juegos: jornada.juegosDisponibles.map((juego) => juego.id),
-    encuentros: jornada.encuentros.map(
-        (encuentro) => encuentro._id
-    ),
-    jugadores: jornada.jugadoresInscriptos.map(
-        (jugador) => jugador.id
-    ),
-});
-///////////////////////
-const handleInscribirseEnTorneo = async (idEncuentro: string) => {
-    if (!token || !usuario) return;
-
-    try {
-        await inscribirseEnEncuentro(
-            idEncuentro,
-            usuario.id,
-            token
-        );
-
-        const jornadaActualizada =
-            await obtenerJornadaPorId(jornada._id);
-
-        onJornadaActualizada(jornadaActualizada);
-    } catch (error) {
-        console.error(
-            "Error al inscribirse en el torneo:",
-            error
-        );
-
-        setError(
-            error instanceof Error
-                ? error.message
-                : "No se pudo realizar la inscripción"
-        );
-    }
-};
-/////////////////////////
-// NUEVO: espejo de handleInscribirseEnTorneo. Solo válida para torneos
-// (así lo exige encuentroService.cancelarInscripcionJugador en el backend);
-// el idJugador no se envía, el backend lo toma de req.user.id.
-const handleDesinscribirseDeTorneo = async (idEncuentro: string) => {
-    if (!token || !usuario) return;
-
-    try {
-        await cancelarInscripcionEncuentro(
-            idEncuentro,
-            token
-        );
-
-        const jornadaActualizada =
-            await obtenerJornadaPorId(jornada._id);
-
-        onJornadaActualizada(jornadaActualizada);
-    } catch (error) {
-        console.error(
-            "Error al desinscribirse del torneo:",
-            error
-        );
-
-        setError(
-            error instanceof Error
-                ? error.message
-                : "No se pudo cancelar la inscripción"
-        );
-    }
-};
-/////////////////////////
+            setError(
+                error instanceof Error
+                    ? error.message
+                    : "No se pudo cancelar la inscripción"
+            );
+        }
+    };
+    /////////////////////////
     return (
         <>
             {/* Fondo oscuro */}
@@ -512,11 +511,11 @@ const handleDesinscribirseDeTorneo = async (idEncuentro: string) => {
                         </p>
                     )}
 
-                   {esJugador && (
-    <button
-        onClick={handleInscripcion}
-        disabled={inscribiendo}
-        className="
+                    {esJugador && (
+                        <button
+                            onClick={handleInscripcion}
+                            disabled={inscribiendo}
+                            className="
             w-full
             mt-8
             rounded-lg
@@ -528,21 +527,21 @@ const handleDesinscribirseDeTorneo = async (idEncuentro: string) => {
             disabled:opacity-50
             disabled:cursor-not-allowed
         "
-    >
-        {inscribiendo
-            ? "Procesando..."
-            : estaInscripto
-                ? "Desinscribirme"
-                : "Inscribirme"}
-    </button>
-)}
+                        >
+                            {inscribiendo
+                                ? "Procesando..."
+                                : estaInscripto
+                                    ? "Desinscribirme"
+                                    : "Inscribirme"}
+                        </button>
+                    )}
 
-{esJuegotekaPropietaria && (
-    <button
-        type="button"
-        onClick={handleCancelarJornada}
-        disabled={cancelando}
-        className="
+                    {esJuegotekaPropietaria && (
+                        <button
+                            type="button"
+                            onClick={handleCancelarJornada}
+                            disabled={cancelando}
+                            className="
             w-full
             mt-3
             rounded-lg
@@ -555,12 +554,12 @@ const handleDesinscribirseDeTorneo = async (idEncuentro: string) => {
             disabled:opacity-50
             disabled:cursor-not-allowed
         "
-    >
-        {cancelando
-            ? "Cancelando..."
-            : "Cancelar jornada"}
-    </button>
-)}
+                        >
+                            {cancelando
+                                ? "Cancelando..."
+                                : "Cancelar jornada"}
+                        </button>
+                    )}
                 </div>
 
                 {/* Información básica */}
@@ -603,22 +602,22 @@ const handleDesinscribirseDeTorneo = async (idEncuentro: string) => {
                         Juegos disponibles
                     </h3>
 
-                  <ul className="space-y-1">
-    {jornada.juegosDisponibles.map((juego) => {
-        const enUso = encuentrosActivosPorJuego[juego.id] ?? 0;
+                    <ul className="space-y-1">
+                        {jornada.juegosDisponibles.map((juego) => {
+                            const enUso = encuentrosActivosPorJuego[juego.id] ?? 0;
 
-        return (
-            <li key={juego.id} className="text-stone-700">
-                🎲 {juego.titulo}
-                {enUso > 0 && (
-                    <span className="text-xs text-stone-500">
-                        {" "}— {enUso} {enUso === 1 ? "encuentro agendado" : "encuentros agendados "}
-                    </span>
-                )}
-            </li>
-        );
-    })}
-</ul>
+                            return (
+                                <li key={juego.id} className="text-stone-700">
+                                    🎲 {juego.titulo}
+                                    {enUso > 0 && (
+                                        <span className="text-xs text-stone-500">
+                                            {" "}— {enUso} {enUso === 1 ? "encuentro agendado" : "encuentros agendados "}
+                                        </span>
+                                    )}
+                                </li>
+                            );
+                        })}
+                    </ul>
 
                 </section>
 
@@ -628,15 +627,15 @@ const handleDesinscribirseDeTorneo = async (idEncuentro: string) => {
                     <h3 className="font-bold text-lg mb-2">
                         Encuentros
                     </h3>
-{esJuegotekaPropietaria && (
-    <>
-        {!mostrarFormularioTorneo ? (
-            <button
-                type="button"
-                onClick={() =>
-                    setMostrarFormularioTorneo(true)
-                }
-                className="
+                    {esJuegotekaPropietaria && (
+                        <>
+                            {!mostrarFormularioTorneo ? (
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setMostrarFormularioTorneo(true)
+                                    }
+                                    className="
                     mt-3
                     w-full
                     rounded-lg
@@ -647,75 +646,75 @@ const handleDesinscribirseDeTorneo = async (idEncuentro: string) => {
                     text-white
                     hover:bg-amber-800
                 "
-            >
-                Crear torneo
-            </button>
-        ) : (
-            <div className="mt-3 space-y-3 rounded-lg border border-amber-200 bg-white p-4">
-
-                <label className="flex flex-col gap-1">
-                    <span className="text-sm">
-                        Juego
-                    </span>
-
-                    <select
-                        value={juegoTorneoId}
-                        onChange={(e) =>
-                            setJuegoTorneoId(
-                                e.target.value
-                            )
-                        }
-                        className="
-                            rounded-lg
-                            border
-                            border-amber-300
-                            px-2
-                            py-2
-                        "
-                    >
-                        {jornada.juegosDisponibles.map(
-                            (juego) => (
-                                <option
-                                    key={juego.id}
-                                    value={juego.id}
                                 >
-                                    {juego.titulo}
-                                </option>
-                            )
-                        )}
-                    </select>
-                </label>
+                                    Crear torneo
+                                </button>
+                            ) : (
+                                <div className="mt-3 space-y-3 rounded-lg border border-amber-200 bg-white p-4">
 
-                <label className="flex flex-col gap-1">
-                    <span className="text-sm">
-                        Capacidad
-                    </span>
+                                    <label className="flex flex-col gap-1">
+                                        <span className="text-sm">
+                                            Juego
+                                        </span>
 
-                    <input
-                        type="number"
-                        min="2"
-                        value={capacidadTorneo}
-                        onChange={(e) =>
-                            setCapacidadTorneo(
-                                e.target.value
-                            )
-                        }
-                        className="
+                                        <select
+                                            value={juegoTorneoId}
+                                            onChange={(e) =>
+                                                setJuegoTorneoId(
+                                                    e.target.value
+                                                )
+                                            }
+                                            className="
                             rounded-lg
                             border
                             border-amber-300
                             px-2
                             py-2
                         "
-                    />
-                </label>
+                                        >
+                                            {jornada.juegosDisponibles.map(
+                                                (juego) => (
+                                                    <option
+                                                        key={juego.id}
+                                                        value={juego.id}
+                                                    >
+                                                        {juego.titulo}
+                                                    </option>
+                                                )
+                                            )}
+                                        </select>
+                                    </label>
 
-                <div className="flex gap-2">
-                    <button
-                        type="button"
-                        onClick={handleCrearTorneo}
-                        disabled={creandoTorneo}
-                        className="
+                                    <label className="flex flex-col gap-1">
+                                        <span className="text-sm">
+                                            Capacidad
+                                        </span>
+
+                                        <input
+                                            type="number"
+                                            min="2"
+                                            value={capacidadTorneo}
+                                            onChange={(e) =>
+                                                setCapacidadTorneo(
+                                                    e.target.value
+                                                )
+                                            }
+                                            className="
+                            rounded-lg
+                            border
+                            border-amber-300
+                            px-2
+                            py-2
+                        "
+                                        />
+                                    </label>
+
+                                    <div className="flex gap-2">
+                                        <button
+                                            type="button"
+                                            onClick={handleCrearTorneo}
+                                            disabled={creandoTorneo}
+                                            className="
                             flex-1
                             rounded-lg
                             bg-amber-700
@@ -724,106 +723,106 @@ const handleDesinscribirseDeTorneo = async (idEncuentro: string) => {
                             text-white
                             disabled:opacity-50
                         "
-                    >
-                        {creandoTorneo
-                            ? "Creando..."
-                            : "Crear torneo"}
-                    </button>
+                                        >
+                                            {creandoTorneo
+                                                ? "Creando..."
+                                                : "Crear torneo"}
+                                        </button>
 
-                    <button
-                        type="button"
-                        onClick={() =>
-                            setMostrarFormularioTorneo(false)
-                        }
-                        className="
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                setMostrarFormularioTorneo(false)
+                                            }
+                                            className="
                             rounded-lg
                             border
                             px-4
                             py-2
                         "
-                    >
-                        Cancelar
-                    </button>
-                </div>
-            </div>
-        )}
-    </>
+                                        >
+                                            Cancelar
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </>
 
-)}
-                  {encuentrosVisibles.length === 0 ? (
-    <p className="text-stone-500">
-        Todavía no hay encuentros.
-    </p>
-) : (
-    <ul className="space-y-2">
-        {encuentrosVisibles.map((encuentro) => {
+                    )}
+                    {encuentrosVisibles.length === 0 ? (
+                        <p className="text-stone-500">
+                            Todavía no hay encuentros.
+                        </p>
+                    ) : (
+                        <ul className="space-y-2">
+                            {encuentrosVisibles.map((encuentro) => {
 
-    const esTorneo = encuentro.tipo === "torneo";
-    const juego = encuentro.juego?.[0];
+                                const esTorneo = encuentro.tipo === "torneo";
+                                const juego = encuentro.juego?.[0];
 
-    const yaInscripto =
-        usuario &&
-        encuentro.jugadores.some(
-            (jugador) =>
-                String(jugador.id_jugador) ===
-                String(usuario.id)
-        );
+                                const yaInscripto =
+                                    usuario &&
+                                    encuentro.jugadores.some(
+                                        (jugador) =>
+                                            String(jugador.id_jugador) ===
+                                            String(usuario.id)
+                                    );
 
-    const completo =
-        encuentro.jugadores.length >= encuentro.capacidad;
+                                const completo =
+                                    encuentro.jugadores.length >= encuentro.capacidad;
 
-    // NUEVO: color del botón torneo según el estado (inscribirme/desinscribirme)
-    const colorBotonTorneo = yaInscripto
-        ? "bg-red-600 hover:bg-red-700"
-        : "bg-amber-700 hover:bg-amber-800";
+                                // NUEVO: color del botón torneo según el estado (inscribirme/desinscribirme)
+                                const colorBotonTorneo = yaInscripto
+                                    ? "bg-red-600 hover:bg-red-700"
+                                    : "bg-amber-700 hover:bg-amber-800";
 
-    return (
-        <li
-            key={encuentro._id}
-            className="
+                                return (
+                                    <li
+                                        key={encuentro._id}
+                                        className="
                 rounded-lg
                 border
                 border-amber-200
                 bg-white
                 p-3
             "
-        >
-            <div className="flex items-start justify-between gap-3">
+                                    >
+                                        <div className="flex items-start justify-between gap-3">
 
-                <div>
-                    <p className="font-semibold text-stone-800">
-                        {esTorneo
-                            ? "🏆 Torneo"
-                            : "⚔ Desafío"}
-                    </p>
+                                            <div>
+                                                <p className="font-semibold text-stone-800">
+                                                    {esTorneo
+                                                        ? "🏆 Torneo"
+                                                        : "⚔ Desafío"}
+                                                </p>
 
-                    {juego && (
-                        <p className="text-sm text-stone-600">
-                            {juego.nombre}
-                        </p>
-                    )}
+                                                {juego && (
+                                                    <p className="text-sm text-stone-600">
+                                                        {juego.nombre}
+                                                    </p>
+                                                )}
 
-                    <p className="mt-1 text-xs text-stone-500">
-                        {encuentro.jugadores.length} /{" "}
-                        {encuentro.capacidad} jugadores
-                    </p>
-                </div>
+                                                <p className="mt-1 text-xs text-stone-500">
+                                                    {encuentro.jugadores.length} /{" "}
+                                                    {encuentro.capacidad} jugadores
+                                                </p>
+                                            </div>
 
-                {esTorneo &&
-                    esJugador &&
-                    !esJuegotekaPropietaria && (
-                        // MODIFICADO: antes solo permitía inscribirse (disabled si
-                        // yaInscripto). Ahora alterna inscribirse/desinscribirse
-                        // según el estado actual del jugador en el encuentro.
-                        <button
-                            type="button"
-                            disabled={completo && !yaInscripto}
-                            onClick={() =>
-                                yaInscripto
-                                    ? handleDesinscribirseDeTorneo(encuentro._id)
-                                    : handleInscribirseEnTorneo(encuentro._id)
-                            }
-                            className={`
+                                            {esTorneo &&
+                                                esJugador &&
+                                                !esJuegotekaPropietaria && (
+                                                    // MODIFICADO: antes solo permitía inscribirse (disabled si
+                                                    // yaInscripto). Ahora alterna inscribirse/desinscribirse
+                                                    // según el estado actual del jugador en el encuentro.
+                                                    <button
+                                                        type="button"
+                                                        disabled={completo && !yaInscripto}
+                                                        onClick={() =>
+                                                            yaInscripto
+                                                                ? handleDesinscribirseDeTorneo(encuentro._id)
+                                                                : handleInscribirseEnTorneo(encuentro._id)
+                                                        }
+                                                        className={`
                                 rounded-lg
                                 px-3
                                 py-2
@@ -834,19 +833,19 @@ const handleDesinscribirseDeTorneo = async (idEncuentro: string) => {
                                 disabled:opacity-50
                                 ${colorBotonTorneo}
                             `}
-                        >
-                            {yaInscripto
-                                ? "Desinscribirme"
-                                : completo
-                                  ? "Completo"
-                                  : "Inscribirme"}
-                        </button>
-                    )}
-            </div>
-        </li>
-    );
-})}
-</ul>
+                                                    >
+                                                        {yaInscripto
+                                                            ? "Desinscribirme"
+                                                            : completo
+                                                                ? "Completo"
+                                                                : "Inscribirme"}
+                                                    </button>
+                                                )}
+                                        </div>
+                                    </li>
+                                );
+                            })}
+                        </ul>
                     )}
 
                 </section>
@@ -860,38 +859,38 @@ const handleDesinscribirseDeTorneo = async (idEncuentro: string) => {
 
                     {esJugador && estaInscripto &&
                         jornada.juegosDisponibles.length > 0 && (
-                        <div className="mb-3">
-                            <label className="text-sm text-stone-600">
-                                Juego para desafiar:{" "}
-                                <select
-                                    value={juegoSeleccionadoId}
-                                    onChange={(e) =>
-                                        setJuegoSeleccionadoId(
-                                            e.target.value
-                                        )
-                                    }
-                                    className="
+                            <div className="mb-3">
+                                <label className="text-sm text-stone-600">
+                                    Juego para desafiar:{" "}
+                                    <select
+                                        value={juegoSeleccionadoId}
+                                        onChange={(e) =>
+                                            setJuegoSeleccionadoId(
+                                                e.target.value
+                                            )
+                                        }
+                                        className="
                                         border
                                         border-amber-300
                                         rounded
                                         px-2
                                         py-1
                                     "
-                                >
-                                    {jornada.juegosDisponibles.map(
-                                        (juego) => (
-                                            <option
-                                                key={juego.id}
-                                                value={juego.id}
-                                            >
-                                                {juego.titulo}
-                                            </option>
-                                        )
-                                    )}
-                                </select>
-                            </label>
-                        </div>
-                    )}
+                                    >
+                                        {jornada.juegosDisponibles.map(
+                                            (juego) => (
+                                                <option
+                                                    key={juego.id}
+                                                    value={juego.id}
+                                                >
+                                                    {juego.titulo}
+                                                </option>
+                                            )
+                                        )}
+                                    </select>
+                                </label>
+                            </div>
+                        )}
 
                     {jornada.jugadoresInscriptos.length === 0 ? (
                         <p className="text-stone-500">
@@ -905,7 +904,7 @@ const handleDesinscribirseDeTorneo = async (idEncuentro: string) => {
                                     const esUnoMismo =
                                         usuario &&
                                         String(jugador.id) ===
-                                            String(usuario.id);
+                                        String(usuario.id);
 
                                     return (
                                         <li
@@ -921,14 +920,14 @@ const handleDesinscribirseDeTorneo = async (idEncuentro: string) => {
                                             </span>
 
                                             {esJugador &&
-    estaInscripto &&
-    !esUnoMismo && (
-        <button
-            onClick={() =>
-                handleDesafiar(jugador.id)
-            }
-            disabled={desafiando === jugador.id}
-            className="
+                                                estaInscripto &&
+                                                !esUnoMismo && (
+                                                    <button
+                                                        onClick={() =>
+                                                            handleDesafiar(jugador.id)
+                                                        }
+                                                        disabled={desafiando === jugador.id}
+                                                        className="
                 text-sm
                 rounded
                 bg-amber-700
@@ -938,12 +937,12 @@ const handleDesinscribirseDeTorneo = async (idEncuentro: string) => {
                 hover:bg-amber-800
                 disabled:opacity-50
             "
-        >
-            {desafiando === jugador.id
-                ? "Enviando..."
-                : "Desafiar"}
-        </button>
-)}
+                                                    >
+                                                        {desafiando === jugador.id
+                                                            ? "Enviando..."
+                                                            : "Desafiar"}
+                                                    </button>
+                                                )}
                                         </li>
                                     );
                                 }

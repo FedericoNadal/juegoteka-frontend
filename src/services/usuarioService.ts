@@ -1,5 +1,6 @@
 import type {
     Usuario,
+    UsuarioAdmin,
     JuegosUsuario,
     UpdateUsuarioData
 } from "../types/usuario";
@@ -210,5 +211,50 @@ throw new Error(
             responseData.message ||
 "No se pudo cambiar la contraseña"
         );
+    }
+}
+
+/**
+ * Obtiene todos los usuarios registrados.
+ * El backend devuelve información ampliada
+ * cuando la consulta corresponde a un administrador.
+ */
+export async function obtenerUsuarios(
+    token: string
+): Promise<UsuarioAdmin[]> {
+
+    const response = await fetch(
+        `${API_URL}/usuarios/`,
+        {
+            method: "GET",
+            headers: getHeaders(token)
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error("No se pudo obtener el listado de usuarios");
+    }
+
+    return response.json();
+}
+/**
+ * Elimina un usuario por ID.
+ * Operación exclusiva para administradores.
+ */
+export async function eliminarUsuario(
+    id: string,
+    token: string
+): Promise<void> {
+
+    const response = await fetch(
+        `${API_URL}/usuarios/${id}`,
+        {
+            method: "DELETE",
+            headers: getHeaders(token)
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error("No se pudo eliminar el usuario");
     }
 }

@@ -263,10 +263,15 @@ export async function crearJornada(
 
     return data.nuevaJornada;
 }
+interface RespuestaCancelarJornada {
+    message: string;
+}
+
 export async function cancelarJornada(
     idJornada: string,
     token: string
-): Promise<Jornada> {
+): Promise<RespuestaCancelarJornada> {
+
     const response = await fetch(
         `${API_URL}/jornadas/updateEstado/${idJornada}`,
         {
@@ -278,13 +283,13 @@ export async function cancelarJornada(
         }
     );
 
-    if (!response.ok) {
-        const error = await response.json();
+    const data = await response.json();
 
+    if (!response.ok) {
         throw new Error(
-            error.message || "No se pudo cancelar la jornada"
+            data.message || "No se pudo cancelar la jornada"
         );
     }
 
-    return await response.json();
+    return data;
 }

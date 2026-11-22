@@ -126,3 +126,33 @@ export async function obtenerJuegoPorId(
 
     return response.json();
 }
+/**
+ * Da de baja un juego del catálogo.
+ *
+ * La baja es lógica: el juego permanece
+ * en la base de datos con estado "eliminado".
+ * Solo los administradores pueden realizarla.
+ */
+export async function eliminarJuego(
+    idJuego: string,
+    token: string
+): Promise<Juego> {
+
+    const response = await fetch(
+        `${API_URL}/juegos/delete/${idJuego}`,
+        {
+            method: "DELETE",
+            headers: getHeaders(token)
+        }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(
+            data.message || "No se pudo eliminar el juego"
+        );
+    }
+
+    return data;
+}
