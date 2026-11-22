@@ -24,7 +24,7 @@ import type { Usuario } from "../../types/usuario";
 import type { Jornada } from "../../types/jornada";
 
 import { useAuth } from "../../hooks/useAuth";
-
+import Spinner from "../ui/Spinner";
 
 interface MapViewProps {
     onVerJornadas: (juegotekaId: string) => void;
@@ -168,45 +168,40 @@ function MapView({ onVerJornadas }: MapViewProps) {
     const [, setError] =
         useState<string | null>(null);
 
+    const [cargandoJuegotekas, setCargandoJuegotekas] = useState(true);
+
     useEffect(() => {
 
-        if (!token) {
-            return;
+    if (!token) {
+        return;
+    }
+    const tokenActual = token;
+    async function cargarJuegotekas() {
+        try {
+            const datosJuegotekas = await obtenerJuegotekas(tokenActual);
+            setJuegotekas(datosJuegotekas);
+        } catch (error) {
+            console.error("Error al cargar juegotekas del mapa:", error);
+            setError("No se pudieron cargar las juegotekas.");
+        }finally {
+        setCargandoJuegotekas(false);
+    }
+    }
+
+    async function cargarJornadas() {
+        try {
+            const datosJornadas = await obtenerJornadas();
+            setJornadas(datosJornadas);
+        } catch (error) {
+            console.error("Error al cargar jornadas del mapa:", error);
+            setError("No se pudieron cargar las jornadas.");
         }
+    }
 
-        const tokenActual = token;
+    cargarJuegotekas();
+    cargarJornadas();
 
-        async function cargarDatos() {
-
-            try {
-
-                // Jornadas es pública, no necesita token — se pide igual
-                // en paralelo para no encadenar esperas innecesarias.
-                const [datosJuegotekas, datosJornadas] =
-                    await Promise.all([
-                        obtenerJuegotekas(tokenActual),
-                        obtenerJornadas()
-                    ]);
-
-                setJuegotekas(datosJuegotekas);
-                setJornadas(datosJornadas);
-
-            } catch (error) {
-
-                console.error(
-                    "Error al cargar datos del mapa:",
-                    error
-                );
-
-                setError(
-                    "No se pudieron cargar los datos del mapa."
-                );
-            }
-        }
-
-        cargarDatos();
-
-    }, [token]);
+}, [token]);
 
     return (
 
@@ -235,7 +230,17 @@ function MapView({ onVerJornadas }: MapViewProps) {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 
             />
-
+{cargandoJuegotekas && (
+    <div className="
+        absolute inset-0 z-[1000]
+        flex items-center justify-center
+        pointer-events-none
+    ">
+        <div className="rounded-lg bg-transparent px-5 py-3 shadow-lg">
+            <Spinner size="lg" label="" />
+        </div>
+    </div>
+)}
 
             {juegotekas.map((juegoteka) => {
 

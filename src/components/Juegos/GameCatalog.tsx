@@ -6,6 +6,7 @@ import type { Juego } from "../../types/juego";
 import {obtenerJuegos, agregarAMisJuegos} from "../../services/juegoService";
 import { obtenerMisJuegos } from "../../services/usuarioService";
 import { useAuth } from "../../hooks/useAuth";
+import Spinner from "../ui/Spinner";
 
 
 function GameCatalog() {
@@ -125,9 +126,13 @@ function GameCatalog() {
     });
 
 
-    if (isLoading) {
-        return <p>Cargando juegos...</p>;
-    }
+   if (isLoading) {
+    return (
+        <div className="flex justify-center py-12">
+            <Spinner size="lg" label="Cargando juegos..." />
+        </div>
+    );
+}
 
 
     if (error) {

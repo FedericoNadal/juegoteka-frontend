@@ -13,6 +13,7 @@ import MazoPanel from "../../components/Mazo/MazoPanel";
 import { useAuth } from "../../hooks/useAuth";
 import { obtenerMisJuegos } from "../../services/usuarioService";
 import { obtenerJornadas, obtenerMisJornadas } from "../../services/jornadaService";
+import Spinner from "../../components/ui/Spinner";
 
 import type { JuegosUsuario } from "../../types/usuario";
 import type { Jornada } from "../../types/jornada";
@@ -27,7 +28,6 @@ function Estudio() {
 
     const [jornadas, setJornadas] =
         useState<Jornada[]>([]);
-
 
     const [jornadasInscripto, setJornadasInscripto] =
         useState<Jornada[]>([]);
@@ -51,7 +51,6 @@ function Estudio() {
     const [destinatarioId, setDestinatarioId] =
         useState<string | undefined>(location.state?.destinatarioId);
     const editorRef = useRef<HTMLDivElement>(null);
-
 
 
 
@@ -115,8 +114,15 @@ function Estudio() {
 
 
 
-    // Ahora cubre también el estado de carga y dispara el redirect de arriba.
-    if (cargandoSesion || !isAuthenticated || !usuario) {
+    if (cargandoSesion) {
+        return (
+            <div className="flex justify-center py-12">
+                <Spinner size="lg" label="Verificando sesión..." />
+            </div>
+        );
+    }
+
+    if (!isAuthenticated || !usuario) {
         return null;
     }
 

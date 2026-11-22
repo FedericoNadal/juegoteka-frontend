@@ -8,6 +8,7 @@ import Container from "../../components/ui/Container";
 import Panel from "../../components/ui/Panel";
 import SectionTitle from "../../components/ui/SectionTitle";
 import Button from "../../components/ui/Button";
+import Spinner from "../../components/ui/Spinner";
 
 function DetalleJuego() {
 
@@ -49,9 +50,13 @@ function DetalleJuego() {
 
     }, [id]);
 
-    if (isLoading) {
-        return <p className="text-center mt-8">Cargando juego...</p>;
-    }
+   if (isLoading) {
+    return (
+        <div className="flex justify-center py-12">
+            <Spinner size="lg" label="Cargando juego..." />
+        </div>
+    );
+}
 
     if (error || !juego) {
         return (

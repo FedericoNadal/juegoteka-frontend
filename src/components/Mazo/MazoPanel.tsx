@@ -10,6 +10,7 @@ import {
 
 
 import type { Mensaje } from "../../types/mensaje";
+import Spinner from "../ui/Spinner";
 
 interface MazoPanelProps {
     onResponder: (idRemitente: string) => void;
@@ -20,19 +21,27 @@ function MazoPanel({ onResponder }: MazoPanelProps) {
     const { usuario, token } = useAuth();
     const [mensajes, setMensajes] = useState<Mensaje[]>([]);
     const [indiceActual, setIndiceActual] = useState(0);
+    const [cargandoMensajes, setCargandoMensajes] = useState(true);
 
     useEffect(() => {
-        async function cargarMensajes() {
-            if (!usuario || !token) return;
-            try {
-                const respuesta = await obtenerMensajesRecibidos(usuario.id, token);
-                setMensajes(respuesta.mensajes);
-            } catch (error) {
-                console.error("No se pudieron cargar los mensajes:", error);
-            }
+    async function cargarMensajes() {
+        if (!usuario || !token) {
+            setCargandoMensajes(false);
+            return;
         }
-        cargarMensajes();
-    }, [usuario, token]);
+
+        try {
+            const respuesta = await obtenerMensajesRecibidos(usuario.id, token);
+            setMensajes(respuesta.mensajes);
+        } catch (error) {
+            console.error("No se pudieron cargar los mensajes:", error);
+        } finally {
+            setCargandoMensajes(false);
+        }
+    }
+
+    cargarMensajes();
+}, [usuario, token]);
 
     function siguienteMensaje() {
         if (mensajes.length === 0) return;
@@ -69,7 +78,13 @@ function MazoPanel({ onResponder }: MazoPanelProps) {
 
 
     ///////////////////////////////////////////////////
-
+if (cargandoMensajes) {
+    return (
+        <div className="flex justify-center py-12">
+            <Spinner size="lg" label="Cargando mensajes..." />
+        </div>
+    );
+}
    return (
     <>
 
