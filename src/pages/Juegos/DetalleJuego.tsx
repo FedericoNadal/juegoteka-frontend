@@ -50,13 +50,13 @@ function DetalleJuego() {
 
     }, [id]);
 
-   if (isLoading) {
-    return (
-        <div className="flex justify-center py-12">
-            <Spinner size="lg" label="Cargando juego..." />
-        </div>
-    );
-}
+    if (isLoading) {
+        return (
+            <div className="flex min-h-[60vh] items-center justify-center">
+                <Spinner size="full" label="" />
+            </div>
+        );
+    }
 
     if (error || !juego) {
         return (

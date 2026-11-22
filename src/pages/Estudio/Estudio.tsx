@@ -116,8 +116,8 @@ function Estudio() {
 
     if (cargandoSesion) {
         return (
-            <div className="flex justify-center py-12">
-                <Spinner size="lg" label="Verificando sesión..." />
+            <div className="flex min-h-[60vh] items-center justify-center">
+                <Spinner size="full" label="Cargando juegos..." />
             </div>
         );
     }
