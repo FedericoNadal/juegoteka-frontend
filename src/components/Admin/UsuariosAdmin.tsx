@@ -14,6 +14,8 @@ function UsuariosAdmin() {
     const [cargando, setCargando] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
+    const [busqueda, setBusqueda] = useState("");
+
     useEffect(() => {
         async function cargarUsuarios() {
             if (!token) {
@@ -55,6 +57,17 @@ function UsuariosAdmin() {
                 return "bg-blue-100 text-blue-800";
         }
     }
+
+
+    const usuariosFiltrados = usuarios.filter(usuario => {
+    const termino = busqueda.trim().toLocaleLowerCase();
+
+    const nombre = nombreCompleto(usuario).toLocaleLowerCase();
+    const userName = usuario.userName.toLocaleLowerCase();
+
+    return nombre.includes(termino) || userName.includes(termino);
+});
+
 
     async function handleEliminarUsuario(usuarioAEliminar: UsuarioAdmin) {
         const confirmado = window.confirm(
@@ -100,8 +113,19 @@ function UsuariosAdmin() {
 
     return (
         <>
+        <div className="mb-4">
+    <input
+        type="search"
+        value={busqueda}
+        onChange={event => setBusqueda(event.target.value)}
+        placeholder="Buscar por nombre o usuario..."
+        className="w-full rounded-lg border border-amber-900/20 bg-white px-4 py-3 text-amber-950 outline-none focus:border-amber-700"
+    />
+</div>
+
+
             <p className="mb-6 text-amber-900">
-                Total de usuarios: <strong>{usuarios.length}</strong>
+               Usuarios encontrados: <strong>{usuariosFiltrados.length}</strong>
             </p>
 
             {usuarios.length === 0 ? (
@@ -125,7 +149,7 @@ function UsuariosAdmin() {
                             </thead>
 
                             <tbody>
-                                {usuarios.map(usuario => (
+                                {usuariosFiltrados.map(usuario => (
                                     <tr
                                         key={usuario.id}
                                         className="border-b border-amber-900/10 hover:bg-amber-50"
@@ -171,7 +195,7 @@ function UsuariosAdmin() {
 
                     {/* Tarjetas para móviles */}
                     <div className="flex flex-col gap-4 md:hidden">
-                        {usuarios.map(usuario => (
+                        {usuariosFiltrados.map(usuario => (
                             <article
                                 key={usuario.id}
                                 className="rounded-xl border border-amber-900/20 bg-amber-50 p-4 shadow-sm"
