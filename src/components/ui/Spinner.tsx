@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 interface SpinnerProps {
-    size?: "sm" | "md" | "lg";
+    size?: "sm" | "md" | "lg" | "full";
     label?: string;
     className?: string;
 }
@@ -12,6 +12,7 @@ function Spinner({ size = "md", label, className = "" }: SpinnerProps) {
         sm: "text-base",
         md: "text-2xl",
         lg: "text-4xl",
+        full: "text-[clamp(5rem,20vw,12rem)]",
     };
 
     const [invertido, setInvertido] = useState(false);
@@ -25,10 +26,9 @@ function Spinner({ size = "md", label, className = "" }: SpinnerProps) {
     }, []);
 
     return (
-        <span
+        <div
             role="status"
-            className={`inline-flex items-center justify-center gap-3 text-amber-800 ${className}`}
-        >
+            className={`flex w-full items-center justify-center  gap-3 text-amber-800 ${className}`}>
             <span
                 aria-hidden="true"
                 className={tamaños[size]}
@@ -36,8 +36,8 @@ function Spinner({ size = "md", label, className = "" }: SpinnerProps) {
                 {invertido ? "⌛" : "⏳"}
             </span>
 
-            {label && <span className="text-sm">{label}</span>}
-        </span>
+            {label && <span className="text-sm text-center">{label}</span>}
+        </div>
     );
 }
 

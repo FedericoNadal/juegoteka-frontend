@@ -349,6 +349,17 @@ export default function AuthOffcanvas({
                                     Cambiar contraseña
                                 </Button>
 
+                                {/*ADMIN */}
+                                {usuario.rol === "administrador" && (
+                                    <Button
+                                        onClick={() => {
+                                            onClose();
+                                            navigate("/admin");
+                                        }}
+                                    >
+                                        Panel de administración
+                                    </Button>
+                                )}
 
                                 <Button
                                     onClick={() => {
