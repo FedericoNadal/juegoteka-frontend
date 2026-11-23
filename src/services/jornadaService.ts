@@ -246,23 +246,24 @@ export async function crearJornada(
     jornada: NuevaJornada,
     token: string
 ): Promise<Jornada> {
+
     const response = await fetch(`${API_URL}/jornadas/create`, {
         method: "POST",
         headers: getHeaders(token),
         body: JSON.stringify(jornada)
     });
 
+    const data = await response.json();
+
     if (!response.ok) {
-        const error = await response.json();
         throw new Error(
-            error.message || "No se pudo crear la jornada"
+            data.message || "No se pudo crear la jornada"
         );
     }
 
-    const data = await response.json();
-
     return data.nuevaJornada;
 }
+
 interface RespuestaCancelarJornada {
     message: string;
 }

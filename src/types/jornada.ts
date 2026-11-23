@@ -2,6 +2,7 @@ export interface JuegotekaJornada {
     id: string;
     nombre: string;
     direccion: string;
+    foto?: string;
 }
 
 export interface JuegoDisponible {

@@ -185,26 +185,34 @@ function Estudio() {
                     }
                     onJornadaActualizada={(jornadaActualizada) => {
 
+                        // Actualiza la jornada abierta en el offcanvas.
+                        setJornadaSeleccionada(jornadaActualizada);
 
-                        /*
-                         * Actualizamos la jornada abierta.
-                         */
-                        setJornadaSeleccionada(
-                            jornadaActualizada
-                        );
-
-                        /*
-                         * Actualizamos la jornada dentro
-                         * del listado general.
-                         */
+                        // Actualiza la jornada en el listado general.
                         setJornadas((jornadasActuales) =>
                             jornadasActuales.map((jornada) =>
-                                jornada._id ===
-                                    jornadaActualizada._id
+                                jornada._id === jornadaActualizada._id
                                     ? jornadaActualizada
                                     : jornada
                             )
                         );
+
+                        // Comprueba si el usuario actual sigue inscripto.
+                        const estaInscripto = jornadaActualizada.jugadoresInscriptos.some(
+                            (jugador) => String(jugador.id) === String(usuario.id)
+                        );
+
+                        // Actualiza también el listado de jornadas propias.
+                        setJornadasInscripto((actuales) => {
+
+                            const jornadasRestantes = actuales.filter(
+                                (jornada) => jornada._id !== jornadaActualizada._id
+                            );
+
+                            return estaInscripto
+                                ? [...jornadasRestantes, jornadaActualizada]
+                                : jornadasRestantes;
+                        });
 
                     }}
 
